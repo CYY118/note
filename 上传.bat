@@ -8,5 +8,5 @@ git push
 echo File uploaded successfully ! 
 del /f /s /q "C:\Users\caoyangyang\AppData\Roaming\Typora\typora-user-images\*.*"
 echo Prcture Clear successfully ! 
-pause
+
 exit
