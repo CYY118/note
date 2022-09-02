@@ -7,5 +7,5 @@ git commit -m "test"
 git push
 
 echo File uploaded successfully ! 
-echo. & pause 
+
 exit
