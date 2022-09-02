@@ -4,6 +4,6 @@ git add .
 git commit -m "test"
 git push
 echo File uploaded successfully ! 
-del /f /s /q "C:\Windows\System32\config\systemprofile\Waytech\CloudDrive\Temp\*.*"
+del /f /s /q "C:\Users\caoyangyang\AppData\Roaming\Typora\typora-user-images\*.*"
 echo Prcture Clear successfully ! 
 exit
