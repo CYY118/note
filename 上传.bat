@@ -1,7 +1,7 @@
 @echo off 
 echo File is being uploaded, please wait...... 
 git add .
-set t=%date%
+set t=%date%+%time%
 git commit -m "%t%"
 @echo %t%
 git push
