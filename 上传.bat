@@ -4,6 +4,7 @@ H:\>cd note
 dir
 git add .
 git commit -m "test"
+git push
 
 echo File uploaded successfully ! 
 echo. & pause 
