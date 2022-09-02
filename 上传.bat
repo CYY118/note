@@ -1,9 +1,9 @@
 @echo off 
 echo File is being uploaded, please wait...... 
 git add .
-set time="1235456798"
-git commit -m "test"
-@echo %time%
+set t=%date%
+git commit -m "%t%"
+@echo %t%
 git push
 echo File uploaded successfully ! 
 del /f /s /q "C:\Users\caoyangyang\AppData\Roaming\Typora\typora-user-images\*.*"
