@@ -5,7 +5,7 @@ dir
 git add .
 git commit -m "test"
 git push
-C:\Users\caoyangyang\AppData\Roaming\Typora\typora-user-images
 echo File uploaded successfully ! 
-
+del /f /s /q "C:\Users\caoyangyang\AppData\Roaming\Typora\typora-user-images\*.*"
+echo Prcture Clear successfully ! 
 exit
