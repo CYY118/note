@@ -30,7 +30,7 @@
         },
         "menu":{
           "textColor":"#8785a2",
-          "changColor": "#8785a2",
+          "changColor": "#484758",
           "textTwoColor": "color:#8785a2",
           "iconColor": "color:#8785a2",
           "backgroundColor": "background-color: #f6f6f6"
