@@ -1,0 +1,76 @@
+{
+  "color":[
+      {
+        "header":{
+          "backgroundColor": "background-color: #99A3F2"
+        },
+        "menu":{
+          "textColor": "rgb(0 0 0)",
+          "changColor": "rgb(0 55 255)",
+          "textTwoColor": "color: rgb(0 0 0)",
+          "iconColor": "color: rgb(0 0 0)",
+          "backgroundColor": "background-color: #9EC5FF"
+        }
+      },
+      {
+        "header":{
+          "backgroundColor": "background-color: #00adb5"
+        },
+        "menu":{
+          "textColor": "#eeeeee",
+          "changColor": "#8e8686",
+          "textTwoColor": "color:#eeeeee",
+          "iconColor": "color:#eeeeee",
+          "backgroundColor": "background-color: #393e46"
+        }
+      },
+      {
+        "header":{
+          "backgroundColor": "background-color: #8785a2"
+        },
+        "menu":{
+          "textColor":"#8785a2",
+          "changColor": "#8785a2",
+          "textTwoColor": "color:#8785a2",
+          "iconColor": "color:#8785a2",
+          "backgroundColor": "background-color: #f6f6f6"
+        }
+      },
+      {
+        "header":{
+          "backgroundColor":"background-color: #7266ba"
+        },
+        "menu":{
+          "textColor":"#8b8e99",
+          "changColor":"#8b8e99",
+          "textTwoColor":"color:#8b8e99",
+          "iconColor":"color:#8b8e99",
+          "backgroundColor":"background-color: #3a3f51"
+        }
+      },
+      {
+        "header":{
+          "backgroundColor":"background-color: #be0000"
+        },
+        "menu":{
+          "textColor":"#d9d9db",
+          "changColor":"#ffffff",
+          "textTwoColor":"color:#d9d9db",
+          "iconColor":"color:#d9d9db",
+          "backgroundColor":"background-color: #2c2c30"
+        }
+      },
+      {
+        "header":{
+          "backgroundColor":"background-color: #f08a5d"
+        },
+        "menu":{
+          "textColor":"#d9d9db",
+          "changColor":"#ffffff",
+          "textTwoColor":"color:#d9d9db",
+          "iconColor":"color:#d9d9db",
+          "backgroundColor":"background-color: #b83b5e"
+        }
+      }
+  ]
+}
