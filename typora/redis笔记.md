@@ -819,7 +819,561 @@ OK
 
 统计用户信息（活跃，不活跃！登录，未登录！打卡，未打卡），例如这样两个状态的都可以使用Bitmaps！
 
-bitmaps位图，数据结构！都是操作二进制位来进行记录，就只有0 和 1 两个状态！
+bitmap位图，数据结构！都是操作二进制位来进行记录，就只有0 和 1 两个状态！
 
 365天=365bit	1字节=8bit  大约46个字节左右！
+
+```bash
+#使用Bitmaps来记录周一到周日的打卡！
+127.0.0.1:6379> SETBIT sign 0 1		#周一
+(integer) 0
+127.0.0.1:6379> SETBIT sign 1 0		#周二
+(integer) 0
+127.0.0.1:6379> SETBIT sign 2 0		#周三
+(integer) 0
+127.0.0.1:6379> SETBIT sign 3 1
+(integer) 0
+127.0.0.1:6379> SETBIT sign 4 1
+(integer) 0
+127.0.0.1:6379> SETBIT sign 5 0
+(integer) 0
+127.0.0.1:6379> SETBIT sign 6 0
+```
+
+查看某一天是否有打卡
+
+```bash
+127.0.0.1:6379> getbit sign 3		#查看周四有没有打卡
+(integer) 1
+127.0.0.1:6379> getbit sign 1		#查看周二有没有打卡
+(integer) 0
+```
+
+统计操作，统计打卡的天数
+
+```bash
+127.0.0.1:6379> BITCOUNT sign		#统计该周的打卡记录
+(integer) 3
+127.0.0.1:6379>
+```
+
+## 事务
+
+在MySQL中事务是具有原子性：要么同时成功，要么同时失败！
+
+==Redis单挑命令式保存原子性的，但是事务不保证原子性！==
+
+Redis事务的本质：一组命令的集合！一个事务中的所有命令都会被序列化，在事务执行过程中，会按照顺序执行！
+
+一次性、顺序性、排他性  执行一系列的命令
+
+==Redis事务没有隔离级别的概念==
+
+所有的命令在事务中，并没有直接执行，只有发起执行命令的时候才会执行！ exec
+
+锁：redis可以实现乐观锁
+
+Redis的事务：
+
+- 开启事务（MULTI）
+- 命令入队（....）
+- 执行事务（exec）
+
+> 正常执行事务
+
+```bash
+127.0.0.1:6379> MULTI			#开启事务
+OK
+127.0.0.1:6379> set k1 v1		#命令入队
+QUEUED
+127.0.0.1:6379> set k2 v2		#命令入队
+QUEUED
+127.0.0.1:6379> get k2			#命令入队
+QUEUED
+127.0.0.1:6379> set k3 v3		#命令入队
+QUEUED
+127.0.0.1:6379> exec			#执行事务
+1) OK							#结果如下
+2) OK
+3) "v2"
+4) OK
+127.0.0.1:6379>
+```
+
+> 放弃事务
+
+```bash
+127.0.0.1:6379> MULTI			#开启事务
+OK
+127.0.0.1:6379> set k1 v1		#命令入队
+QUEUED
+127.0.0.1:6379> set k2 v2		#命令入队
+QUEUED
+127.0.0.1:6379> set k4 v4		#命令入队
+QUEUED
+127.0.0.1:6379> DISCARD			#放弃事务（取消事务），事务中的命令都不会被执行
+OK
+127.0.0.1:6379> get k4
+(nil)
+127.0.0.1:6379>
+```
+
+> 编译型异常（java中是代码有问题！redis中是命令有错），事务中所有的命令都不会被执行！
+
+```bash
+127.0.0.1:6379> MULTI
+OK
+127.0.0.1:6379> set k1 v1
+QUEUED
+127.0.0.1:6379> set k2 v2
+QUEUED
+127.0.0.1:6379> getset k3		#命令错误，出现错误
+(error) ERR wrong number of arguments for 'getset' command
+127.0.0.1:6379> set k3 v3
+QUEUED
+127.0.0.1:6379> set k4 v4
+QUEUED
+127.0.0.1:6379> EXEC			#事务执行时报错！所有都不会被执行
+(error) EXECABORT Transaction discarded because of previous errors.
+127.0.0.1:6379>
+```
+
+> 运行时异常（1/0），如果事务队列中存在语法性，那么执行命令的时候，其他命令是可以正常执行的，错误命令抛出异常
+
+```bash
+127.0.0.1:6379> set k1 "v1"		#
+OK
+127.0.0.1:6379> MULTI
+OK
+127.0.0.1:6379> incr k1			#字符串类型不能加一操作，在执行的时候会报错失败
+QUEUED
+127.0.0.1:6379> set k2 v2
+QUEUED
+127.0.0.1:6379> set k3 v3
+QUEUED
+127.0.0.1:6379> get v3
+QUEUED
+127.0.0.1:6379> EXEC
+1) (error) ERR value is not an integer or out of range	#虽然第一条命令报错了，但是依旧正常执行成功了！
+2) OK
+3) OK
+4) (nil)
+127.0.0.1:6379> keys *
+1) "k1"
+2) "k2"
+3) "k3"
+127.0.0.1:6379>
+```
+
+> 监控！	watch（面试常问）
+
+**悲观锁：**
+
+- 很悲观，认为什么时候都会出问题，无论什么时候都会加锁！用完之后会解锁
+
+**乐观锁：**
+
+- 很乐观，认为什么都不会出现问题，所以不会上锁！更i性能数据的时候去判断一下，在此期间是否有人修改过这个数据，version
+- 获取version
+- 更新的时候比较version
+
+> Redis监视测试
+
+```bash
+#正常执行成功
+127.0.0.1:6379> set money 100
+OK
+127.0.0.1:6379> set out 0
+OK
+127.0.0.1:6379> WATCH money			#监视money
+OK
+127.0.0.1:6379> MULTI		#事务
+OK
+127.0.0.1:6379> DECRBY money 20
+QUEUED
+127.0.0.1:6379> INCRBY out 20
+QUEUED
+127.0.0.1:6379> EXEC	#事务正常结束，数据期间没有发生变动，这个时候就正常执行成功了
+1) (integer) 80
+2) (integer) 20
+127.0.0.1:6379>
+```
+
+测试多线程修改值！使用watch充当乐观锁操作
+
+```bash
+127.0.0.1:6379> WATCH money		#监视money
+OK
+127.0.0.1:6379> MULTI
+OK
+127.0.0.1:6379> DECRBY money 10
+QUEUED
+127.0.0.1:6379> INCRBY out 10
+QUEUED
+127.0.0.1:6379> EXEC		#执行之前另外一个线程修改了money的值，这个时候就会导致事务执行失败
+(nil)
+```
+
+应该这样做
+
+```bash
+127.0.0.1:6379> UNWATCH			#1.如果发现事务执行失败，就先解锁
+OK
+127.0.0.1:6379> WATCH money		#2.获取最新的值，再次监视 select version
+OK
+127.0.0.1:6379> MULTI
+OK
+127.0.0.1:6379> DECRBY money 10
+QUEUED
+127.0.0.1:6379> INCRBY out 10
+QUEUED
+127.0.0.1:6379> EXEC			#3.对比监视的值是否发生变化，如果没有变化，那么可以执行成功，如果变化了就执行失败
+1) (integer) 990
+2) (integer) 30
+127.0.0.1:6379>
+```
+
+如果修改失败，获取最新的值可以了
+
+## Jedis
+
+需要使用Java来操作Redis
+
+> 什么是Jedis  是redis官方推荐的java连接开发工具！使用Java来操作Redis中间件！如果你要使用java操作redis，那么一定要十分的熟悉！（慢慢来吧，很快的！）
+
+1.导入对应的依赖
+
+```xml
+        <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.67_noneautotype2</version>
+        </dependency>
+```
+
+2.编码测试：
+
+- 连接数据库
+- 操作命令
+- 断开连接！
+
+```java
+package com;
+
+import redis.clients.jedis.Jedis;
+
+public class TetsPing {
+    public static void main(String[] args) {
+//        1.new Jedis对象即可
+        Jedis jedis = new Jedis("xx.xx.xx.xx",6379);
+        jedis.auth("xxxx");	//输入密码
+//        jedis所有的命令就是我们之前学习的所有指令
+        System.out.println(jedis.ping());	//测试链接
+        jedis.close();/*关闭连接*/
+    }
+}
+
+```
+
+输出：
+
+![image-20221014153554234](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210141535429.png)
+
+常用的API
+
+>jedis所有的命令就是我们之前学习的所有指令
+
+==jedis所有的命令就是我们之前学习的所有指令==
+
+```java
+package com.yang;
+
+import redis.clients.jedis.Jedis;
+
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Created by cyy
+ * Time on 2022-10-14
+ */
+public class TestString {
+    public static void main(String[] args) {
+        Jedis jedis = new Jedis(""xx.xx.xx.xx", 6379);
+        jedis.auth("xxxx");	//输入密码
+        jedis.flushDB();
+        System.out.println("===========增加数据===========");
+        System.out.println(jedis.set("key1","value1"));
+        System.out.println(jedis.set("key2","value2"));
+        System.out.println(jedis.set("key3", "value3"));
+        System.out.println("删除键key2:"+jedis.del("key2"));
+        System.out.println("获取键key2:"+jedis.get("key2"));
+        System.out.println("修改key1:"+jedis.set("key1", "value1Changed"));
+        System.out.println("获取key1的值："+jedis.get("key1"));
+        System.out.println("在key3后面加入值："+jedis.append("key3", "End"));
+        System.out.println("key3的值："+jedis.get("key3"));
+        System.out.println("增加多个键值对："+jedis.mset("key01","value01","key02","value02","key03","value03"));
+        System.out.println("获取多个键值对："+jedis.mget("key01","key02","key03"));
+        System.out.println("获取多个键值对："+jedis.mget("key01","key02","key03","key04"));
+        System.out.println("删除多个键值对："+jedis.del("key01","key02"));
+        System.out.println("获取多个键值对："+jedis.mget("key01","key02","key03"));
+
+        jedis.flushDB();
+        System.out.println("===========新增键值对防止覆盖原先值==============");
+        System.out.println(jedis.setnx("key1", "value1"));
+        System.out.println(jedis.setnx("key2", "value2"));
+        System.out.println(jedis.setnx("key2", "value2-new"));
+        System.out.println(jedis.get("key1"));
+        System.out.println(jedis.get("key2"));
+
+        System.out.println("===========新增键值对并设置有效时间=============");
+        System.out.println(jedis.setex("key3", 2, "value3"));
+        System.out.println(jedis.get("key3"));
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(jedis.get("key3"));
+
+        System.out.println("===========获取原值，更新为新值==========");
+        System.out.println(jedis.getSet("key2", "key2GetSet"));
+        System.out.println(jedis.get("key2"));
+
+        System.out.println("获得key2的值的字串："+jedis.getrange("key2", 2, 4));
+    }
+}
+```
+
+> ==如果不知道哪个方法了就去到五大基本数据类型去查找方法==
+
+### 事务
+
+```java
+package com.yang;
+
+import com.alibaba.fastjson.JSONObject;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Transaction;
+
+public class TestTX {
+    public static void main(String[] args) {
+//        1.new Jedis对象即可
+        Jedis jedis = new Jedis("39.106.62.65",6379);
+        jedis.auth("caoyangyang");
+//        jedis所有的命令就是我们之前学习的所有指令
+        System.out.println(jedis.ping());       //测试链接
+
+        JSONObject jsonObject = new JSONObject();   /*new一个JSONObject*/
+        jsonObject.put("msg","hello,world");
+        jsonObject.put("name","yang");
+        /*开启事务*/
+        Transaction multi = jedis.multi();
+        /*开始事务的操作*/
+        String s = jsonObject.toJSONString();
+
+        try {
+            multi.set("user1",s);
+            multi.set("user2",s);
+            //int i=1/0;  /*此处代码抛出异常，事务执行失败*/
+            multi.exec();       /*提交并执行事务*/
+        }catch (Exception e){
+            multi.discard();    /*放弃事务*/
+            e.printStackTrace();
+        }finally {
+            System.out.println(jedis.get("user1")); /**/
+            System.out.println(jedis.get("user2"));
+            jedis.close();/*关闭连接*/
+        }
+    }
+}
+```
+
+输出：
+
+![image-20221014155942997](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210141559106.png)
+
+解开：int i=1/0;
+
+输出如下：
+
+![image-20221014160104623](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210141601726.png)
+
+## SpringBoot整合
+
+SpringBoot操作数据：spring-data 
+
+SpringData也是和SpringBoot齐名的项目
+
+说明：在SpringBoot2.x之后，原来使用的jedis被替换成了lettuce
+
+jedis：采用的是直连多个线程操作的话，是不安全的，如果想要避免不安全的，就需要使用jedis pool连接池！更像BIO模式
+
+lettuce：采用netty，实力可以在多个线程中共享，不存在线程不安全的情况！可以减少线程数量。更像NIO模式
+
+> 整合测试一下
+
+1. 导入依赖
+
+   ```xml
+   <!--        操作redis-->
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-data-redis</artifactId>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-web</artifactId>
+           </dependency>
+   
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-devtools</artifactId>
+               <scope>runtime</scope>
+               <optional>true</optional>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-configuration-processor</artifactId>
+               <optional>true</optional>
+           </dependency>
+           <dependency>
+               <groupId>org.projectlombok</groupId>
+               <artifactId>lombok</artifactId>
+               <optional>true</optional>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-test</artifactId>
+               <scope>test</scope>
+           </dependency>
+   ```
+
+   
+
+2. 配置连接
+
+   ```yaml
+   # SpringBoot所有的配置类，都有一个自动配置类
+   # 自动配置类都会绑定一个properties配置文件
+   # 配置redis
+   spring:
+     redis:
+       host: xx.xx.xx.xx
+       port: 6379
+       password: xxxxxxxx
+   
+   ```
+
+   
+
+3. 测试
+
+   ```java
+   package com.yang;
+   
+   import org.junit.jupiter.api.Test;
+   import org.springframework.boot.test.context.SpringBootTest;
+   import org.springframework.data.redis.core.RedisTemplate;
+   
+   import javax.annotation.Resource;
+   
+   @SpringBootTest
+   class Redis02SpringbootApplicationTests {
+   
+       @Resource
+       private RedisTemplate<String, String> redisTemplate;
+   
+       @Test
+       void contextLoads() {
+   //        redisTemplate     操作不同类型的数据，api和我们的指令是一样的
+   //        redisTemplate.opsForValue()       操作字符串  类似于String
+   //        redisTemplate.opsForList()        操作List   类似于List
+           
+   //        获取redis的连接对象
+   //        RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
+   //        connection.flushDb();
+   //        connection.flushAll();
+           
+           redisTemplate.opsForValue().set("Spring","test");
+       }
+   }
+   ```
+
+效果：
+
+![image-20221014163255950](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210141632060.png)
+
+出现乱码是因为没有序列化
+
+如下是一些默认的序列化配置
+
+![image-20221014164058944](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210141640067.png)
+
+所以我们在这里自定义  `RedisTemplate`  进行序列化
+
+具体代码如下：
+
+```java
+package com.yang.config;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+@Configuration
+public class RedisConfig {
+    /**
+     * 自定义 RedisTemplate
+     * 固定模板，以后可以直接使用
+     * @param factory
+     * @return
+     */
+    @Bean
+    @SuppressWarnings("all")
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+        // 为开发方便，一般直接使用 <String, Object>
+        RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
+        template.setConnectionFactory(factory);
+
+        // Json序列化配置
+        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        ObjectMapper om = new ObjectMapper();
+        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        jackson2JsonRedisSerializer.setObjectMapper(om);
+
+        // String 的序列化
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+        // key采用String的序列化方式
+        template.setKeySerializer(stringRedisSerializer);
+        // hash的key也采用String的序列化方式
+        template.setHashKeySerializer(stringRedisSerializer);
+        // value序列化方式采用jackson
+        template.setValueSerializer(jackson2JsonRedisSerializer);
+        // hash的value序列化方式采用jackson
+        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+        template.afterPropertiesSet();
+        return template;
+    }
+}
+
+```
+
+配置了序列化的redis的存储结果为：
+
+![image-20221014164947621](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210141649723.png)
+
+
 
