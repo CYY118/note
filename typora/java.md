@@ -140,7 +140,7 @@ JVM，核心类库，运行工具
 
 # 二、Java基础语法
 
-### 注释
+## 注释
 
 说明性的信息
 
@@ -150,7 +150,7 @@ JVM，核心类库，运行工具
 文档注释			/**注释信息*/
 ```
 
-### 关键字
+## 关键字
 
 被Java赋予了特定含义的英文单词
 
@@ -163,7 +163,7 @@ JVM，核心类库，运行工具
 
 class：用于创建/定义一个类，类是java的最基本的组成单元
 
-### 字面量
+## 字面量
 
 数据在程序中的书写格式
 
@@ -205,7 +205,7 @@ public class demo1 {
 }
 ```
 
-### 变量
+## 变量
 
 数据类型 变量名 = 数据值；
 
@@ -218,7 +218,7 @@ public class demo1 {
 - 不能是关键字
 - 区分大小写
 
-### 数据类型
+## 数据类型
 
 **分为两大类**
 
@@ -314,7 +314,7 @@ public class movie{
 }
 ```
 
-### 键盘录入
+## 键盘录入
 
 Java帮我们写好了一个类叫Scanner，这个类就可以接收键盘输入的数字
 
@@ -369,7 +369,7 @@ public class demo4 {
 
 ```
 
-### 开发工具
+## 开发工具
 
 IDEA
 
@@ -379,7 +379,7 @@ IDEA
 
 *把代码编写，编译，执行，调试等多种功能综合到一起的开发工具*
 
-### 运算符
+# 三、运算符
 
 运算符和表达式
 
@@ -390,7 +390,7 @@ IDEA
 
 `a+b`就是表达式
 
-#### 算术运算符
+## 算术运算符
 
 | 符号 | 作用       |
 | ---- | ---------- |
@@ -467,7 +467,7 @@ public class test1 {
 
 字符串只能进行加法操作
 
-#### 自增自减运算符
+## 自增自减运算符
 
 | 符号 | 作用 | 说明        |
 | ---- | ---- | ----------- |
@@ -497,7 +497,7 @@ public class demo6 {
 
 ![image-20221019164046337](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210191640410.png)
 
-#### 赋值运算符
+## 赋值运算符
 
 | 符号 | 作用       | 说明                     |
 | ---- | ---------- | ------------------------ |
@@ -510,7 +510,7 @@ public class demo6 {
 
 *该运算符的底层隐含了一个强制类型转化的操作*
 
-#### 关系运算符
+## 关系运算符
 
 比较运算符
 
@@ -562,3 +562,544 @@ public class test2 {
 
 ```
 
+## 逻辑运算符
+
+- &	与
+- |    或
+- ^    
+- !      取反
+
+***短路逻辑运算符***
+
+| 符号 | 作用   | 说明                           |
+| ---- | ------ | ------------------------------ |
+| &&   | 短路与 | 结果和&相同，但是有短路效果    |
+| \|\| | 短路或 | 结果和 \| 相同，但是有短路效果 |
+
+*什么是短路效果：*
+
+简单而言：当左边的表达式能确定最终的结果，那么右边就不会参与运行了
+
+==注意事项==
+
+- & |，无论左边true/false，右边都要执行
+
+- && ||，如果左边能确定整个表达式的结果，右边不执行
+
+- &&：左边为false，右边不管是真是假，整个表达式的结果一定是false
+
+- ||：左边为true，右边不管是真是假，整个表达式的结果一定是true
+
+  ==这两种情况下，右边不执行，提高了效率==
+
+- 最为常用的：&&，||，！
+
+*练习：数字6*
+
+```tex
+需求：数字6是一个真正伟大的数字，键盘录入两个整数。
+
+如果其中一个为6，最终结果输出true
+
+如果它们的和为6的倍数。最终输出true
+
+其他情况都是false
+```
+
+```java
+package java基础语法.test;
+
+import java.util.Scanner;
+
+public class test3 {
+    public static void main(String[] args) {
+        /*需求：数字6是一个真正伟大的数字，键盘录入两个整数。
+        如果其中一个为6，最终结果输出true
+        如果它们的和为6的倍数。最终输出true
+        其他情况都是false*/
+
+        //分析
+//        1.键盘录入两个整数a ，b
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入一个整数");
+        int num1 = sc.nextInt();
+        System.out.println("请输入二个整数");
+        int num2 = sc.nextInt();
+
+//        2.a==6   b==6  (a+b)%6==0    满足其中一个就可以输出true
+        boolean res = num1 == 6 || num2 == 6 || (num1 + num2) % 6 == 0;
+        System.out.println("res = " + res);
+    }
+}
+
+```
+
+![image-20221020145725041](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210201457275.png)
+
+## 三元运算符
+
+作用：根据条件判断变量的值
+
+格式：关系表达式 ？表达式1 ：表达式2；
+
+范例：求两个数的较大值
+
+`int max = a > b ? a : b; `
+
+```java
+package java基础语法;
+
+public class demo8 {
+    public static void main(String[] args) {
+        //    需求：获取两个数的较大值
+        int a=10;
+        int b=20;
+        System.out.println("masx"+(a>b?a:b));
+    }
+}
+
+```
+
+*计算规则*
+
+- 首先计算关系表达式的值
+- 如果值为true，表达式1的值就是运算结果
+- 如果值为false，表达式2的值就是运算结果
+
+
+
+==运算符优先级：小括号优先于所有==
+
+# 四、流程控制语句
+
+通过一些语句，来控制程序运行
+
+## 顺序执行
+
+程序的默认执行顺序（从上到下）
+
+## 分支结构
+
+### if
+
+*格式一*
+
+```java
+if (关系表达式){
+    语句体；
+}
+```
+
+*格式二*
+
+```java
+if(关系表达式){
+    语句体1;
+}else{
+    语句体2;
+}
+```
+
+*格式三*
+
+```java
+if(关系表达式1){
+    语句体1;
+}else if (关系表达式2){
+    语句体2;
+}
+	······
+ else{
+     语句体n+1;
+ }
+```
+
+### switch
+
+*格式*
+
+```java
+switch(表达式){
+    case 值1:
+        语句体1;
+        break;
+    case 值2:
+        语句体2;
+        break;
+    ······
+    default:
+        语句体n+1;
+        break;
+}
+```
+
+*执行流程*
+
+1. 首先计算表达式的值
+2. 依次和case后面的值进行比较，如果有对应的值，就会执行相应的语句，在执行的过程中，遇到break就会结束。
+3. 如果所有的case后面的值和表达式的值都不匹配 就会执行default里面的语句体，然后结束整个switch
+
+*格式说明*
+
+- case：后面跟的是要和表达式进行比较的值（被匹配的值）
+- break：表示中断，结束的意思，用来结束switch语句。
+- default：表示所有情况都不匹配的时候，就执行该处的内容，和if语句的else相似
+- case后面的值只能是字面量，不能是变量
+- case给出的值不允许重复
+
+*练习：吃面*
+
+```java
+package 流程控制;
+
+public class demo1 {
+    public static void main(String[] args) {
+//        拉面、热干面、炸酱面、油泼面
+//        1.定义变量记录想吃的面
+        String noodles="炸酱面";
+//        2.利用swict进行匹配
+        switch (noodles){
+            case "拉面":
+                System.out.println("我想吃拉面");
+                break;
+            case "热干面":
+                System.out.println("我想吃热干面");
+                break;
+            case "炸酱面":
+                System.out.println("我想吃炸酱面");
+                break;
+            case "油泼面":
+                System.out.println("我想吃油泼面");
+                break;
+            default:
+                System.out.println("错误");
+        }
+    }
+}
+```
+
+![image-20221020170117558](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210201701664.png)
+
+*switch的其他知识点*
+
+- default的位置和省略
+
+  - default可以省略，语法上不会有问题，但是不建议省略
+
+  - default的位置不一定写在最下面，我们可以写在任何位置，只不过习惯会写在下面
+
+- case穿透
+
+  - 语句体中如果将break省略，就会导致case穿透，
+  - 会使每个case都会执行直到遇到break或者右大括号为止
+  - 使用场景：如果多个case的语句体重复了，那么我们考虑利用case穿透去简化代码。
+
+- switch新特性
+
+  - 在JDK12中才具备的，JDK12以下版本的不具备该特性
+
+  ```java
+  int number=1;
+  switch(number){
+          case 1 ->{
+              System.out.println("一")
+          }
+          case 2 ->{
+              System.out.println("二")
+          }
+          case 3 ->{
+              System.out.println("三")
+          }
+          default ->{
+              System.out.println("没有该选项")
+          }
+  }
+  ```
+
+  - 如果大括号里面只有一行代码的话，就可以把大括号去掉
+
+- switch和if的第三种格式各自的使用场景
+
+  - if的第三种格式，一般用于范围的判断
+  - switch是把有限个数据一一列举出来，再进行选择
+
+### for
+
+格式
+
+```java
+for(初始化语句; 条件判断语句; 条件控制语句){
+    循环体语句;
+}
+```
+
+*执行流程*
+
+1. 执行初始化语句
+2. 执行条件判断语句，看起结果是true还是false
+   - 如果是false，循环结束
+   - 如果是true，执行循环体语句
+3. 执行条件控制语句
+4. 回到 `2` 继续执行条件判断语句
+
+*注意*
+
+- 初始化语句只执行一次
+
+练习：打印5次 `Hello,world`
+
+```java
+public class demo{
+    public static void main(String[] args){
+        for(int i=0;i<5;i++){
+            System.out.println("Hello,world");
+        }
+    }
+}
+```
+
+*倒着打印1-5*
+
+```java
+public class demo{
+    public static void main(String[] args){
+        for(int i=5;i>=1;i--){
+            System.out.println(i);
+        }
+    }
+}
+```
+
+*练习：断线重连*
+
+```tex
+在实际开中，需要重复执行的代码，会选择循环实现
+
+例如：玩游戏的时候，如果网不好那么会经常断线重连。那么断线重连这个业务逻辑就需要重复执行。假设现在公司要求，断线重连的业务逻辑最多只写5次。请用代码实现
+
+备注：断线重连的业务逻辑可以使用输出语句代替
+```
+
+```java
+public class demo{
+        public static void main(String[] args){
+        for(int i=1;i<5;i++){
+            System.out.println("第"+i+"次执行断线重连的业务逻辑");
+        }
+    }
+}
+```
+
+*练习：求和*
+
+需求：求1-5之间的和
+
+```java
+public class demo{
+    public static void main(String[] args){
+        //分析
+        //1.循环1~5得到里面的每一个数字
+        int sum=0;
+        for(int i=0;i<5;i++){
+            //sum=sum+i;
+            sum+=i;
+        }
+        System.out.println("和为："+sum);
+    }
+}
+```
+
+*注意：*
+
+- 如果把`int sum=0;`定义在循环的里面，会报错（原因是作用域不同）
+
+*练习：求和*
+
+需求：求1-100之间的偶数和
+
+```java
+package 流程控制.test;
+
+public class test1 {
+    public static void main(String[] args) {
+//        求1-100之间的偶数和
+        int sum=0;
+        for (int i = 1; i <= 100; i++) {
+            if(i % 2 == 0){
+                sum+=i;
+            }
+        }
+        System.out.println("sum = " + sum);
+    }
+}
+```
+
+![image-20221020220450118](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210202204225.png)
+
+*练习：*
+
+需求：键盘录入两个数字，表示一个范围。统计这个范围中，既能被3整除，又能被5整除的数字有多少个？
+
+```java
+package 流程控制.test;
+
+import java.util.Scanner;
+
+public class test2 {
+    public static void main(String[] args) {
+//        需求：键盘录入两个数字，表示一个范围。统计这个范围中，既能被3整除，又能被5整除的数字有多少个？
+//        分析
+//        1.键盘录入两个数字
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入第一个数字");
+        int num1 = sc.nextInt();    //定义开始条件
+        System.out.println("请输入第二个数字");
+        int num2 = sc.nextInt();    //定义结束条件
+//        2.利用循环获取这个范围中的数字
+        int count=0;    //统计个数
+        for (int i = num1; i < num2; i++) {
+            if (i % 3 == 0 && i % 5 == 0){
+                //        3.对一个数字进行判断
+                System.out.println(i);
+                count++;
+            }
+        }
+        System.out.println("满足条件的总共的有"+count);
+    }
+}
+
+```
+
+![image-20221020221827479](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210202218573.png)
+
+### while
+
+*格式*
+
+```java
+初始化语句;
+while(条件判断语句){
+    循环体语句;
+    条件控制语句;
+}
+```
+
+*举例*
+
+```java
+package 流程控制;
+
+public class demo2 {
+    public static void main(String[] args) {
+        int i=1;
+        while (i<=100){
+            System.out.println(i);
+            i++;
+        }
+    }
+}
+```
+
+**for和while的区别：**
+
+- for循环中：知道循环的次数或者循环的范围
+- while循环中：不知道循环的次数和范围，只知道循环的结束条件
+
+*案例：打印折纸的次数*
+
+```tex
+需求：世界最高的山峰是珠穆朗玛峰（8844.43米=8844430毫米），假如我有一张足够大的纸，它的厚度是0.1毫米。请问，我折叠多少次，可以折成珠穆朗玛峰的高度？
+```
+
+```java
+package 流程控制.test;
+
+public class test3 {
+    public static void main(String[] args) {
+//        需求：世界最高的山峰是珠穆朗玛峰（8844.43米=8844430毫米），
+//        假如我有一张足够大的纸，它的厚度是0.1毫米。请问，我折叠多少次，可以折成珠穆朗玛峰的高度？
+//        分析：折叠纸张;每次折叠纸张的厚度都是原先的两倍
+//        1.定一个变量用来记录山峰的高度
+        double height=8844430;
+//        2.定义一个变量用来记录纸张的起始厚度
+        double paper=0.1;
+//        3.定义一个变量用来统计次数
+        int count=0;
+//        4.循环折叠纸张，只要纸张的厚度小于山峰的高度，那么循环就继续
+//        每折叠一次。统计次数就要++
+        while (paper<height){
+//            折叠纸张
+//            paper=paper * 2;
+            paper*=2;
+//            折叠一次，就++一次
+            count++;
+        }
+//        输出结果
+        System.out.println("count = " + count);
+    }
+}
+
+```
+
+![image-20221020224230917](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210202242007.png)
+
+*案例：回文数*
+
+```tex
+需求：给你一个整数 x，如果 x 是一个回文整数，打印true，否则，返回false。
+
+解释：回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。
+
+例如：121是回文，而123不是
+```
+
+```java
+package 流程控制.test;
+
+public class test4 {
+    public static void main(String[] args) {
+        /*需求：给你一个整数 x，如果 x 是一个回文整数，打印true，否则，返回false。
+
+        解释：回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。
+
+        例如：121是回文，而123不是*/
+//        核心思路：把数字倒过来跟原来的数字进行比较
+/*//        1.定义数字
+        //原始写法
+        int x=121;
+//        2.获取位数
+        int ge = x % 10;
+        int shi = x / 10 % 10;
+        int bai = x / 100 % 10;
+//        拼接
+        int res=ge*100 + shi*10 + bai;
+        System.out.println("res = " + res);
+        System.out.println("该数是否是回文数："+(x==res));*/
+        
+//        使用循环
+//        1.定义数字
+        int x=121121;
+//        定义一个临时变量用于记录x原来的值
+        int temp=x;
+//        用于记录x倒过来后的值
+        int num = 0;
+//        利用循环开始
+        while (x != 0){
+//            从左往右获取每一位数字
+            int ge = x % 10;
+//            修改一下x记录的值
+            x = x / 10;
+//            把当前获取到的数字拼接到最右边
+            num = num * 10 +ge;
+//            System.out.println("x = " + x);
+        }
+//        3.打印
+        System.out.println("num = " + num);
+        System.out.println("x = " + x);
+        System.out.println("temp = " + temp);
+        System.out.println("该数是否是回文数："+(temp==num));
+    }
+}
+```
+
+![image-20221020230805247](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210202308344.png)
