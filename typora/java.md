@@ -1103,3 +1103,776 @@ public class test4 {
 ```
 
 ![image-20221020230805247](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210202308344.png)
+
+*练习：*
+
+```tex
+需求：给定两个整数，被除数和除数（都是正数，且不超过int的范围），将两个数相除，要求不使用乘法‘除法和%运算符,得到商和余数
+```
+
+分析：
+
+被除数 / 除数 = 商······余数
+
+int a=100;
+
+int b=10;
+
+100-10=90;
+
+90-10=80;
+
+····
+
+10-10=0 (余数)
+
+```java
+package 流程控制.test;
+
+public class test5 {
+    public static void main(String[] args) {
+//        需求：给定两个整数，被除数和除数（都是正数，且不超过int的范围），
+//        将两个数相除，要求不使用乘法‘除法和%运算符,得到商和余数
+//        1.定义变量记录被除数
+        int dividend=4562;
+//        2.定义变量记录除数
+        int divisor=456;
+//        定义一个变量用于统计相减了多少次
+        int count=0;
+//        3.循环while
+//        在循环中，不断用被除数-除数，只要被除数是大于等于除数的，那么就一直循环
+        while (dividend>=divisor){
+            dividend=dividend-divisor;
+            count++;
+        }
+//        当循环结束之后dividend变量记录的就是余数
+        System.out.println("商 = " + count);
+        System.out.println("余数 = " + dividend);
+    }
+}
+```
+
+
+
+### do...while
+
+*格式*
+
+```java
+初始化语句;
+do{
+    循环体语句;
+    条件控制语句;
+}while(条件判断语句);
+```
+
+*特点*
+
+- 先执行后判断
+
+### 循环高级
+
+#### 无限循环
+
+表示循环一直都停不下来
+
+*格式一*
+
+```java
+for (;;){
+    System.out.println("for的无限循环")
+}
+```
+
+*格式二*
+
+```java
+while(true){
+    System.out.println("while的无限循环")
+}
+```
+
+*格式三*
+
+```java
+do{
+    System.out.println("do...while的无限循环")
+}while(true);
+```
+
+==其中经常使用的是格式二的方式（while）==
+
+注意：
+
+- 无限循环的下面不能再写其他代码了，因为循环永远同步下来，那么下面的代码永远执行不到
+
+#### 跳转控制语句
+
+##### **continue**
+
+==跳过本次循环，继续下次循环==
+
+*案例：小老虎吃包子*
+
+小老虎吃包子，第三个包子有虫子，跳过
+
+```java
+package 流程控制;
+
+public class demo3 {
+    public static void main(String[] args) {
+//        1.跳过某一次循环
+        for (int i = 1; i <= 5; i++) {
+            if (i==3){
+//                跳过本次循环，继续下次循环
+                continue;
+            }
+            System.out.println("小老虎在吃第"+i+"个包子");
+        }
+    }
+}
+
+```
+
+![image-20221021151944017](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210211519191.png)
+
+##### break
+
+==结束整个循环==
+
+*案例：小老虎吃包子*
+
+小老虎吃包子，吃完第三个就饱了
+
+```java
+package 流程控制;
+
+public class demo4 {
+    public static void main(String[] args) {
+        //        1.结束循环
+        for (int i = 1; i <= 5; i++) {
+            System.out.println("小老虎在吃第"+i+"个包子");
+            if (i==3){
+//                结束循环
+                break;
+            }
+        }
+    }
+}
+```
+
+![image-20221021152306065](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210211523145.png)
+
+### 获取随机数
+
+java帮我们写好了一个类叫Random，这个类就可以生成一个随机数
+
+使用步骤：
+
+- 导包   ----Random这个类在哪里
+
+  `import java.util.Random;`
+
+- 创建对象
+
+  `Random r = new Random();`
+
+- 生成随机数
+
+  `int number = r.nextInt(随机数的范围)`
+
+*练习*
+
+```java
+package 流程控制;
+
+import java.util.Random;
+
+public class demo5 {
+    public static void main(String[] args) {
+//        获取随机数
+//        范围：0~10
+        Random r = new Random();
+//        判断技巧
+//        在小括号中，书写的是生成数字的范围
+//        这个范围一定是从0开始的
+//        到这个数-1结束
+//        口诀：包头不包尾，包左不包右
+        int i = r.nextInt(100);  //0~99
+        System.out.println("i = " + i);
+    }
+}
+
+```
+
+*练习*
+
+```java
+package 流程控制;
+
+import java.util.Random;
+
+public class demo6 {
+    public static void main(String[] args) {
+//        生成任意数之间的随机数 7~15
+//        1.让这个范围头尾都减去一个值，让这个范围从0开始  -7   0~8
+//        2.尾巴+1    8+1=9
+//        3.最终的结果(包含7和15)，再加上第一步减去的值
+        Random r = new Random();
+        int i = r.nextInt(9)+7;
+        System.out.println("i = " + i);
+    }
+}
+```
+
+### 练习
+
+*案例：逢7过*
+
+```tex
+朋友聚会的时候可能会玩一个游戏：逢7过
+
+游戏规则：从任意一个数字开始报数，当你要报的数字是包含7或者是7的倍数时都要说：过
+
+需求：使用程序在控制台打印出1-100之间的满足逢七必过规则的数据
+```
+
+```java
+package 流程控制.test;
+
+public class test6 {
+    public static void main(String[] args) {
+/*        朋友聚会的时候可能会玩一个游戏：逢7过
+
+        游戏规则：从任意一个数字开始报数，当你要报的数字是包含7或者是7的倍数时都要说：过
+
+        需求：使用程序在控制台打印出1-100之间的满足逢七必过规则的数据*/
+//        分析：
+//        个位7   十位7     7倍数
+//        例如：  1 2 3 4 5 6 过 8 9 10 11 12 13 过 14 15 16 过 18 19 ...
+
+//        1.得到1-100之间的每一个数字
+        for (int i=1;i<=100;i++){
+ //        2.判断每一个数字，如果符合规则，就打印过，如果不符合规则就打印真实的数字
+            if (i%7==0 || i/10 %10==7 || i%10==7){
+                System.out.print("过"+"、");
+                continue;
+            }
+            System.out.print(i+"、");
+        }
+
+    }
+}
+```
+
+![image-20221021153631390](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210211536488.png)
+
+*案例：求平方根*
+
+```tex
+需求：键盘录入一个大于等于2的整数x，计算并返回x的平方根。结果只保留整数部分，小数部分将被舍去
+```
+
+```java
+package 流程控制.test;
+
+import java.util.Scanner;
+
+public class test7 {
+    public static void main(String[] args) {
+//        需求：键盘录入一个大于等于2的整数x，计算并返回x的平方根。结果只保留整数部分，小数部分将被舍去
+//        分析：
+//        平方根：16的平方根4；
+//               4的平方根2
+        /*
+        10
+        1*1=1<10
+        2*2=4<10
+        3*3=9<10
+        4*4=16>10
+        所以：10的平方根是在3~4之间
+        * */
+        /*
+        * 在代码中
+        * 从1开始循环，拿着数字的平方和原来的数字相比较
+        * 如果小于的，那么继续往后判断
+        * 如果相等，那么当前数字就是平方根
+        * 如果大于的，那么前一个数字就是平方根的整数部分*/
+
+//        1.键盘录入一个整数
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入一个整数");
+        int number = sc.nextInt();
+        for (int i = 1; i <= number; i++) {
+            if (i*i==number){
+                System.out.println(i+"就是"+number+"的平方根");
+                break;/*一旦找到了，循环就可以停止了，后面的数字就不需要再找了，提高代码的运行效率*/
+            }else if (i*i>number){
+                System.out.println((i-1)+"就是"+number+"的平方根的整数部分");
+                break;
+            }
+        }
+    }
+}
+```
+
+![image-20221021155438883](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210211554987.png)
+
+*案例：求质数*
+
+```tex
+需求：键盘录入一个正整数 x ，判断该数是否为一个质数
+```
+
+```java
+package 流程控制.test;
+
+import java.util.Scanner;
+
+public class test8 {
+    public static void main(String[] args) {
+//        需求：键盘录入一个正整数 x ，判断该数是否为一个质数
+
+//        质数：
+//        如果一个整数只能被1和本身整除，那么这个数就是质数，否则这个数叫做合数
+//        例如：7=7*1  质数
+//             8=1*8 2*4  合数
+
+        /*
+        * 分析：
+        * */
+//        1.键盘录入一个正整数number
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入一个正整数");
+        int number = sc.nextInt();
+//        定义一个变量，表示标记   true;是质数；false：不是一个质数
+        boolean flag=true;
+//        2.判断
+//        写一个循环，从2开始判断，一直判断到number-1为止
+//        看这个范围之内，有没有数字可以被number整除
+        for (int i = 2; i < number; i++) {
+            if (number % i ==0){
+//                System.out.println(number+"不是一个质数");
+                flag=false;
+                break;
+            }
+        }
+//        只有当这个循环结束了，表示这个范围之内的所有数字都判断完毕了
+//        此时才能断定number是一个质数
+        if (flag){
+            System.out.println(number+"是一个质数");
+        }else {
+            System.out.println(number+"不是一个质数");
+        }
+    }
+}
+```
+
+![image-20221021161128188](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210211611279.png)
+
+*优化：*
+
+为什么要优化？如果要判断一个数100000是不是一个质数，那么就需要循环100000次，这样的效率不高
+
+```java
+package 流程控制.test;
+
+public class test9 {
+    public static void main(String[] args) {
+//        判断一个数是不是质数的优化
+//        推荐一个简化的思路
+        /*
+        * 81
+        * 1*81
+        * 3*27
+        * 9*9*/
+        /*
+        * 以81的平方根9为中心
+        * 而且假设a*b=81
+        * 那么a和b中，其中有一个必定是小于9的
+        * 另一个是大于等于9的*/
+
+//        假设，都是大于9----9.1*9.1>81
+//        假设，都是小于9----8.9*8.9<81
+//        其中一个数字一定是小于等于平方根
+//        另外一个数字一定是大于等于平方根
+
+        int number=100;
+//        如果这个范围之内，所有数字都不能被number整除
+//        那么number就一定是一个质数
+        for (int i=2;i <= number的平方根;i++){
+            
+        }
+    }
+}
+```
+
+# 五、数组
+
+## 数组介绍
+
+数组是一种容器，可以用来存储同种数据类型的多个值
+
+## 数组的定义和静态初始化
+
+*格式一*
+
+```java
+数据类型[] 数组名
+范例：	int[] array
+```
+
+格式二
+
+```java
+数据类型 数组名[]
+范例： int array[]
+```
+
+### 数组的初始化
+
+初始化：就是在内存中，为数组容器开辟空间,并将数据存入容器中的过程
+
+完整格式：
+
+数据类型[] 数组名 = new 数据类型[]{元素1，元素2，元素3，.....}
+
+范例：`int[] array =  new int[]{11,22,33};`
+
+简化格式：数据类型[] 数组名={元素1，元素2，元素3，.....}
+
+范例：`int[] array = {11,22,33};`
+
+```java
+package 数组;
+
+public class demo {
+    public static void main(String[] args) {
+//        静态初始化
+//        需求：定义数组存储3个学生的年龄
+        int[] arr1=new int[]{11,12,13};     //完整格式
+        int[] arr2={11,12,13};
+//        需求：定义数组存储3个学生的姓名
+        String[] arr3=new String[]{"a","b","c"};    //完整格式
+        String[] arr4={"a","b","c"};
+    }
+}
+
+```
+
+*地址值*
+
+数组在整个内存中的位置
+
+```java
+package 数组;
+
+public class demo {
+    public static void main(String[] args) {
+//        静态初始化
+//        需求：定义数组存储3个学生的年龄
+        int[] arr1=new int[]{11,12,13};     //完整格式
+        System.out.println(arr1);
+    }
+}
+```
+
+输出结果：`[I@1b6d3586`
+
+如上的输出结果表示的是数组的地址值
+
+==解释地址值的格式含义==
+
+`[I@1b6d3586`
+
+- [   :表示当前是一个数组
+- I   ：表示当前数组里面的元素都是int类型的
+- @ ：表示一个间隔符号。（固定格式）
+- 1b6d3586  ：才是正真的地址值，（十六进制）
+- 平时我们习惯性的将这个整体叫做地址值
+
+### 数组元素的访问
+
+数组名[索引]
+
+索引：
+
+- 也叫做下标，角标
+- 从0开始，逐个+1增长，连续不间断
+
+*练习：遍历数组并求和*
+
+```java
+package 数组;
+
+public class demo {
+    public static void main(String[] args) {
+//        静态初始化
+//        需求：定义数组存储3个学生的年龄
+        int[] arr2={11,12,13};
+
+        int sum=0;
+        for (int i = 0; i < arr2.length; i++) {
+            sum+=arr2[i];
+        }
+        System.out.println("sum = " + sum);
+    }
+}
+
+```
+
+*练习：*
+
+需求：遍历数组得到每一个元素，统计数组里面一共有多少个能被3整除的数字
+
+```java
+package 数组.test;
+
+public class test1 {
+    public static void main(String[] args) {
+        int[] arr={1,2,12,3,5,6,7,8,9,16};
+        int count=0;
+        for (int i = 0; i < arr.length; i++) {
+            if(arr[i] % 3 == 0){
+                count++;
+            }
+        }
+        System.out.println("count = " + count);
+    }
+}
+```
+
+![image-20221021214714513](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210212147661.png)
+
+*练习：变化数据*
+
+```tex
+定义一个数组，存储1,2,3,4,5,6,7,8,9,10
+遍历数组得到每一个元素
+要求：
+1.如果是奇数，则将当前数字扩大两倍
+2.如果是偶数，则将当前数字变成二分之一
+```
+
+```java
+package 数组.test;
+
+public class test2 {
+    public static void main(String[] args) {
+        /*定义一个数组，存储1,2,3,4,5,6,7,8,9,10
+            遍历数组得到每一个元素
+            要求：
+            1.如果是奇数，则将当前数字扩大两倍
+            2.如果是偶数，则将当前数字变成二分之一*/
+        int[] arr={1,2,3,4,5,6,7,8,9,10};
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] % 2 ==1){
+                arr[i]*=2;
+            }else if (arr[i] % 2 ==0){
+                arr[i]*=0.5;
+            }
+        }
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println(arr[i]);
+        }
+    }
+}
+```
+
+![image-20221021215701550](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210212157666.png)
+
+注意：
+
+- 一个循环尽量只做一件事情
+
+## 数组的动态初始化
+
+格式：`数据类型[] 数组名 = new 数据类型[数组的长度]`
+
+特点：在创建的时候，由我们自己指定数组的长度，由虚拟机给出默认的初始化值
+
+*静态初始化和动态初始化的区别*
+
+- 动态初始化：手动指定数组的长度，由虚拟机给出默认的初始化值
+- 静态初始化：手动指定数组的元素，系统会根据元素个数，计算出数组的长度
+
+## 数组的内存图
+
+
+
+## 数组常见问题
+
+- 当访问了数组中不存在的索引，就会引发索引越界异常
+
+```java
+package 数组;
+
+public class demo2 {
+    public static void main(String[] args) {
+        int[] arr={1,2,3};
+        System.out.println(arr[4]);		//访问了不存在的索引
+    }
+}
+```
+
+
+
+![image-20221021221550443](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210212215564.png)
+
+`ArrayIndexOutOfBoundsException`:索引越界异常
+
+
+
+## 数组常见操作
+
+- 求最值
+
+  *练习*
+
+  ```tex
+  需求：已知数组元素为{33,5,22,44,55}
+  找出最大值并打印输出
+  ```
+
+  ```java
+  package 数组.test;
+  
+  public class test3 {
+      public static void main(String[] args) {
+          /*需求：已知数组元素为{33,5,22,44,55}
+            找出最大值并打印输出*/
+  //        1.定义数组用来存储5个值
+          int[] arr={33,5,22,44,55};
+  //        2.定义一个变量max用来存储最大值
+          int max=arr[0];		//如果将max初始化值是0，那么如果数组中的值若为负数则不正确
+  
+          for (int i = 0; i < arr.length; i++) {
+              if (arr[i]>max){
+                  max=arr[i];
+              }
+          }
+  //        4.当循环结束之后，max记录的就是数组中的最大值
+          System.out.println("max = " + max);
+  
+      }
+  }
+  ```
+
+  <img src="https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210212226542.png" alt="image-20221021222604435" style="zoom:200%;" />
+
+- 求和
+
+  *练习*
+
+  ```tex
+  需求：生成10个1~100之间的随机数存入数组
+  求出所有数据的和
+  求所有数据的平均数
+  统计有多少个数据比平均数值小
+  ```
+
+  ```java
+  package 数组.test;
+  
+  import java.util.Random;
+  
+  public class test4 {
+      public static void main(String[] args) {
+          /*需求：生成10个1~100之间的随机数存入数组
+              求出所有数据的和
+              求所有数据的平均数
+              统计有多少个数据比平均数值小*/
+          int[] arr=new int[10];
+          Random r = new Random();
+  //        1.生成10个1~100之间的随机数存入数组
+          for (int i = 0; i < arr.length; i++) {
+              arr[i]= r.nextInt(100)+1;
+          }
+  //        2.求出所有数据的和
+          int sum=0;
+          for (int i = 0; i < arr.length; i++) {
+              sum+=arr[i];
+          }
+  //        3.求所有数据的平均数
+          double avg=sum/(arr.length);
+  //        4.统计有多少个数据比平均数值小
+          int count=0;
+          for (int i = 0; i < arr.length; i++) {
+              if (arr[i]<avg){
+                  count++;
+              }
+          }
+          for (int i = 0; i < arr.length; i++) {
+              System.out.print(arr[i]+" ");
+          }
+          System.out.println("");
+          System.out.println("数组的长度为："+arr.length);
+          System.out.println("数据的和为："+sum);
+          System.out.println("数据的平均数为："+avg);
+          System.out.println("比平均数值小的数据共有："+count+"个");
+      }
+  }
+  ```
+
+  ![image-20221021225205640](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210212252753.png)
+
+- 交换数据
+
+  ```java
+  package 数组.test;
+  
+  public class test5 {
+      public static void main(String[] args) {
+          int[] arr={1,2,3,4,5};
+          for (int i = 0,j = arr.length-1; i < j; i++,j--) {
+              int temp=arr[i];
+              arr[i]=arr[j];
+              arr[j]=temp;
+          }
+          for (int i = 0; i < arr.length; i++) {
+              System.out.print(arr[i]+" ");
+          }
+      }
+  }
+  ```
+
+  ![image-20221021231327210](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210212313316.png)
+
+- 打乱数据
+
+  ```java
+  package 数组.test;
+  
+  import java.util.Random;
+  
+  public class test6 {
+      public static void main(String[] args) {
+  //        需求：定义一个数组，存入1~5，要求打乱数组中所有数据的顺序
+  
+  /*//        难点：
+  //        如何获取数组中的随机索引
+          int[] arr={1,2,3,4,5};
+  //        索引范围1~5
+          Random r = new Random();
+          int randomIndex = r.nextInt(arr.length);*/
+  
+  //        1.定义数组
+          int[] arr={1,2,3,4,5};
+  
+          Random r = new Random();
+          for (int i = 0; i < arr.length; i++) {
+              int randomIndex = r.nextInt(arr.length);
+              int temp=arr[i];
+              arr[i]=arr[randomIndex];
+              arr[randomIndex]=temp;
+          }
+  
+          for (int i = 0; i < arr.length; i++) {
+              System.out.print(arr[i]+" ");
+          }
+  
+      }
+  }
+  ```
+
+  
