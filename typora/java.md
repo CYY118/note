@@ -1698,7 +1698,83 @@ public class test2 {
 
 ## 数组的内存图
 
+Java内存分配
 
+- 栈：方法运行时使用的内存，比如main方法运行，进入方法栈中运行
+- 堆：存储对象或者数组，new来创建的，都存储在堆内存
+- 方法区：存储可以运行的class文件
+- 本地方法栈：JVM在使用操作系统功能的时候使用，和我们开发无关
+- 寄存器：给CPU使用，和我们开发无关
+
+*练习：*
+
+```java
+public class test{
+    public static void main(String[] args){
+        int a = 10;
+        int b = 10;
+        int c = a + b;
+        System.out.println(c)
+    }
+}
+```
+
+![image-20221022123105211](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210221231310.png)
+
+#### 数组的内存图
+
+```java
+public class test{
+    public static void main(String[] args){
+		int[] arr = new int[2];
+        sout(arr);
+        sout(arr[0]);
+        sout(arr[1]);
+        
+        arr[0] = 11;
+        arr[1] = 22;
+        sout(arr[0]);
+        sout(arr[1]);
+        
+        sout("-------------------")
+        int[] arr2 = {33,44,55};
+        sout(arr2);
+    }
+}
+```
+
+![image-20221022125540688](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210221255783.png)
+
+*注意：*
+
+- 只要是new出来的一定是在堆里面开辟了一个小空间
+- 如果new了多次，那么在堆里面就有多个小空间，每个小空间中都有各自的数据
+
+#### 两个数组指向同一个空间的内存图
+
+```java
+public class test{
+    public static void main(String[] args){
+        int[] arr1 = {33,44};
+        int[] arr2 = arr1;
+        
+        sout(arr1[0]);
+        sout(arr2[0]);
+        
+        arr2[0] = 33;
+        
+        sout(arr1[0]);
+        sout(arr2[0]);
+
+    }
+}
+```
+
+![image-20221022131422263](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210221314371.png)
+
+*注意：*
+
+- 当两个数组指向同一个小空间时，其中一个数组对小空间中的值发生了改变，那么其他数组再次访问时就都是修改之后的结果了
 
 ## 数组常见问题
 
@@ -1876,3 +1952,29 @@ public class demo2 {
   ```
 
   
+
+![image-20221022121533196](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210221215324.png)
+
+# 六、方法
+
+## *什么是方法？*
+
+==方法（method）时程序中最小的执行单元==
+
+## *方法有什么用呢？*
+
+- 提高代码的复用性
+- 提高代码的可维护性
+
+## 方法的格式
+
+方法的定义：把一些代码打包到一块
+
+*格式一*
+
+```java
+public static void 方法名(){
+    方法体;
+}
+```
+
