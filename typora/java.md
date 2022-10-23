@@ -223,7 +223,20 @@ public class demo1 {
 **分为两大类**
 
 - 基本数据类型
+
+  数据值是存储在自己的空间中的
+
+  - 特点：赋值给其他变量，也是赋的真实的值
+
 - 引用数据类型
+
+  只要是new出来的都是引用数据类型
+
+  当一个变量存储的不是数据，而是其他空间的地址值的时候，就把其称之为引用数据类型
+
+  ==这里的`引用`就可以理解为使用其他空间中的数据==
+
+  - 特点：赋值给其他变量，赋的地址值
 
 
 
@@ -1955,6 +1968,238 @@ public class demo2 {
 
 ![image-20221022121533196](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210221215324.png)
 
+## 二维数组
+
+*格式*
+
+```java
+数据类型[][] 数组名=new 数据类型[][]{{元素1，元素2},{元素1，元素2}}
+```
+
+*范例*
+
+```java
+int[][] arr = new int[][]{{11,22},{33,44}}
+```
+
+*简化格式*
+
+```java
+数据类型[][] 数组名 = {{元素1，元素2},{元素1，元素2}}
+```
+
+*范例*
+
+```java
+int[][] arr = {{11,22},{33,44}}
+```
+
+或者
+
+```java
+int arr[][]= {{11,22},{33,44}}
+```
+
+### 二维数组的静态初始化
+
+*练习：*
+
+```java
+package 数组.二维数组;
+
+public class demo1 {
+    public static void main(String[] args) {
+        int[][] arr = new int[][]{{11, 22}, {33, 44}};
+        int[][] arr2={{1,2,3},{4,5,6,7}};
+//        建议如下的写法
+        int[][] arr3={
+                {1,2,3},
+                {4,5,6,7}
+        };
+//      获取一个元素
+        /*
+        * arr[i][j]
+        * arr:数组
+        * i：二维数组的索引，获取出来的是里面的一维数组
+        * j：表示一维数组中的索引，获取出来的是真正的元素*/
+        System.out.println(arr[0][1]);
+
+//       3.遍历数组
+        System.out.println("========================遍历二维数组=========================");
+//        外循环：遍历二维数组，得到每一个一维数组
+        for (int i = 0; i < arr3.length; i++) {
+//            i:二维数组的索引
+//            内循环：遍历一维数组，得到里面的每一个元素，
+            for (int j = 0; j < arr3[i].length; j++) {
+                System.out.print(arr3[i][j]+" ");
+            }
+            System.out.println();
+        }
+    }
+}
+```
+
+![image-20221023193944168](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210231939276.png)
+
+### 二维数组的动态初始化
+
+*格式*
+
+```java
+数据类型[][] 数组名 = new 数据类型[m][n];
+m:表示这是一个二维数组，可以存放多少个一维数组
+n:表示每一个一维数组，可以存放多少个元素
+```
+
+*范例：*
+
+```java
+int[][] arr = new int[2][3];
+该数组表示可以存放2个一维数组，，每一个一维数组中可以存放3个int类型的元素
+```
+
+*练习：*
+
+```java
+package 数组.二维数组;
+
+public class demo2 {
+    public static void main(String[] args) {
+//        1.利用动态初始化创建二维数组
+        int[][] arr = new int[3][5];
+        arr[0][0]=10;
+
+//        遍历数组
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[i].length; j++) {
+                System.out.print(arr[i][j]+" ");
+            }
+            System.out.println();
+        }
+    }
+}
+```
+
+![image-20221023194906425](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210231949533.png)
+
+### 二维数组的内存原理
+
+*例如：*
+
+```java
+public static void main(String[] args){
+    int[][] arr = new int[2][3];
+}
+```
+
+如下是内存图
+
+![image-20221023200530986](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210232005094.png)
+
+*特殊情况：*
+
+例如：
+
+```java
+public static voic main(String[] args){
+    int[][] arr = new int[2][];
+    int[] arr1 = {11,22};
+    int[] arr2 = {44,55,66};
+    
+    arr[0]=arr1;
+    arr[1]=arr2;
+}
+```
+
+![image-20221023201724502](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210232017609.png)
+
+*特殊情况*
+
+*例如：*
+
+```java
+public static voic main(String[] args){
+    int[][] arr = new int[2][3];
+    int[] arr1 = {11,22};
+    int[] arr2 = {44,55,66};
+    
+    arr[0]=arr1;
+    arr[1]=arr2;
+}
+```
+
+内存图如下：
+
+![image-20221023202842301](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210232028422.png)
+
+### 总结
+
+1. 当我们需要把数据分组管理的时候，就需要用到二维数组
+2. 掌握二维数组的静态初始化、动态初始化
+3. 如何给二维数组中的元素赋值
+4. 如何遍历二维数组
+
+*练习：二维数组的练习：*
+
+```te
+某商场每个季度的营业额度如下：单位（万元）
+
+第一季度：22、66、44
+第二季度：77、33、88
+第三季度：25、45、65
+第四季度：11、66、99
+
+要求计算出每个季度的总营业额和全年的营业额
+```
+
+```java
+package 数组.二维数组;
+
+public class demo3 {
+    public static void main(String[] args) {
+        /*某商场每个季度的营业额度如下：单位（万元）
+
+            第一季度：22、66、44
+            第二季度：77、33、88
+            第三季度：25、45、65
+            第四季度：11、66、99
+
+            要求计算出每个季度的总营业额和全年的营业额*/
+
+//        1.创建二维数组并存储数据
+        int[][] arr = {
+                {22, 66, 44},
+                {77, 33, 88},
+                {25, 45, 65},
+                {11, 66, 99}
+        };
+        int yearSum=0;
+        for (int i = 0; i < arr.length; i++) {
+            int sum = getSum(arr[i]);
+            System.out.println("第"+(i+1)+"个季度的总营业额为："+sum+"万元");
+//            计算全年的总营业额
+            yearSum+=sum;
+        }
+
+//        输出全年的总营业额
+        System.out.println("该商场全年的总营业额为："+yearSum+"万元");
+    }
+    //        定义一个方法，计算每一个季度的营业额
+    public static int getSum(int[] arr){
+        int sum=0;
+        for (int i = 0; i < arr.length; i++) {
+            sum+=arr[i];
+        }
+
+        return sum;
+    };
+}
+```
+
+![image-20221023204714876](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210232047988.png)
+
+
+
 # 六、方法
 
 ## *什么是方法？*
@@ -1978,3 +2223,356 @@ public static void 方法名(){
 }
 ```
 
+
+
+*练习：拷贝数组*
+
+定义一个方法copyOfRange（int[] arr,int from,int to），
+
+功能：将数组arr中从索引from（包含from）开始。到索引to（不包含to）的元素复制到新数组中，将新数组返回。
+
+```java
+package 方法.test;
+
+public class test1 {
+    public static void main(String[] args) {
+        /*定义一个方法copyOfRange（int[] arr,int from,int to），
+            功能：将数组arr中从索引from（包含from）开始。
+            到索引to（不包含to）的元素复制到新数组中，将新数组返回。*/
+//        1.定义初始数组
+        int[] arr={1,2,3,4,5,6,7,8,9};
+
+//        2.调用方法拷贝数组
+        int[] copyArr = copyOfRange(arr, 1, 5);
+        for (int i = 0; i < copyArr.length; i++) {
+            System.out.print(copyArr[i]+" ");
+        }
+    }
+
+    public static int[] copyOfRange(int[] arr, int from, int to){
+//        1.定义数组，动态的
+        int arrLength=to-from;
+        int[] newArr=new int[arrLength];
+
+        int index=0;
+        for (int i = from; i < to; i++) {
+            newArr[index]=arr[i];
+            index++;
+        }
+        return newArr;
+    }
+}
+```
+
+![image-20221023141803067](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210231418197.png)
+
+## java的内存分配
+
+![image-20221023143516526](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210231435642.png)
+
+栈：先进后出
+
+### 方法传递基本数据类型的内存原理
+
+*练习*
+
+```java
+package 方法;
+
+public class demo2 {
+    public static void main(String[] args) {
+        int num=100;
+        System.out.println("调用change方法前"+num);
+        change(num);
+        System.out.println("调用change方法后"+num);
+    }
+
+    public static void change(int num){
+        num=200;
+    }
+}
+```
+
+![image-20221023151026775](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210231510899.png)
+
+*注意：*
+
+==传递基本数据类型时，传递的是真实的数据，形参的改变，不影响实际参数的值==
+
+*练习*
+
+```java
+package 方法;
+
+public class demo3 {
+    public static void main(String[] args) {
+        int[] arr={10,20,30};
+        System.out.println("调用change方法前"+arr[1]);
+        change(arr);
+        System.out.println("调用change方法后"+arr[1]);
+    }
+    public static void change(int[] arr){
+        arr[1]=200;
+    }
+}
+```
+
+![image-20221023152213752](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210231522844.png)
+
+*注意：*
+
+==传递引用数据类型时，传递的是地址值，形参的改变，影响实际参数的值==
+
+# 七、面向对象
+
+## 类和对象
+
+*如何定义类：*
+
+```java
+public class 类名{
+    1.成员变量（代表属性，一般是名词）
+    2.成员方法（代表方法，一般是动词）
+    3.构造器（后面学习）
+    4.代码块（后面学习）
+    5.内部类（后面学习）    
+}
+```
+
+例如：
+
+```java
+public class Phone{
+    //属性（成员变量）
+    String brand;
+    double price;
+    
+    //行为（方法）
+    public void call(){
+        sout("打电话")
+    }
+    public void playGame(){
+        sout("玩游戏")
+    }
+}
+```
+
+*问：类和对象是什么？*
+
+- 类：是共同特征的描述
+- 对象：是真实存在的具体实例
+
+*定义类的补充注意事项：*
+
+- 用来描述一类事物的类，专业叫做：==JavaBean类==
+
+  - 在JavaBean类中，是不写卖弄方法的
+
+- 在以前，编写main方法的类，叫做==测试类==
+
+  - 我们可以在测试类中创建JavaBean类的对象并进行赋值调用
+
+- 类名首字母建议大写需要见名知意，驼峰模式
+
+- 一个java文件中可以定义多个class类，且只能一个类是public修饰，而且public修饰的类名必须成为代码文件名
+
+  - ==实际开发中建议还是一个文件定义一个class类==
+
+- 成员变量的完整定义格式是：`修饰符 数据类型  变量名称 = 初始化值;`  ==一般无需指定初始化值，存在默认值==
+
+  
+
+## 封装
+
+### 面向对象三大特征
+
+- 封装
+  - 告诉我们，如何正确设计对象的属性和方法
+  - 原则：==对象代表什么，就得封装对应的数据，并提供数据对应的行为==
+  - 理解封装思想的好处？
+    - 让编程变得简单，有什么事。找对象，调方法就行
+    - 降低我们的学习成本，可以少学、少记，不用记对象有哪些方法，有需要时去找就行
+- 继承
+- 多态
+
+### private关键字
+
+- 是一个权限修饰符
+- 可以修饰成员（成员变量的成员方法）
+- 被`private`修饰的成员只能在本类中才能访问
+- 针对private修饰的成员变量，如果需要被其它类使用，提供相应的操作
+- 提供”setXxx(参数)“方法，用于给成员变量赋值，方法用public来修饰
+- 提供”gettXxx()“方法，用于获取成员变量的值，方法用public来修饰
+
+==目的：就是为了保证数据的安全性==
+
+例如：
+
+```java
+public class Friend{
+    private String name;
+    private int age;
+    private String gender;
+}
+```
+
+此时如下这样写就会报错
+
+```java
+Friend fri = new Friend();
+fri.age = 18;		//此时这样写就会报错
+```
+
+要求：正确的数据可以赋值，错误的数据无法赋值（例如`fri.age = -18;`就是错误的数据）
+
+实现的方式如下：
+
+get 、set 方法
+
+```java
+public class Friend{
+    private String name;
+    private int age;
+    private String gender;
+    
+    //set(赋值)
+    public void setAge(int a){
+        if(a > 0 && a <= 50){
+            age = a;
+        }else{
+            Sout("非法数据");
+        }
+    }
+    //get(获取)
+    public int getAge(){
+        return age;
+    }
+}
+```
+
+*练习：*
+
+```java
+package 面向对象.test1;
+
+public class Friend {
+    private String name;
+    private int age;
+    private String gender;
+
+//    针对每一个私有化的成员变量，都要提供get和set方法
+//    set方法：给成员变量赋值
+//    get方法：对外提供成员变量的值
+
+    //    name
+//    作用：给成员变量name进行赋值
+    public void setName(String n) {
+        name = n;
+    }
+    //    作用：对外提供name属性
+    public String getName() {
+        return name;
+    }
+
+    //    age
+    public void setAge(int a) {
+        if (a > 0 && a <= 50) {
+            age = a;
+        } else {
+            System.err.println("非法数据");
+        }
+    }
+    public int getAge() {
+        return age;
+    }
+
+    //    gender
+    public void setGender(String g) {
+        gender = g;
+    }
+    public String getGender() {
+        return gender;
+    }
+}
+```
+
+```java
+package 面向对象.test1;
+
+public class FriendTest {
+    public static void main(String[] args) {
+        Friend friend = new Friend();
+        friend.setName("小红");
+        friend.setAge(-20);
+        friend.setGender("女");
+
+        System.out.println(friend.getName());
+        System.out.println(friend.getAge());
+        System.out.println(friend.getGender());
+    }
+}
+```
+
+![image-20221023231048340](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210232310504.png)
+
+### this关键字
+
+当成员变量和局部变量重名时，就会触发就近原则，如果想要使用成员变量就需要使用`this.`
+
+就近原则：谁离我近，我就用谁
+
+例如对Friend类的修改：
+
+```java
+package 面向对象.test2;
+
+public class Friend {
+    private String name;
+    private int age;
+    private String gender;
+
+//    针对每一个私有化的成员变量，都要提供get和set方法
+//    set方法：给成员变量赋值
+//    get方法：对外提供成员变量的值
+
+    //    name
+//    作用：给成员变量name进行赋值
+    public void setName(String name) {
+//        局部变量表示测试类中调用方法传递过来的数据
+//        等号的左边：就表示成员位置的变量name
+        this.name=name;
+    }
+
+    //    作用：对外提供name属性
+    public String getName() {
+        return name;
+    }
+
+    //    age
+    public void setAge(int age) {
+        if (age > 0 && age <= 50) {
+            this.age = age;
+        } else {
+            System.err.println("age-非法数据");
+        }
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    //    gender
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+}
+```
+
+*this的作用？*
+
+可以区别成员变量和局部变量
