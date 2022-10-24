@@ -2576,3 +2576,696 @@ public class Friend {
 *this的作用？*
 
 可以区别成员变量和局部变量
+
+*成员变量和局部变量的区别：*
+
+| 区别           | 成员变量                                   | 局部变量                                       |
+| -------------- | ------------------------------------------ | ---------------------------------------------- |
+| 类中的位置不同 | 类中，方法外                               | 方法内、方法声明上                             |
+| 初始化值不同   | 有默认初始化值                             | 没有、使用之前需要完成赋值                     |
+| 内存位置不同   | 堆内存                                     | 栈内存                                         |
+| 生命周期不同   | 随着对象的创建而存在，随着对象的消失而消失 | 随着方法的调用而存在，随着方法的运行结束而消失 |
+| 作用域         | 整个类中有效                               | 当前方法中有效                                 |
+
+### 案例
+
+#### *案例1：文字版格斗游戏*
+
+如下是JavaBean代码
+
+```java
+package 案例.test1;
+
+import java.util.Random;
+
+public class Role {
+    private String name;
+    private int blood;
+
+    public Role(String name, int blood) {
+        this.name = name;
+        this.blood = blood;
+    }
+
+    public Role() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getBlood() {
+        return blood;
+    }
+
+    public void setBlood(int blood) {
+        this.blood = blood;
+    }
+
+    //    定义一个方法用于攻击别人
+    /*
+     * 思考：谁攻击谁？
+     * r1,r2
+     * r1.攻击(r2)
+     * 方法的调用者去攻击参数
+     * */
+    public void attack(Role role) {
+//        计算造成的伤害1~20，随机的伤害
+        Random random = new Random();
+        int hurt = random.nextInt(20) + 1;
+//         被打的角色的血量
+        int remainBlood = role.getBlood() - hurt;
+//        对剩余血量做一个验证，如果为负数了，就修改为0
+        remainBlood = remainBlood < 0 ? 0 : remainBlood;
+//         修改一下被打的角色的血量
+        role.setBlood(remainBlood);
+//        this表示的是方法的调用者
+        System.out.println(this.getName() + "举起拳头，打了一下" + role.getName() +
+                "，造成了" + hurt + "点的伤害，" + role.getName() + "还剩下了" + remainBlood + "点血");
+    }
+}
+
+```
+
+```java
+package 案例.test1;
+
+public class GameTest {
+    public static void main(String[] args) {
+//        1.创建一个角色
+        Role r1 = new Role("亚瑟",50);
+//        2.创建第二个角色
+        Role r2 = new Role("后裔",50);
+
+//        3.开始格斗，回合制游戏
+
+        while (true){
+//            r1开始攻击r2
+            r1.attack(r2);
+//            判断r2的剩余血量
+            if (r2.getBlood() == 0){
+                System.out.println(r1.getName()+"K.O了"+r2.getName());
+                break;
+            }
+
+//            r2开始攻击r1
+            r2.attack(r1);
+            if (r1.getBlood() == 0){
+                System.out.println(r2.getName()+"K.O了"+r1.getName());
+                break;
+            }
+        }
+    }
+}
+```
+
+![image-20221024151733215](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210241517315.png)
+
+#### *案例2：对象数组*
+
+```tex
+需求：定义一个数组存储3个商品对象
+
+商品的属性：商品的id，名字，价格，库存
+
+创建三个商品对象，并把商品对象存入到数组当中
+```
+
+如下是javabean代码
+
+```java
+package 案例.test3;
+
+public class Goods {
+    private String id;
+    private String name;
+    private double price;
+    private int count;
+
+//    无参构造
+    public Goods() {
+    }
+//    有参构造
+    public Goods(String id, String name, double price, int count) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.count = count;
+    }
+//     get  set方法
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    @Override
+    public String toString() {
+        return "Goods{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", count=" + count +
+                '}';
+    }
+}
+```
+
+如下是测试代码
+
+```java
+package 案例.test3;
+
+public class GoodsTest {
+    public static void main(String[] args) {
+//        1.创建一个数组
+        Goods[] goodsArr = new Goods[3];
+//        2.创建三个商品对象
+        Goods g1 = new Goods("001", "小米K50", 3999.0, 100);
+        Goods g2 = new Goods("002", "荣耀50", 2999.0, 50);
+        Goods g3 = new Goods("003", "充电宝", 199.0, 70);
+//        把商品添加到数组中
+        goodsArr[0] = g1;
+        goodsArr[1] = g2;
+        goodsArr[2] = g3;
+
+        for (int i = 0; i < goodsArr.length; i++) {
+            System.out.println(goodsArr[i]);
+        }
+
+    }
+}
+```
+
+![image-20221024153853042](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210241538138.png)
+
+#### *案例3：对象数组2*
+
+```java
+需求：定义一个数组用来存储3部汽车对象
+
+汽车的属性：品牌，价格，颜色
+
+创建三个汽车对象，数据通过键盘录入的方式而来。并把数据存入到数组当中去
+```
+
+键盘录入：
+
+- 第一套体系
+
+  ==特点：遇到空格，制表符，回车就停止接受。这些符号后面的数据就不会接受了==
+
+  - nextInt()：接收整数
+  - nextDouble()：接受小数
+  - next()：接收字符串
+
+- 第二套体系
+
+  ==特点：可以接收空格，制表符，遇到回车才停止接收数据==
+
+  - nextLine()：接收字符串
+
+- 以上键盘录入的两套体系是不建议混合使用
+
+  弊端：先用nextInt，再用nextLine会导致下面的nextLine接收不到数据
+
+如下是JavaBean类
+
+```java
+package 案例.test4;
+
+public class Car {
+    private String brand;//表示汽车的品牌
+    private int price;//表示汽车的价格
+    private String color;//表示汽车的颜色
+//  无参构造
+    public Car() {
+    }
+//  有参构造
+    public Car(String brand, int price, String color) {
+        this.brand = brand;
+        this.price = price;
+        this.color = color;
+    }
+//get set方法
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+//    toString方法
+    @Override
+    public String toString() {
+        return "Car{" +
+                "brand='" + brand + '\'' +
+                ", price=" + price +
+                ", color='" + color + '\'' +
+                '}';
+    }
+}
+```
+
+如下是测试类
+
+```java
+package 案例.test4;
+
+import java.util.Scanner;
+
+public class CarTest {
+    public static void main(String[] args) {
+//        1.创建一个数组用来存储三个汽车对象
+        Car[] carsArr = new Car[3];
+//        2.创建汽车对象，数据来自于键盘录入
+        Scanner sc = new Scanner(System.in);
+        for (int i = 0; i < carsArr.length; i++) {
+//            创建汽车的对象，
+//            注意：如果将对象放到循环的外面，那么每次输入的数据就会覆盖掉上一次的输入的数据
+//            所以不能写在循环的外面
+            Car car = new Car();
+//            品牌
+            System.out.println("请录入汽车的品牌");
+            String brand = sc.next();
+            car.setBrand(brand);
+//            价格
+            System.out.println("请输入汽车的价格");
+            int price = sc.nextInt();
+            car.setPrice(price);
+//            颜色
+            System.out.println("请输入汽车的颜色");
+            String color = sc.next();
+            car.setColor(color);
+//            将汽车对象添加到数组当中
+            carsArr[i] = car;
+        }
+
+//        遍历数组
+        for (int i = 0; i < carsArr.length; i++) {
+            System.out.println(carsArr[i]);
+        }
+    }
+}
+```
+
+![image-20221024161836032](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210241618202.png)
+
+注意：
+
+- 如果将对象放到循环的外面，那么每次输入的数据就会覆盖掉上一次的输入的数据
+
+- 所以不能写在循环的外面
+
+- 如下是其内存图
+
+  ![image-20221024161950006](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210241619097.png)
+
+#### *案例4：对象数组3*
+
+```tex
+需求：定义数组存储三部手机对象
+
+手机的属性：品牌，价格，颜色
+
+要求：计算出三部手机的平均价格
+```
+
+如下是JavaBean的代码
+
+```java
+package 案例.test5;
+
+public class Phone {
+    private String brand;//品牌
+    private int price;//价格
+    private String color;//颜色
+
+    public Phone() {
+    }
+
+    public Phone(String brand, int price, String color) {
+        this.brand = brand;
+        this.price = price;
+        this.color = color;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        return "Phone{" +
+                "brand='" + brand + '\'' +
+                ", price=" + price +
+                ", color='" + color + '\'' +
+                '}';
+    }
+}
+```
+
+如下是测试类
+
+```java
+package 案例.test5;
+
+public class PhoneTest {
+    public static void main(String[] args) {
+//        1.创建一个数组
+        Phone[] phonesArr = new Phone[3];
+//        2.创建手机对象
+        Phone p1 = new Phone("小米", 4500, "红色");
+        Phone p2 = new Phone("华为", 4999, "蓝色");
+        Phone p3 = new Phone("苹果", 6999, "黑色");
+//        3.将手机对象添加到数组中
+        phonesArr[0] = p1;
+        phonesArr[1] = p2;
+        phonesArr[2] = p3;
+//        4.获取价格
+        int sum=0;
+        for (int i = 0; i < phonesArr.length; i++) {
+            Phone phone=phonesArr[i];
+            sum+= phone.getPrice();
+        }
+        int priceAvg=0;
+        priceAvg=sum/ phonesArr.length;
+        System.out.println("三部手机的平均价格为："+priceAvg);
+    }
+}
+```
+
+![image-20221024163659237](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210241636318.png)
+
+# 八、API&字符串
+
+如何使用java已经写好的东西
+
+API：应用程序编程接口
+
+简单理解：API就是别人已经写好了的东西，我们不需要自己编写，直接使用即可
+
+Java API：指的就是JDK中提供的各种功能的Java类
+
+这些类将底层的实现分装了起来，我们不需要关心这些类是如何实现的，只需要学习这些类如何使用即可
+
+## API和API帮助文档
+
+API帮助文档：帮助开发人员更好的使用API和查询API的一个工具
+
+如何使用API帮助文档
+
+![image-20221024204940871](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210242049087.png)
+
+目前我们需要学习的就是
+
+![image-20221024205010020](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210242050087.png)
+
+练习：使用Scanner获取一个小数
+
+帮助文档如下描述：
+
+![image-20221024210202789](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210242102875.png)
+
+如下是代码的实现：
+
+![image-20221024210343186](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210242103304.png)
+
+## 字符串
+
+字符串在开发中的应用场景
+
+- 用户登录时判断用户账号和密码
+- 敏感词替换
+
+***Srting概述：***
+
+- java.lang.String类代表字符串，Java程序中的所有字符串文字（例如：“abc”）都为此类的对象，
+- java.lang包是Java的核心包，所以在使用的时候是不用导包的
+
+***String的注意点：***
+
+字符串的内容是不会发生改变的，它的对象在创建后不能被更改
+
+***创建String对象的两种方式***
+
+- 直接赋值
+
+```java
+public class demo{
+    public static void main(String[] args){
+        String a1 = "abc";
+        String a2 = "abc";
+    }
+}
+```
+
+注意：
+
+==当使用双引号直接赋值时，系统会检查该字符串在串池中是否存在。==
+
+==如果不存在：创建新的==
+
+==存在：复用==
+
+- new
+
+练习：
+
+```java
+package JAVAAPI.String;
+
+public class demo1 {
+    public static void main(String[] args) {
+//        1.使用直接赋值的方式获取一个字符串对象
+        String s1 = "abc";
+        System.out.println("s1 = " + s1);
+
+//        2.使用new的方式来获取一个字符串对象
+//        空参构造
+        String s2 = new String();   //没有任何的内容
+        System.out.println("s2 = " + s2);
+
+//      有参构造
+        String s3 = new String("abc");
+
+//        传递字符数组，得到字符串对象
+        char[] chs = {'a', 'b', 'c', 'd'};
+        String s4 = new String(chs);
+        System.out.println("s4 = " + s4);
+
+//        传递一个字节数组，根据字节数组的内容再创建一个新的字符串对象
+//        应用场景：在网络中传输的数据其实都是字节信息        
+        byte[] bytes = {97, 98, 99, 100};
+        String s5 = new String(bytes);
+        System.out.println("s5 = " + s5);
+    }
+}
+```
+
+注意：
+
+new出来的字符串不会被复用
+
+### java中的常用方法（比较）
+
+`==` 和  `equals`的区别
+
+- `==`比较
+
+| 基本数据类型               | 引用数据类型               |
+| -------------------------- | -------------------------- |
+| 基本数据类型比较的是数据值 | 引用数据类型比较的是地址值 |
+
+例如：
+
+```java
+String s1 = "abc";		//该值是记录在串池中的
+String s2 = "abc";		//该值是记录在串池中的
+sout(s1 == s2) //true
+```
+
+原因是因为s1和s2的地址值是一样的（复用）
+
+
+
+```java
+String s1 = new String("abc");		//该是记录在堆中的地址值
+String s2 = "abc";					//该值是记录在串池中的地址值
+sout(s1 == s2) //false
+```
+
+两者的地址值不一样
+
+- `equals`比较	
+
+  ![image-20221024215115641](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210242151756.png)
+
+`equals`:完全一样的结果才是true，否则则是false
+
+`equalsIgnoreCase`：忽略大小写的比较
+
+练习：
+
+```java
+//        1.创建两个字符串对象
+        String s1 = "abc";
+        String s2 = "ABC";
+        System.out.println(s1.equals(s2));		//false
+		//忽略大小写的比较
+        System.out.println(s1.equalsIgnoreCase(s2));		//true
+```
+
+![image-20221024215718411](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210242157509.png)
+
+但是  数字 `1`  和中文数字 `一`类似这样的是不可以比较的
+
+练习
+
+```java
+package JAVAAPI.String;
+
+import java.util.Scanner;
+
+public class demo3 {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String s1 = scanner.next();		//java底层是new出来的，所以说和s2的地址值是不一样的
+        String s2 = "abc";
+        System.out.println(s1 == s2);
+    }
+}
+```
+
+![image-20221024220514011](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210242205100.png)
+
+<p style="color:red">注意：next()的java底层是new出来的，所以说和s2的地址值是不一样的</p>
+
+结论：
+
+- 以后只要是想比较字符串中的内容，就必须要使用String里面的方法`equals`或者`equalsIgnoreCase`
+
+案例：用户登录
+
+```tex
+需求：已知正确的用户名和密码，请用程序实现模拟用户登录
+
+总共给三次机会，登录之后，给出相应的提示
+```
+
+```java
+package JAVAAPI.String;
+
+import java.util.Scanner;
+
+public class demo4 {
+    public static void main(String[] args) {
+        /*需求：已知正确的用户名和密码，请用程序实现模拟用户登录
+            总共给三次机会，登录之后，给出相应的提示*/
+//        1.定义两个变量，记录正确的用户名和密码
+        String rightUsername = "cyy";
+        String rightPassword = "123456";
+
+//        2.模拟用户登录
+        Scanner sc = new Scanner(System.in);
+        int count=0;
+        for (int i = 0; i < 3; i++) {
+
+            System.out.println("请您登录，您还有"+(3-count)+"次机会");
+            System.out.println("请输入用户名");
+            String username = sc.next();
+            System.out.println("请输入密码");
+            String password = sc.next();
+            if (username.equals(rightUsername) &&password.equals(rightPassword)){
+                System.out.println("用户登录成功");
+                break;
+            }else {
+                if (count==2){
+                    System.out.println("您的三次机会已经用完，账户"+rightUsername+"已被锁定，系统即将推出");
+                }else {
+                    System.out.println("用户登陆失败,账号或密码错误，请检查");
+                }
+                count++;
+            }
+        }
+
+
+    }
+}
+```
+
+登录失败演示
+
+![image-20221024224041705](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210242240857.png)
+
+登录成功演示
+
+![image-20221024224145222](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210242241324.png)
