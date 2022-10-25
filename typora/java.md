@@ -3269,3 +3269,258 @@ public class demo4 {
 登录成功演示
 
 ![image-20221024224145222](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210242241324.png)
+
+*练习：遍历字符串*
+
+需求：键盘录入一个字符串，使用程序实现在控制台遍历该字符串
+
+```java
+public char charAt(int index):根据索引返回字符
+public int length():返回此字符串的长度
+```
+
+数组的长度：数组名.length
+
+字符串的长度：字符串对象.length()
+
+“你好123世界”
+
+```java
+package JAVAAPI.String;
+
+import java.util.Scanner;
+
+public class demo5 {
+    public static void main(String[] args) {
+//        1.键盘读入一个字符串
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入一个字符串");
+        String str = sc.next();
+//        2.进行遍历
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            System.out.println(c);
+        }
+    }
+}
+```
+
+输出结果如下：
+
+```java
+请输入一个字符串
+你好123世界
+你
+好
+1
+2
+3
+世
+界
+```
+
+*案例：统计字符的次数*
+
+键盘录入一个字符串，统计该字符串中大写小写字母字符，数字字符出现的次数（不考虑其他字符）
+
+```java
+package JAVAAPI.String;
+
+import java.util.Scanner;
+
+public class demo6 {
+    public static void main(String[] args) {
+//        键盘录入一个字符串，统计该字符串中大写小写字母字符，数字字符出现的次数（不考虑其他字符）
+        
+//        1.键盘录入一个字符串
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入一个字符串");
+        String str = sc.next();
+//        2.统计----计数器思想
+        int bigCount = 0;
+        int smallCount = 0;
+        int numberCount = 0;
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c>='a' && c<='z'){
+                smallCount++;
+            }else if (c>='A'&& c<='Z'){
+                bigCount++;
+            }else if (c>='0'&&c<='9'){
+                numberCount++;
+            }
+        }
+        System.out.println("bigCount = " + bigCount);
+        System.out.println("smallCount = " + smallCount);
+        System.out.println("numberCount = " + numberCount);
+    }
+}
+```
+
+输出结果：
+
+```bash
+请输入一个字符串
+ghj123456ADhj45HSD
+bigCount = 5
+smallCount = 5
+numberCount = 8
+```
+
+*案例：字符串的反转*
+
+定义一个方法，实现字符串的反转
+
+键盘录入一个字符串，调用该方法后，在控制台输出结果
+
+例如，键盘录入abc，输出结果cba
+
+```java
+package JAVAAPI.String;
+
+import java.util.Scanner;
+
+public class demo7 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入一个字符串");
+        String str = sc.next();
+        String s = strFan(str);
+        System.out.println("反转后的字符串为：" + s);
+    }
+
+    //定义一个方法：实现字符串的反转
+    public static String strFan(String str) {
+        int j = str.length();
+        String strF = "";
+        for (int i = str.length() - 1; i >= 0; i--) {
+            char c = str.charAt(i);
+            strF = strF + c;
+        }
+        return strF;
+    }
+
+}
+```
+
+输出结果：
+
+```java
+请输入一个字符串
+你好啊
+反转后的字符串为：啊好你
+```
+
+*案例：金额转换*
+
+需求：将阿拉伯数字转化为大写的中文
+
+```java
+package JAVAAPI.String;
+
+import java.util.Scanner;
+
+public class demo8 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int money = 0;
+        while (true) {      //ctrl+alt+T:可以用来包裹代码
+            System.out.println("请录入一个整数");
+            money = sc.nextInt();
+            if (money >= 0 && money <= 9999999) {
+                break;
+            } else {
+                System.out.println("金额无效");
+            }
+        }
+        System.out.println(money);
+
+        String strMoney = "";   //表示大写的数字
+        while (true) {
+//            从右往左获取数据
+            int ge = money % 10;
+            String capitalNumber = getCapitalNumber(ge);
+//            把转换之后的大写拼接到strMoney当中
+            strMoney = capitalNumber + strMoney;
+//            去掉刚刚获取的数据
+            money = money / 10;
+//            如果数字上的每一位全部获取到了，那么money记录的就是0，此时循环结束
+            if (money == 0) {
+                break;
+            }
+        }
+
+        System.out.println("大写：" + strMoney);
+//        3.在前面补0，补齐7位
+        int count = 7 - strMoney.length();
+        for (int i = 0; i < count; i++) {
+            strMoney = "零" + strMoney;
+        }
+        System.out.println("补齐后的七位大写数字：" + strMoney);
+//        4.添加单位
+        String strMoneyTwo = "";       //插入了单位后的结果
+        String[] arr = {"佰", "拾", "万", "仟", "佰", "拾", "元",};
+        for (int i = 0; i < strMoney.length(); i++) {
+            char c = strMoney.charAt(i);
+            strMoneyTwo = strMoneyTwo + c + arr[i];
+        }
+        System.out.println("插入单位后的结果：" + strMoneyTwo);
+
+    }
+
+    //    定义各一个方法把数字变成大写中文
+    public static String getCapitalNumber(int money) {
+        String[] arr = {"零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"};
+//              数组下标   0    1     2     3    4     5    6     7     8    9
+        return arr[money];
+    }
+}
+```
+
+输出结果：
+
+```java
+请录入一个整数
+4562
+4562
+大写：肆伍陆贰
+补齐后的七位大写数字：零零零肆伍陆贰
+插入单位后的结果：零佰零拾零万肆仟伍佰陆拾贰元
+```
+
+==小tips：ctrl+alt+T:可以用来包裹代码==
+
+*案例：手机号屏蔽*
+
+```java
+String substring(int beginIndex,int endIndex)    //表示截取的意思（包头不包尾）
+    只有返回值才是截取的小串
+
+重载的方法如下
+String substring(int beginIndex)		//截取到末尾
+```
+
+```java
+package JAVAAPI.String;
+
+public class demo9 {
+    public static void main(String[] args) {
+//        1.获取一个手机号码
+        String phoneNumber = "13545826987";
+//        2.截取手机号码前面的三位
+        String phoneNumberBeginThree = phoneNumber.substring(0, 3);
+//        3.截取手机号码后面四位
+        String phoneNumberEndFour = phoneNumber.substring(7);
+//        4.拼接
+        String res=phoneNumberBeginThree+"****"+phoneNumberEndFour;
+        System.out.println(res);
+    }
+}
+```
+
+输出结果
+
+```java
+135****6987
+```
+
