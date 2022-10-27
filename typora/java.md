@@ -1,3 +1,5 @@
+‎2022‎年‎10‎月‎18‎日 开始
+
 # 一、Java
 
 IBM			1981年   MS-DOS
@@ -3524,3 +3526,760 @@ public class demo9 {
 135****6987
 ```
 
+- `StringBuilder`
+
+  - 详情参考jdk1.8-API中文帮助文档
+  - 构造方法
+
+  ![image-20221027122858425](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271231803.png)
+
+  - 方法
+
+    
+
+![image-20221027123236842](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271232941.png)
+
+![image-20221027123304820](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271233927.png)
+
+- `Stringjoiner`
+
+  - jdk1.8开始出现
+  - 构造方法，成员方法
+
+  ![image-20221027123549926](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271235030.png)
+
+*练习：转换罗马数字*
+
+```java
+键盘录入一个字符串
+
+要求1：长度小于等于9
+
+要求2：只能是数字
+
+将内容变成罗马数字
+
+下面是阿拉伯数字和罗马数字的对比关系
+
+Ⅰ  - 1、Ⅱ--2、Ⅲ--3、Ⅳ--4、Ⅴ--5、Ⅵ--6、Ⅶ--7、Ⅷ--8、Ⅸ--9
+
+注意点：罗马数字里面是没有0的
+
+如果键盘录入的数字包含0，可以变成“ ”（长度为0的字符串）
+```
+
+```java
+package JAVAAPI.String;
+
+import java.util.Scanner;
+
+public class demo10 {
+    public static void main(String[] args) {
+        /*键盘录入一个字符串
+        要求1：长度小于等于9
+        要求2：只能是数字
+        将内容变成罗马数字
+        下面是阿拉伯数字和罗马数字的对比关系
+        Ⅰ  - 1、Ⅱ--2、Ⅲ--3、Ⅳ--4、Ⅴ--5、Ⅵ--6、Ⅶ--7、Ⅷ--8、Ⅸ--9
+        注意点：罗马数字里面是没有0的
+        如果键盘录入的数字包含0，可以变成“ ”（长度为0的字符串）*/
+
+        Scanner sc = new Scanner(System.in);
+        String str = "";
+        while (true) {
+            System.out.println("请输入一个字符串");
+            str = sc.next();
+//        校验是否满足规则
+            if (checkString(str)){
+                break;
+            }else {
+                System.out.println("当前的字符串不符合规则，请重新输入");
+            }
+        }
+
+//        使用查表法
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+//            将字符数字变化为数字
+            int num=c-48;
+            String s = toRomanNumerals(num);
+            stringBuilder.append(s);
+        }
+        stringBuilder.toString();
+        System.out.println(stringBuilder);
+    }
+
+    public static String toRomanNumerals(int num){
+//        定义一个数组
+        String[] arr={"","Ⅰ","Ⅱ","Ⅲ","Ⅳ","Ⅴ","Ⅵ","Ⅶ","Ⅷ","Ⅸ",};
+//        和数字的对应关系   1    2    3   4    5    6   7    8   9
+
+        return arr[num];
+    }
+
+    /**
+     * 校验字符串
+     * @param str
+     * @return
+     */
+    public static boolean checkString(String str){
+        if (str.length()>9){
+            return false;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c<'0'||c>'9'){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```
+
+![image-20221027145404107](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271454213.png)
+
+# 九、集合
+
+## 概述
+
+### *为什么要有集合？*
+
+因为数组在被创建后，它的长度就不可变了，这样不利与我们的操作。所以就有了集合，集合就可以不用担心这样的问题，因为集合的长度会自动扩容，不需要我们亲自操作
+
+### 集合存储数据类型的特点
+
+- 集合可以直接存储引用数据类型
+- 集合不可以直接存储基本数据类型，如果想要存储基本数据类型就需要使用到==包装类==
+
+### 集合和数组的对比
+
+- 长度
+  - 数组长度固定
+  - 集合长度可变
+- 存储类型
+  - 数组可以存储基本数据类型和引用数据类型
+  - 集合可以存储引用数据类型，如果想要存储基本数据类型就需要将他们变成相应的==包装类==
+
+## ArrayList
+
+![image-20221027153749443](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271537531.png)
+
+图片中的`E`表示==泛型==
+
+==泛型：限定集合中存储数据的类型==
+
+```java
+package JAVAAPI.ArrayList;
+
+import java.util.ArrayList;
+
+public class demo1 {
+    public static void main(String[] args) {
+//        1.创建集合对象
+//        泛型：限定集合中存储数据的类型
+//        ArrayList<String> arrayList = new ArrayList<String>();
+//        以上这种写法是jdk1.7以前的写法，
+//        jdk1.7以后的写法如下
+//        
+        ArrayList<String> arrayList = new ArrayList<>();
+        System.out.println("arrayList = " + arrayList);
+    }
+}
+```
+
+成员方法：
+
+| 方法名               | 说明                                 |
+| -------------------- | ------------------------------------ |
+| boolean add(E e)     | 添加元素，返回值表示是否添加成功     |
+| boolean remove(E e)  | 删除指定元素，返回值表示是否删除成功 |
+| E remove(int index)  | 删除指定索引的元素，返回被删除的元素 |
+| E set(int index,E e) | 修改指定索引下的元素，返回原来的元素 |
+| E get(int index)     | 获取指定索引的元素                   |
+| int size()           | 集合的长度，也就是集合中元素的个数   |
+
+如上的几种方法总结下来就是：增-------删--------改-------查
+
+*练习*
+
+```java
+package JAVAAPI.ArrayList;
+
+import java.util.ArrayList;
+
+public class demo2 {
+    public static void main(String[] args) {
+//        1.创建一个集合
+        ArrayList<String> list = new ArrayList<>();
+//        2.添加元素
+        boolean flag = list.add("aaa"); //一般情况下我们不会去管它的返回值
+        list.add("aaa");
+        list.add("bbb");
+        list.add("ccc");
+        list.add("ddd");
+        list.add("eee");
+        System.out.println("flag = " + flag);
+        System.out.println("list = " + list);
+
+//        3.删除元素
+        list.remove("aaa");     //删除成功返回true，否则返回false
+        System.out.println("list = " + list);
+//        remove的重载方法，根据索引删除
+        String removeStr = list.remove(0);  //该方法会将删除的元素返回
+        System.out.println("removeStr = " + removeStr);
+
+//        4.修改元素
+        String set = list.set(1, "修改");     //该方法会将被修改的元素做一个返回
+        System.out.println("list = " + list);
+
+//        5.查询元素，根据索引查询
+        String s = list.get(2);
+        System.out.println("s = " + s);
+
+//        6.遍历
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i));
+        }
+//        或者使用如下的方法也可以实现遍历
+        System.out.println("========================");
+        for (String value : list) {
+            System.out.println(value);
+        }
+    }
+}
+```
+
+![image-20221027160645586](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271606696.png)
+
+*练习：添加数字并遍历*
+
+```tex
+需求：定义一个集合，添加数字，并进行遍历
+
+遍历格式参照：[元素1，元素2，元素3] 。
+```
+
+
+
+*基本数据类型所对应的包装类*
+
+| 基本数据类型 | 其所对应的包装类 |
+| ------------ | ---------------- |
+| byte         | Byte             |
+| short        | Short            |
+| char         | Character        |
+| int          | Integer          |
+| long         | Long             |
+| float        | Float            |
+| double       | Double           |
+| boolean      | Boolean          |
+
+实际记住这两个就行了
+
+![image-20221027161626890](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271616973.png)
+
+```java
+package JAVAAPI.ArrayList;
+
+import java.util.ArrayList;
+
+public class demo3 {
+    public static void main(String[] args) {
+//        1.创建集合
+        ArrayList<Integer> list = new ArrayList<>();
+//        2.添加元素
+//        jdk5以后 int  Integer 之间是可以互相转换的
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+
+//        3.遍历集合
+        System.out.print("[");
+        for (int i = 0; i < list.size(); i++) {
+            if (i==list.size()-1){
+                System.out.print(list.get(i));
+            }else {
+                System.out.print(list.get(i)+",");
+            }
+        }
+        System.out.print("]");
+    }
+}
+```
+
+![image-20221027162354242](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271623334.png)
+
+*练习：添加学生对象并进行遍历*
+
+```tex
+需求：定义一个集合，添加一些学生对象，并进行遍历
+
+学生类的属性为：姓名，年龄
+```
+
+
+
+如下是javaBean类：
+
+```java
+package JAVAAPI.ArrayList.demo4;
+
+public class Student {
+    private String name;
+    private Integer age;
+
+    public Student() {
+    }
+
+    public Student(String name, Integer age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+```
+
+测试类
+
+```java
+package JAVAAPI.ArrayList.demo4;
+
+import java.util.ArrayList;
+
+public class StudentTest {
+    public static void main(String[] args) {
+//        1.定义一个集合
+        ArrayList<Student> list = new ArrayList<>();
+
+//        2.添加数据
+        list.add(new Student("张三",18));
+        list.add(new Student("李四",20));
+        list.add(new Student("王五",19));
+
+//        3.遍历
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i));
+        }
+    }
+}
+```
+
+![image-20221027163140790](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271631892.png)
+
+小tips：ctrl+p
+
+![image-20221027163521414](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271635544.png)
+
+
+
+*练习：添加手机对象并返回要求的数据*
+
+```tex
+需求：定义一个Phone
+
+Phone的属性：品牌，价格
+
+main方法中定义一个集合，存入三个手机对象
+
+分别为：小米：1999。苹果：4000。锤子：2999。
+
+定义一个方法，将价格低于3000的手机信息返回
+```
+
+如下是javaBean类
+
+```java
+package JAVAAPI.ArrayList.demo5;
+
+public class Phone {
+    private String brand;
+    private int price;
+
+    public Phone() {
+    }
+
+    public Phone(String brand, int price) {
+        this.brand = brand;
+        this.price = price;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Phone{" +
+                "brand='" + brand + '\'' +
+                ", price=" + price +
+                '}';
+    }
+}
+```
+
+如下是测试类
+
+```java
+package JAVAAPI.ArrayList.demo5;
+
+import java.util.ArrayList;
+
+public class PhoneTest {
+    public static void main(String[] args) {
+        ArrayList<Phone> list = new ArrayList<>();
+        list.add(new Phone("小米",1999));
+        list.add(new Phone("苹果",4000));
+        list.add(new Phone("锤子",2999));
+
+        ArrayList<Phone> phoneInfo = getPhoneInfo(list);
+        for (Phone phone:phoneInfo){
+            System.out.println(phone);
+        }
+
+    }
+
+    public static ArrayList<Phone> getPhoneInfo(ArrayList<Phone> phone){
+//        定义一个集合用于存储价格低于3000的手机的信息
+        ArrayList<Phone> list = new ArrayList<>();
+        for (int i = 0; i < phone.size(); i++) {
+            int price = phone.get(i).getPrice();
+            if (price<3000){
+                list.add(phone.get(i));
+            }
+        }
+        return list;
+    }
+}
+```
+
+![image-20221027205918864](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210272059976.png)
+
+*练习：学生管理系统*
+
+需求分析：
+
+**需求：**
+
+采取控制台的方式去书写学生管理系统
+
+**分析：**
+
+**初始菜单：**
+
+```bash
+-------------------欢迎来到学生管理系统------------------
+1.添加学生
+2.删除学生
+3.修改学生
+4.查询学生
+5.退出
+请输入您的选择：
+```
+
+**学生类：**
+
+属性：id、姓名、年龄、家庭住址
+
+**添加功能：**
+
+键盘录入每一个学生信息并添加，需满足以下的要求：
+
+- id唯一
+
+**删除功能：**
+
+键盘录入要删除的学生的id，需满足以下的要求：
+
+- id存在删除
+- id不存在，需要提示不存在，并返回到初始菜单
+
+**修改功能：**
+
+键盘录入要修改的学生id，需要满足以下的要求
+
+- id存在，继续录入其他信息
+- id不存在，需要提示不存在，并返回到初始菜单
+
+**查询功能**：
+
+打印所有学生信息，需要满足以下要求：
+
+- 如果没有学生信息，提示：当前无学生信息，亲添加后再查询
+- 如果有学生信息，需要按照一下格式输出（不用过于纠结对齐问题）
+
+```bash
+id		姓名		年龄		家庭住址
+
+```
+
+如下是javaBean类
+
+```java
+package JAVAAPI.ArrayList.demo6;
+
+public class Student {
+    private int id;
+    private String name;
+    private int age;
+    private String address;
+
+    public Student() {
+    }
+
+    public Student(int id, String name, int age, String address) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.address = address;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", address='" + address + '\'' +
+                '}';
+    }
+}
+```
+
+如下是main方法：
+
+```java
+package JAVAAPI.ArrayList.demo6;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class StudentTest {
+
+    public static void main(String[] args) {
+//        定义一个集合用于存储学生对象
+        ArrayList<Student> list = new ArrayList<>();
+        home(list);
+
+    }
+
+    /**
+     * 入口函数
+     */
+    public static void home(ArrayList<Student> list){
+        Scanner sc = new Scanner(System.in);
+        loop:while (true) {
+            System.out.println("--------------------------欢迎来到cyy的学生管理系统----------------------------");
+            System.out.println("1.添加学生||"+"2.删除学生||"+"3.修改学生||"+"4.查询学生||"+"5.退出");
+            System.out.println("请输入您的选择：");
+            String choose = sc.next();
+            switch (choose) {
+                case "1":addStudent(list);break;
+                case "2":delStudent(list);break;
+                case "3":updateStudent(list);break;
+                case "4":queryStudent(list);break;
+                case "5":
+                    System.out.println("退出");
+                    break loop;
+//                    System.exit(0);//停止虚拟机的运行
+                default:System.out.println("没有这个选项");
+            }
+        }
+    }
+
+    /**
+     * 添加学生函数
+     */
+    public static void addStudent(ArrayList<Student> list){
+        Scanner sc = new Scanner(System.in);
+        Student student = new Student();
+        int id = 0;
+        while (true) {
+            System.out.println("请输入学生id：");
+            id = sc.nextInt();
+            if (contains(list,id)) {
+                System.out.println("id已经存在，请重新录入");
+            }else {
+//                表示id不存在
+                break;
+            }
+        }
+        student.setId(id);
+
+        System.out.println("请输入学生姓名：");
+        String name = sc.next();
+        student.setName(name);
+
+        System.out.println("请输入学生年龄：");
+        int age = sc.nextInt();
+        student.setAge(age);
+
+        System.out.println("请输入学生家庭住址：");
+        String address = sc.next();
+        student.setAddress(address);
+
+        list.add(student);
+
+        System.out.println("学生信息添加成功");
+
+    }
+//   判断id在集合中是否存在
+    public static boolean contains(ArrayList<Student> list,int id){
+        for (int i = 0; i < list.size(); i++) {
+            int uid = list.get(i).getId();
+            if (uid==id){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+//    删除学生
+    public static void delStudent(ArrayList<Student> list){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入要删除的学生的id");
+        String Id =sc.next();
+        int delId= Integer.parseInt(Id);
+        int index = getIndex(list, delId);
+        if (index<0){
+            System.out.println("id不存在");
+        }else {
+            list.remove(index);
+            System.out.println("id为"+Id+"的学生删除成功");
+        }
+    }
+
+//    修改学生
+    public static void updateStudent(ArrayList<Student> list){
+        if (list.size()==0) {
+            System.out.println("当前没有学生数据，请添加");
+            return;
+        }else {
+            System.out.println("学生数据表如下：");
+            for (Student student:list){
+                System.out.println(student);
+            }
+        }
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入要修改的学生的id");
+        int Id =sc.nextInt();
+        int delId= Id;
+        int index = getIndex(list, delId);
+        if (index<0){
+            System.out.println("id不存在");
+        }else {
+            System.out.println("索引为"+index);
+            System.out.println("原数据为："+list.get(index).getName()+",请输入要修改的姓名");
+            String name = sc.next();
+            System.out.println("原数据为："+list.get(index).getAge()+",请输入要修改的年龄");
+            int age = sc.nextInt();
+            System.out.println("原数据为："+list.get(index).getAddress()+",请输入要修改的地址");
+            String address = sc.next();
+            list.set(index,new Student(Id,name,age,address));
+            System.out.println("学生数据修改成功");
+        }
+    }
+
+//    查询学生
+    public static void queryStudent(ArrayList<Student> list){
+        if (list.size()==0) {
+            System.out.println("当前无学生信息，请添加后再查询");
+            return;
+        }
+//        打印表头信息
+        System.out.println("id\t姓名\t年龄\t家庭住址");
+        for (int i = 0; i < list.size(); i++) {
+            Student student = list.get(i);
+            System.out.println(student.getId()+"\t"+student.getName()+"\t"+student.getAge()+"\t"+student.getAddress());
+        }
+
+    }
+
+//    通过id获取索引的方法
+    public static int getIndex(ArrayList<Student> list,int id){
+
+        for (int i = 0; i < list.size(); i++) {
+            int uid = list.get(i).getId();
+            if (uid==id){
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+```
+
+部分功能演示如下
+
+![image-20221027231244913](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210272312083.png)
