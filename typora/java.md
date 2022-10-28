@@ -4283,3 +4283,405 @@ public class StudentTest {
 部分功能演示如下
 
 ![image-20221027231244913](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210272312083.png)
+
+# 十、面向对象进阶
+
+## static关键字
+
+练习：
+
+```java
+package 面向对象进阶.a01static.demo1;
+
+public class Student {
+    private String name;
+    private int age;
+    private String gender;
+//    public String teacherName;
+//    使用静态
+    static String teacherName;
+
+    public Student() {
+    }
+
+    public Student(String name, int age, String gender) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", gender='" + gender + '\'' +", teacherName='" + teacherName + '\'' +
+                '}';
+    }
+
+//    行为
+    public void study(){
+        System.out.println(name+"正在学习");
+    }
+}
+```
+
+```java
+package 面向对象进阶.a01static.demo1;
+
+public class StudentTest {
+    public static void main(String[] args) {
+        Student.teacherName="刘老师";      //使用静态的方式
+        Student s1 = new Student();
+        s1.setName("cyy");
+        s1.setAge(22);
+        s1.setGender("男");
+//        s1.teacherName="刘老师";
+        s1.study();
+        System.out.println(s1);
+
+        Student s2 = new Student();
+        s2.setName("test");
+        s2.setAge(19);
+        s2.setGender("女");
+        s2.study();
+        System.out.println(s2);
+    }
+}
+```
+
+内存图解
+
+![image-20221028195057581](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210281950737.png)
+
+==静态区：专门用来存放静态变量的======》静态存储位置
+
+static表示对象，是java中的一个修饰符，可以修饰成员方法，成员变量
+
+- 被static修饰的成员变量，叫做**静态变量**
+  - 特点：
+    - 被该类所有对象共享
+    - ==跟对象无关，随着类的加载而加载，优先于对象存在==
+  - 调用方式：
+    - 类名调用（推荐使用）
+    - 对象名调用
+  - 是否使用static修饰，就看被修饰的属性  是不是==共享的==
+- 被static修饰的成员方法，叫做**静态方法**
+  - 特点：
+    - 多用在测试类和工具类中
+    - javabean类中很少使用
+  - 调用方式
+    - 类名调用（推荐使用）
+    - 对象名调用
+
+*工具类*
+
+==帮助我们做一些事情的，但是不描述任何事物的类==
+
+规则：
+
+- 类名见名知意
+- 私有化构造方法（用来防止外界来创建它的实例对象，因为创建对象是没有实际意义的）
+- 方法定义为静态，方便调用
+
+
+
+| 名称       | 描述                                                       |
+| ---------- | ---------------------------------------------------------- |
+| JavaBean类 | 用来描述一类事物的类。比如，Student，Teacher，Dog          |
+| 测试类     | 用来检车其他类是否书写正确，带有main方法的类，是程序的入口 |
+| 工具类     | 不是用来描述一类事物的，而是帮助我们做一些事情的类         |
+
+*练习：定义数组工具类*
+
+![image-20221028200430070](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282004170.png)
+
+```java
+package 面向对象进阶.a01static.demo2;
+
+public class ArrayUtil {
+//    私有化构造方法
+//    目的：为了不让外界创建它的实例对象
+    private ArrayUtil(){}
+
+//     需要定义为静态的，方便调用
+    public static String printArr(int[] arr){
+        StringBuffer sb = new StringBuffer();
+        sb.append("[");
+        for (int i = 0; i < arr.length; i++) {
+            if (i== arr.length-1){
+                sb.append(arr[i]);
+            }else {
+                sb.append(arr[i]).append(",");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+    public static double getAverage(double[] arr){
+        double sum=0;
+        for (int i = 0; i < arr.length; i++) {
+            sum+=arr[i];
+        }
+        return sum/ arr.length;
+    }
+}
+```
+
+测试类：
+
+```java
+package 面向对象进阶.a01static.demo2;
+
+public class test {
+    public static void main(String[] args) {
+//        测试工具类（ArrayUtil）中的两个方法是否正确
+        int[] arr={1,2,3,4,5,6};
+        String s = ArrayUtil.printArr(arr);     //调用工具类
+        System.out.println("s = " + s);
+
+        double[] arr2={2.1,3.5,5.6,1.4};
+        double average = ArrayUtil.getAverage(arr2);       //调用工具类
+        System.out.println("average = " + average);
+    }
+}
+```
+
+![image-20221028201527267](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282015365.png)
+
+***static的注意事项***
+
+- 用static修饰的就是静态的
+
+- 静态方法只能访问静态变量和静态方法
+- 非静态方法可以访问静态变量或者静态方法，也可以访问非静态的成员变量和非静态的成员方法
+- ==非静态方法中是没有this关键字的==
+
+==**总结：**==
+
+静态方法中，只能访问静态
+
+非静态方法可以访问所有
+
+静态方法中是没有this关键字的
+
+![image-20221028203429352](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282034443.png)
+
+***重新认识main方法***
+
+```java
+public class demo{
+    public static void main(String[] args){
+        
+    }
+}
+```
+
+- public：被JVM调用，访问权限足够大
+
+- static：被JVM调用，不用创建对象，直接类名访问
+
+  因为main方法是静态的，所以测试类中其他方法也需要是静态的
+
+- void：被JVM调用，不需要给JVM返回值
+
+- main：一个通用的名称，虽然不是关键字，但是被JVM识别
+
+- String[] args：以前用于接受键盘录入数据的，现在已经没有了
+
+## 继承
+
+==回顾封装：对象代表什么，就得封装对应的数据，并提供数据对应的行为==
+
+重复的代码太多，例如下图
+
+![image-20221028205810702](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282058802.png)
+
+使用继承来改进的话，如下图这样
+
+![image-20221028210513573](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282105678.png)
+
+### 继承的概念
+
+- java中提供一个关键字 `extends`，用这个关键字，我们可以让一个类和一个类建立起继承的关系
+
+  `public class Student extends Person {}`
+
+- Student成为==子类（派生类）==，Person成为==父类（基类或者超类）==。
+
+### 使用继承的好处
+
+- 可以把多个子类中重复的代码抽取到父类中，提高代码的复用性
+- 子类可以在父类的基础上，增加其他的功能，使子类更加强大
+
+### 继承需要学习的点
+
+- 自己设计
+  - 什么是继承？继承的好处
+  - 继承的特点
+  - 子类到底能继承父类中的哪些内容?(内存图/内存分析工具)
+  - 继承中：成员变量的访问特点
+  - 继承中：成员方法的访问特点
+  - 继承中：构造方法的特点
+  - ==this、super的使用总结==
+- 用别人已经写好的继承结构
+
+### 什么时候用继承？
+
+- 当类与类之间，存在相同（共性）的内容，并满足子类是父类的一种，就可以考虑使用继承，来优化代码
+
+### 应用场景
+
+例如以下结构就可以使用继承
+
+![image-20221028211945917](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282119022.png)
+
+==如下就不可以使用继承结构==
+
+**==因为如下的两个子类不属于同一种类==**
+
+![image-20221028212218281](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282122366.png)
+
+### 继承的特点
+
+Java只支持单继承，不支持多继承，但支持多层继承
+
+解释：
+
+- 单继承：一个子类只能继承一个父类
+- 不支持多继承：子类不能同时继承多个父类
+- 多层继承：子类A可以继承父类B，父类B可以继承父类C。（相当于祖孙三代的关系）
+
+![image-20221028213756733](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282137845.png)
+
+总结
+
+1. Java中只能单继承：一个类只能继承一个直接父类
+2. Java不支持多继承，但是支持多层继承
+3. Java中所有的类都直接或间接的继承于==Object==这个类
+
+
+
+*练习：继承的练习*
+
+![image-20221028213947321](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282139413.png)
+
+![image-20221028214838750](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282148866.png)
+
+
+
+使用继承结构的JavaBean类如下
+
+![image-20221028220722350](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282207450.png)
+
+部分代码
+
+```java
+package 面向对象进阶.a02继承.demo1;
+
+public class Animal {
+//    权限修饰符：
+//    如果将public写成 private，那么子类就无法访问了
+//    私有：只能在本类中访问
+    
+//    注意事项：
+//    子类只能访问父类中非私有的成员
+    public void eat(){
+        System.out.println("在吃饭");
+    }
+    public void drink(){
+        System.out.println("在喝水");
+    }
+}
+```
+
+
+
+测试类如下：
+
+```java
+package 面向对象进阶.a02继承.demo1;
+
+public class Test {
+    public static void main(String[] args) {
+        Husky husky = new Husky();
+        husky.breakHome();
+
+        LiHua liHua = new LiHua();
+        liHua.catchMice();
+        liHua.eat();
+    }
+}
+```
+
+![image-20221028220328033](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210282203131.png)
+
+### 成员变量的访问特点
+
+就近原则：谁离我近，我就用谁
+
+```java
+public class Fu{
+    String name="Fu";			//1
+}
+
+public class Zi extends Fu{
+    String name="Zi";			//2
+    public void ziShow(){
+        String name="isShow";	//3
+        sout(name);
+    }
+}
+```
+
+分类输出观察：
+
+- 上面的代码的输出结果为 isShow
+
+- 删除3位置处的代码，则输出  Zi
+- 删除2、3位置处的代码，则输出 Fu
+
+
+
+`super`：表示父类
+
+```java
+public class Fu{
+    String name="Fu";			//1
+}
+
+public class Zi extends Fu{
+    String name="Zi";			//2
+    public void ziShow(){
+        String name="isShow";	//3
+        sout(name);			//输出isShow
+        sout(this.name);	//输出Zi
+        sout(super.name);	//输出FU
+    }
+}
+```
+
