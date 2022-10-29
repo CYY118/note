@@ -2325,7 +2325,7 @@ public class demo3 {
 
 ==传递引用数据类型时，传递的是地址值，形参的改变，影响实际参数的值==
 
-# 七、面向对象
+# 七、面向对象（oop）
 
 ## 类和对象
 
@@ -4684,4 +4684,899 @@ public class Zi extends Fu{
     }
 }
 ```
+
+在子类中只能写一个super
+
+*练习：就近原则*
+
+```java
+package 面向对象进阶.a02继承.demo2;
+
+public class Test {
+    public static void main(String[] args) {
+        Zi zi = new Zi();
+        zi.show();
+    }
+}
+
+class Fu{
+    String name="Fu";
+    String hobby="喝茶";
+}
+
+class Zi extends Fu{
+    String name="Zi";
+    String game="玩游戏";
+
+    public void show(){
+//        打印Zi
+        System.out.println(this.name);
+        System.out.println(name);//或者
+//        打印Fu
+        System.out.println(super.name);
+//        打印喝茶
+        System.out.println(hobby);          //方式一
+        System.out.println(this.hobby);     //方式二
+        System.out.println(super.hobby);    //方式三
+//        打印玩游戏
+        System.out.println(game);
+        System.out.println(this.game);
+    }
+}
+```
+
+总结：
+
+- 继承中成员变量访问特点：就近原则
+- 先在局部位置找，本类成员位置找，父类成员位置找，逐级往上找
+- 如果出现重名了也是如此
+
+### 成员方法的访问特点
+
+直接调用满足就近原则：谁离我近，我就用谁
+
+super调用，直接访问父类
+
+练习：
+
+```java
+package 面向对象进阶.a02继承.demo3;
+
+public class Test {
+    public static void main(String[] args) {
+        Student s1 = new Student();
+        s1.lunch();
+
+        System.out.println("======老师======");
+        Teacher t1 = new Teacher();
+        t1.lunch();
+    }
+}
+
+class Person{
+    public void eat(){
+        System.out.println("吃大米饭");
+    }
+
+    public void drink(){
+        System.out.println("喝可口可乐");
+    }
+}
+
+class Student extends Person{
+    public void lunch(){
+//        如下的调用，在调用时隐含了this
+//        此时现在本类中查看是否有eat和drink方法，有的话就会调用子类的，没有的话，就会调用父类中继承下来的eat和drink方法
+        eat();  //也可以使用this.eat()
+        drink();    //也可以使用this.drink()
+
+//        直接调用父类中的eat和drink方法
+        super.eat();
+        super.drink();
+    }
+}
+
+class Teacher extends Person{
+    public void lunch(){
+        this.eat();    //老师吃面条
+        this.drink();   //老师喝开水
+
+        System.out.println("Teacher的父类方法");
+        super.eat();    //吃大米饭
+        super.drink();  //喝可口可乐
+    }
+//    当父类的方法不能满足子类现在的需求时，需要进行方法的重写
+    @Override       //重写注解
+    public void eat(){
+        System.out.println("老师吃面条");
+    }
+
+    @Override       //重写注解
+    public void drink(){
+        System.out.println("老师喝开水");
+    }
+}
+```
+
+![image-20221029131209798](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210291312902.png)
+
+#### **方法的重写**
+
+当父类的方法不能满足子类现在的需求时，需要进行方法的重写
+
+##### **书写格式：**
+
+在继承体系中，子类出现了和父类中一摸一样的方法声明，我们就称子类这个方法是重写的方法
+
+##### **@Override重写注释**
+
+- @Override是放在重写后的方法上的，检验子类重写时语言是否正确
+- 加上注解后如果有红色波浪线，表示语法错误
+- ==建议重写方法都加@Override注解，代码安全，优雅！==
+
+##### **方法重写的本质**
+
+覆盖了虚方法表中的方法
+
+发生重写，则会覆盖（==子类覆盖了从父类继承下来的虚方法表里面的方法==）
+
+##### **注意事项**
+
+- 重写方法的名称，形参列表必须与父类中的一致
+- 子类重写父类方法时，访问权限子类必须大于等于父类（）
+- 子类重写父类方法时，返回值类型子类必须小于等于父类
+- 建议：重写方法尽量和父类保持一致
+- ==私有方法不能被重写（原因是：只有被添加到虚方法表中的方法才能被重写）==
+
+*练习：利用方法的重写设计继承结构*
+
+![image-20221029135522887](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210291355984.png)
+
+分析继承结构如下
+
+![image-20221029141828009](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210291418132.png)
+
+父类
+
+```java
+package 面向对象进阶.a02继承.demo4;
+
+
+public class Dog {
+    public void eat(){
+        System.out.println("吃狗粮");
+    }
+    public void drink(){
+        System.out.println("喝水");
+    }
+    public void lookHome(){
+        System.out.println("看家");
+    }
+
+}
+```
+
+哈士奇（子类）
+
+```java
+package 面向对象进阶.a02继承.demo4;
+
+public class Husky extends Dog{
+    public void demolishTheHouse(){
+        System.out.println("拆家");
+    }
+}
+```
+
+沙皮狗（子类）
+
+```java
+package 面向对象进阶.a02继承.demo4;
+
+public class SharPei extends Dog{
+    @Override
+    public void eat(){
+        System.out.println("吃狗粮，吃骨头");
+    }
+}
+```
+
+中华田园犬（子类）
+
+```java
+package 面向对象进阶.a02继承.demo4;
+
+public class ChinesePastoralDog extends Dog{
+    @Override
+    public void eat(){
+        System.out.println("吃剩饭");
+    }
+}
+```
+
+测试类
+
+```java
+package 面向对象进阶.a02继承.demo4;
+
+public class Test {
+    public static void main(String[] args) {
+        Husky husky = new Husky();
+        husky.eat();
+        husky.drink();
+
+        SharPei sharPei = new SharPei();
+        sharPei.eat();
+
+        ChinesePastoralDog chinesePastoralDog = new ChinesePastoralDog();
+        chinesePastoralDog.eat();
+    }
+}
+```
+
+![image-20221029142041954](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210291420050.png)
+
+##### 总结
+
+1. **继承中成员方法的访问特点**
+
+   this调用：就近原则
+
+   super调用：直接找父类
+
+2. **什么是方法重写？**
+
+   在继承体系中，子类出现了和父类中一模一样的方法声明
+
+   我们就称子类的这个方法是重写的方法
+
+3. **方法重写建议加上哪个注解，有什么好处？**
+
+   @Override注解可以校验重写是否正确，同时可读性好
+
+4. **重写方法有哪些基本要求？**
+
+   - 子类重写的方法尽量跟父类中方法保持一致
+   - 只有虚方法表里面的方法可以被重写
+
+5. **方法重写的本质？**
+
+   覆盖虚方法表中的方法
+
+### 构造方法的特点
+
+- 父类中的构造方法不会被子类继承
+
+- 子类中所有的构造方法默认先访问父类中的无参构造，再执行自己
+
+  - 为什么？
+
+    - 子类在初始化的时候，有可能会使用到父类中的数据，如果父类没有完成初始化，子类将无法使用父类的数据
+    - 子类初始化之前，一定要调用父类构造方法先完成父类数据空间的初始化
+
+  - 怎么调用父类构造方法的？
+
+    - 子类构造方法的第一行语句默认都是：==super()，不写也存在，且必须在第一行==
+    - 如果想调用父类的有参构造，必须手动写`super`进行调用
+
+    
+
+总结：
+
+- 子类不能继承父类的构造方法，但是可以通过super调用
+- 子类构造方法的第一行，有一个默认的super()
+- 默认先访问父类中无参构造的构造方法，再执行自己
+- 如果想要方法调用父类的有参构造，必须手动书写
+
+### this、super的使用总结
+
+- this：理解为一个变量，表示当前方法调用者的地址值
+- super：代表父类存储空间
+- 使用场景：设置默认值
+
+| 关键字 | 访问成员变量                         | 访问成员方法                               | 访问构造方法                     |
+| ------ | ------------------------------------ | ------------------------------------------ | -------------------------------- |
+| this   | this.成员变量；（访问本类成员变量）  | this.成员方法(...)；（访问本类成员方法）   | this(...)；（访问本类构造方法）  |
+| super  | super.成员变量；（访问父类成员变量） | super.成员方法(...)； （访问父类成员方法） | super(...)；（访问父类构造方法） |
+
+*练习：带有继承结构的标准JavaBean类*
+
+![image-20221029150602672](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210291506756.png)
+
+结构如下：
+
+![image-20221029152913743](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210291529843.png)
+
+代码如下：
+
+Employee.java
+
+```java
+package 面向对象进阶.a02继承.demo5;
+
+public class Employee {
+    private String id;
+    private String name;
+    private double salary;
+
+    public Employee() {
+    }
+
+    public Employee(String id, String name, double salary) {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+//    工作
+    public void work(){
+        System.out.println("员工在工作");
+    }
+
+//    吃饭
+    public void eat(){
+        System.out.println("吃米饭");
+    }
+}
+```
+
+Manager.java
+
+```java
+package 面向对象进阶.a02继承.demo5;
+
+public class Manager extends Employee{
+    private double bonus;   //奖金
+
+//    空参构造
+    public Manager() {
+
+    }
+//    有参构造（带全部参数的构造，包括父类）
+    public Manager(String id, String name, double salary, double bonus) {
+        super(id, name, salary);
+        this.bonus = bonus;
+    }
+
+    public double getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(double bonus) {
+        this.bonus = bonus;
+    }
+
+    @Override
+    public void work(){
+        System.out.println("管理其他人");
+    }
+
+    @Override
+    public String toString() {
+        return "Manager{" +
+                "id=" + getId() +","+
+                "name=" + getName() +","+
+                "salary=" + getSalary() +","+
+                "bonus=" + bonus +
+                '}';
+    }
+}
+```
+
+Cook.java
+
+```java
+package 面向对象进阶.a02继承.demo5;
+
+public class Cook extends Employee{
+    public Cook() {
+    }
+
+    public Cook(String id, String name, double salary) {
+        super(id, name, salary);
+    }
+
+    @Override
+    public void work(){
+        System.out.println("厨师在炒菜");
+    }
+
+    @Override
+    public String toString() {
+        return "Cook{"+getId()+","+getName()+","+getSalary()+"}";
+    }
+}
+```
+
+Test.java
+
+```java
+package 面向对象进阶.a02继承.demo5;
+
+public class Test {
+    public static void main(String[] args) {
+        Manager manager = new Manager("001","王经理",6000,1500);
+        Manager manager2 = new Manager("002","黄经理",8000,2000);
+        System.out.println(manager);
+        System.out.println(manager2);
+
+        Cook cook = new Cook("y01","马厨师",5000);
+        Cook cook2 = new Cook("y02","张厨师",8000);
+        System.out.println(cook);
+        System.out.println(cook2);
+
+    }
+}
+```
+
+## 多态
+
+封装：对象代表什么，就得封装对应的数据，并提供数据对应的行为
+
+没有继承就没有多态，继承就是多态的前提条件
+
+多态的应用场景：学生管理系统
+
+**什么是多态？**
+
+同类型的对象，表现出的不同形态
+
+**多态的表现形式**
+
+`父类类型 对象名称 = 子类对象;`
+
+**多态的前提**
+
+- 有继承/实现（和接口相关）关系
+
+- 有父类引用指向子类对象
+
+  `Fu  f  =  new  Zi();`
+
+- 有方法重写
+
+**多态的好处**
+
+==使用父类型作为参数，可以加授所有子类对象，体现多态的扩展性与便利==
+
+*练习：多态基本应用*
+
+![image-20221029155732188](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210291557270.png)
+
+Person.java
+
+```java
+package 面向对象进阶.a03多态.demo1;
+
+public class Person {
+    private String name;
+    private int age;
+
+    public Person() {
+    }
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+
+    public String show() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+```
+
+Admin.java
+
+```java
+package 面向对象进阶.a03多态.demo1;
+
+public class Admin extends Person{
+
+    @Override
+    public String show(){
+        return "Admin{" +
+                "name='" + getName() + '\'' +
+                ", age=" + getAge() +
+                '}';
+    }
+}
+```
+
+Student.java
+
+```java
+package 面向对象进阶.a03多态.demo1;
+
+public class Student extends Person{
+
+    @Override
+    public String show(){
+        return "Student{" +
+                "name='" + getName() + '\'' +
+                ", age=" + getAge() +
+                '}';
+    }
+}
+```
+
+Teacher.java
+
+```java
+package 面向对象进阶.a03多态.demo1;
+
+public class Teacher extends Person{
+    @Override
+    public String show(){
+        return "Teacher{" +
+                "name='" + getName() + '\'' +
+                ", age=" + getAge() +
+                '}';
+    }
+}
+```
+
+测试类
+
+```java
+package 面向对象进阶.a03多态.demo1;
+
+public class Test {
+    public static void main(String[] args) {
+        Student student = new Student();
+        student.setName("刘同学");
+        student.setAge(15);
+
+        Teacher teacher = new Teacher();
+        teacher.setName("王老师");
+        teacher.setAge(30);
+
+        Admin admin = new Admin();
+        admin.setName("张管理");
+        admin.setAge(26);
+
+        register(student);
+        register(teacher);
+        register(admin);
+
+    }
+
+//    这个方法要能接收老师，学生，管理员这三种类型的对象
+//    只能把参数写成这三个类型的父类
+    public static void register(Person person){
+        System.out.println(person.show());
+
+    }
+}
+```
+
+![image-20221029155939979](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210291559072.png)
+
+### 多态调用成员的特点
+
+- 变量调用：编译看左边，运行也看左边
+- 方法调用：编译看左边，运行看右边
+
+*练习：*
+
+```java
+package 面向对象进阶.a03多态.demo2;
+
+public class Test {
+    public static void main(String[] args) {
+//      创建对象（多态方式）
+        Animal dog = new Dog();
+//        变量调用：编译看左边，运行也看左边
+//        编译看左边：Javac编译代码的时候，会看左边的父类中有没有这个变量，如果有，编译成功，如果没有编译失败报错
+//        运行也看左边：java运行代码的时候，实际获取的就是左边父类中成员变量的值
+        System.out.println(dog.name);   //动物
+
+//        调用成员方法
+//        方法调用：编译看左边，运行看右边
+//        编译看左边：Javac编译代码的时候，会看左边的父类中有没有这个方法，如果有，编译成功，如果没有编译失败
+//        运行看右边：java运行代码的时候，实际上运行的是子类中的方法
+        dog.show();     //Dog-----show方法
+
+//        理解：
+//        Animal dog = new Dog();
+
+    }
+}
+class Animal{
+    String name="动物";
+
+    public void show(){
+        System.out.println("Animal-----show方法");
+    }
+}
+
+class Dog extends Animal{
+    String name="狗";
+
+    @Override
+    public void show(){
+        System.out.println("Dog-----show方法");
+    }
+}
+
+class Cat extends Animal{
+    String name="猫";
+
+    @Override
+    public void show(){
+        System.out.println("Cat-----show方法");
+    }
+}
+```
+
+### 多态的优势
+
+- 在多态形势下，右边对象可以实现解耦合，便于扩展和维护
+
+  ```java
+  Person p = new Student();
+  p.work();	//业务逻辑发生改变时，后续代码无需修改
+  ```
+
+- 定义一个方法的时候，使用父类型作为参数，可以接受所有子类对象，体现多态的扩展性与便利
+
+
+
+
+
+## 包、final、权限修饰符、代码块
+
+### 包
+
+#### 什么是包？
+
+包就是文件夹。用来管理各种不同功能的Java类，方便后期代码的维护
+
+#### 包名的规则：
+
+公司域名反写+包的作用，需要全部英文小写，见名知意。com.yang.domain
+
+使用其他类的规则
+
+使用其他类时，需要使用全类名
+
+导包可以简化步骤
+
+- 使用同一个包中的类时，不需要导包
+- 使用Java.lang包中的类时，不需要导包（例如使用String就不用导包）
+- 其他情况都需要导包
+- 如果同时使用两个包中的同类名，需要使用**全类名（包名+类名）**
+
+### final
+
+- 修饰方法：表明该方法是最终方法，不能被重写
+- 修饰类：表明该类是最终类，不能被继承
+- 修饰变量：此时就叫做常量，只能被赋值一次
+  - 修饰基本数据类型：变量的数据值不能被改变
+  - 修饰引用数据类型：记录的地址值不能发生改变，但是内部的属性值是可以改变的
+
+![image-20221029214418016](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210292144134.png)
+
+**常量**
+实际开发中，常量一般作为系统的配置信息，方便维护，提供可读性
+
+常量的命名规范：
+
+- 单个单词：全部大写（ctrl+shift+u可以变为大写）
+- 多个单词：全部大写，单词之间用下划线隔开
+
+==小tips：ctrl+shift+u   可以变为大写==
+
+### 权限修饰符
+
+- 是用来控制一个成员能够被访问的范围的
+- 可以修饰成员变量，方法，构造方法，内部类
+
+例如：private表示私有
+
+有四种权限修饰符的作用范围由小到大==（private<空着不写<protected<public）==
+
+| 修饰符    | 同一个类中 | 同一个包中其他类 | 不同包下的子类 | 不同包下的无关类 |
+| :-------- | :--------: | :--------------: | :------------: | :--------------: |
+| private   |     ✔️      |                  |                |                  |
+| 空着不写  |     ✔️      |        ✔️         |                |                  |
+| protected |     ✔️      |        ✔️         |       ✔️        |                  |
+| public    |     ✔️      |        ✔️         |       ✔️        |        ✔️         |
+
+辅助理解：
+
+- private：私房钱，只能自己用
+- 默认：只能本包使用（）
+- protected：受保护的
+- public：公共的
+
+实际开发中，一般只用private和public
+
+### 代码块
+
+#### 分类
+
+- 局部代码块（已淘汰）
+- 构造代码块（不够灵活）
+- 静态代码块（重点）
+
+
+
+#### 局部代码块
+
+![image-20221029222815881](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210292228019.png)
+
+目的是：节约内存空间。用完后就立马回收
+
+现在基本不用
+
+#### 构造代码块
+
+```java
+package 面向对象进阶.a05代码块.demo2;
+
+public class Student {
+    private String name;
+    private int age;
+
+//    构造代码块
+    /*1.写在成员位置的代码块
+    * 2.作用：可以把多个构造方法中重复的代码抽取出来
+    * 3.执行时机：我们在创建本类对象的时候会先执行构造代码块再执行构造方法*/
+    {
+        System.out.println("开始创建对象了");
+    }
+
+    public Student() {
+        System.out.println("无参构造");
+    }
+
+    public Student(String name, int age) {
+
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+```
+
+```java
+package 面向对象进阶.a05代码块.demo2;
+
+public class StudentTest {
+    public static void main(String[] args) {
+        Student student = new Student();
+    }
+}
+```
+
+![image-20221029223942170](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210292239282.png)
+
+现在也逐渐不再使用了
+
+#### 静态代码块
+
+格式：static{}
+
+特点：需要通过static关键字修饰，随着类的加载而加载，并且自动触发、只执行一次
+
+使用场景：
+
+在类加载的时候，做一下数据初始化的时候使用。在程序刚开始的时候，做一些数据的初始化。==（如果将类似的数据初始化的操作写在方法中是有弊端的，因为方法可能会被被别人反复调用，这样一来在内存中就会有多组的重复数据，浪费内存main方法也是可以被我们手动调用的）==。
+
+```java
+package 面向对象进阶.a05代码块.demo3;
+
+public class Student {
+    private String name;
+    private int age;
+
+//    静态代码块
+    /*1.需要通过static关键字修饰，
+     *2.随着类的加载而加载，并且自动触发、只执行一次*/
+    static {
+        System.out.println("开始创建对象了");
+    }
+
+    public Student() {
+        System.out.println("无参构造");
+    }
+
+    public Student(String name, int age) {
+        System.out.println("有参构造");
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+```
+
+```java
+package 面向对象进阶.a05代码块.demo3;
+
+public class StudentTest {
+    public static void main(String[] args) {
+        Student student = new Student();
+
+        Student student2 = new Student("张三",23);
+
+    }
+}
+```
+
+![image-20221029224744399](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210292247522.png)
 
