@@ -5580,3 +5580,756 @@ public class StudentTest {
 
 ![image-20221029224744399](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210292247522.png)
 
+## 抽象类
+
+### 概念
+
+- 抽象方法：将共性的行为（方法）抽取到父类之后，由于每一个子类的内容是不一样的，所以，在父类中不能确定具体的方法体。该方法就可以定义为抽象方法 
+- 抽象类：如果一个类中存在抽象方法，那么该类就必须声明为==抽象类==
+
+### 定义格式
+
+- 抽象方法的定义格式：
+
+  public abstract  返回值类型  方法名（参数列表）；
+
+- 抽象类的定义格式：
+
+  public abstract class  类名{}
+
+*练习*
+
+抽象类：Person.java
+
+```java
+package 面向对象进阶.a06抽象类;
+
+public abstract class Person {      //抽象类的定义格式
+    private String name;
+    private int age;
+
+    public abstract void eat();     //抽象方法的定义格式
+
+    public Person() {
+    }
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+```
+
+Student.java
+
+```java
+package 面向对象进阶.a06抽象类;
+
+public class Student extends Person{
+//    子类继承时强制重写父类中的方法eat()
+    @Override
+    public void eat() {
+        System.out.println("学生在吃米饭");
+    }
+
+
+    public Student() {
+    }
+
+    public Student(String name, int age) {
+        super(name, age);
+    }
+
+}
+```
+
+Teacher.java
+
+```java
+package 面向对象进阶.a06抽象类;
+
+public class Teacher extends Person{
+    //    子类继承时强制重写父类中的方法eat()
+    @Override
+    public void eat() {
+        System.out.println("老师在吃面条");
+    }
+
+
+    public Teacher() {
+    }
+
+    public Teacher(String name, int age) {
+        super(name, age);
+    }
+}
+```
+
+测试类
+
+```java
+package 面向对象进阶.a06抽象类;
+
+public class Test {
+    public static void main(String[] args) {
+        Student s1 = new Student("小红同学",13);
+        System.out.println(s1.getName()+", "+s1.getAge());
+        s1.eat();
+
+
+        Teacher t1 = new Teacher("王老师",26);
+        System.out.println(t1.getName()+", "+t1.getAge());
+        t1.eat();
+    }
+}
+```
+
+![image-20221030184057778](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210301840915.png)
+
+抽象类的特点：
+
+- 抽象类不能实例化（也就是不能够创建对象）
+- 抽象类中不一定有抽象方法，有抽象方法的类一定是抽象类
+- 可以有构造方法
+- 抽象类的子类
+  - 要么重写抽象类中的所有抽象方法（一般使用这个方式）
+  - 要么是抽象类
+
+练习：编写带有抽象类的标准JavaBean类
+
+![image-20221030184603188](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210301846280.png)
+
+分析
+
+![image-20221030185619750](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210301856862.png)
+
+代码如下：
+
+![image-20221030190413063](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210301904132.png)
+
+Animal.java
+
+```java
+package 面向对象进阶.a06抽象类.demo2;
+
+public abstract class Animal {
+    private String name;
+    private int age;
+
+    public abstract void eat();
+
+    public void drink(){
+        System.out.println("动物在喝水");
+    }
+
+    public Animal() {
+    }
+
+    public Animal(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Animal{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+```
+
+Dog.java
+
+```java
+package 面向对象进阶.a06抽象类.demo2;
+
+public class Dog extends Animal{
+    @Override
+    public void eat() {
+        System.out.println("狗在吃骨头");
+    }
+
+    public Dog() {
+    }
+
+    public Dog(String name, int age) {
+        super(name, age);
+    }
+}
+```
+
+Frog.java
+
+```java
+package 面向对象进阶.a06抽象类.demo2;
+
+public class Frog extends Animal{
+    @Override
+    public void eat() {
+        System.out.println("青蛙在吃虫子");
+    }
+
+    public Frog() {
+    }
+
+    public Frog(String name, int age) {
+        super(name, age);
+    }
+
+}
+```
+
+Sheep.java
+
+```java
+package 面向对象进阶.a06抽象类.demo2;
+
+public class Sheep extends Animal{
+    @Override
+    public void eat() {
+        System.out.println("山羊在吃草");
+    }
+
+    public Sheep() {
+    }
+
+    public Sheep(String name, int age) {
+        super(name, age);
+    }
+}
+```
+
+Test.java
+
+```java
+package 面向对象进阶.a06抽象类.demo2;
+
+public class Test {
+    public static void main(String[] args) {
+        Dog dog = new Dog("小狗",3);
+        System.out.println(dog);
+        dog.drink();
+        dog.eat();
+
+        Sheep sheep = new Sheep("小山羊",6);
+        System.out.println(sheep);
+        sheep.drink();
+        sheep.eat();
+    }
+}
+```
+
+结果：
+
+![image-20221030190621226](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210301906315.png)
+
+## 接口（interface）
+
+接口是一种规则，是对==行为==的抽象
+
+![image-20221030202551860](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302025013.png)
+
+如上图，不是所有的动物都是会游泳的
+
+还可以写成如下的方式
+
+![image-20221030203219526](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302032653.png)
+
+
+
+### 定义和使用
+
+使用 `interface`关键字
+
+```java
+public interface 接口名{}
+```
+
+- 接口用关键字interface来定义
+
+  public ==interface== 接口名{}
+
+- 接口不能实例化
+
+- 接口和类之间是实现关系，通过implement关键字表示
+
+  public class 类名  implement  接口名{}
+
+- 接口的子类（实现类）
+
+  - 要么重写接口中的所有抽象方法
+  - 要么是抽象类
+
+==注意1：接口和类的实现关系，可以单实现，也可以多实现。==
+
+​			`public class  类名  implement  接口名1 ，接口名2 {}`
+
+==注意2：实现类还可以在继承一个类的同时实现多个接口==
+
+​			`public  class  类名  extends  父类  implement  接口名1 ，接口名2 {} `
+
+
+
+*练习：编写带有接口和抽象类的标准JavaBean类*
+
+![image-20221030204138674](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302041761.png)
+
+分析：
+
+![image-20221030205539985](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302055119.png)
+
+代码如下：
+
+![image-20221030210534778](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302105864.png)
+
+Animal.java
+
+```java
+package 面向对象进阶.a07接口.demo3;
+
+public abstract class Animal {
+    private String name;
+    private int age;
+
+    public abstract void eat(); //抽象方法
+
+    public Animal() {
+    }
+
+    public Animal(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Animal{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+```
+
+Dog.java
+
+```java
+package 面向对象进阶.a07接口.demo3;
+
+public class Dog extends Animal implements Swim{
+    @Override
+    public void eat() {
+        System.out.println("狗在吃骨头");
+    }
+
+    @Override
+    public void swim() {
+        System.out.println("狗刨");
+    }
+
+    public Dog() {
+    }
+
+    public Dog(String name, int age) {
+        super(name, age);
+    }
+}
+```
+
+Frog.java
+
+```java
+package 面向对象进阶.a07接口.demo3;
+
+public class Frog extends Animal implements Swim{
+    @Override
+    public void eat() {
+        System.out.println("青蛙在吃虫子");
+    }
+
+    @Override
+    public void swim() {
+        System.out.println("蛙泳");
+    }
+
+    public Frog() {
+    }
+
+    public Frog(String name, int age) {
+        super(name, age);
+    }
+}
+```
+
+Rabbit.java
+
+```java
+package 面向对象进阶.a07接口.demo3;
+
+public class Rabbit extends Animal{
+    @Override
+    public void eat() {
+        System.out.println("兔子在吃胡萝卜");
+    }
+
+    public Rabbit() {
+    }
+
+    public Rabbit(String name, int age) {
+        super(name, age);
+    }
+}
+```
+
+Swim.java  (interface)
+
+```java
+package 面向对象进阶.a07接口.demo3;
+
+public interface Swim {
+    void swim();
+}
+```
+
+![image-20221030212019927](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302120038.png)
+
+测试类
+
+```java
+package 面向对象进阶.a07接口.demo3;
+
+public class Test {
+    public static void main(String[] args) {
+        Frog frog = new Frog("小青蛙",1);
+        System.out.println(frog);
+        frog.eat();
+        frog.swim();
+
+        Dog dog = new Dog("小狗",3);
+        System.out.println(dog);
+        dog.eat();
+        dog.swim();
+
+        Rabbit rabbit = new Rabbit("小兔子",2);
+        System.out.println(rabbit);
+        rabbit.eat();
+
+    }
+}
+```
+
+结果如下：
+
+![image-20221030210837684](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302108781.png)
+
+### 接口中的成员变量的特点
+
+- 成员变量
+  - 只能是常量
+  - 默认修饰符： public static final
+- 构造方法
+  - 没有
+- 成员方法
+  - 只能是抽象方法
+  - 默认修饰符：public abstract（不写也是可以的）
+- JDK1.7以前：接口中只能定义抽象方法
+
+### 接口和类之间的关系
+
+- 类和类之间的关系
+  - 继承关系，只能单继承，不能多继承，但是可以多层继承
+- 类和接口的关系
+  - 实现关系，可以单实现，也可以多实现，还可以在继承一个类的同时实现多个接口
+- 接口和接口的关系
+  - 继承关系，可以单继承，也可以多继承
+
+
+
+*练习：编写带有接口和抽象类的标准JavaBean类*
+
+![image-20221030214037604](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302140710.png)
+
+分析（思路一）：
+
+体系设计
+
+![image-20221030215800905](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302158010.png)
+
+分析二（思路二）：
+
+![image-20221030220830800](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302208899.png)
+
+以上两种思路个人认为第一种更好一些，
+
+如下是相关代码（思路一）
+
+![image-20221030223427533](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302234630.png)
+
+Person.java
+
+```java
+package 面向对象进阶.a07接口.demo4;
+
+//这里使用abstract，是因为我不想让外界去创建Person的对象，因为创建Person的对象是没有意义的
+public abstract class Person {	//chou'xiang
+    private String name;
+    private int age;
+
+    public Person() {
+    }
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+```
+
+Say.java  (==interface==)
+
+```java
+package 面向对象进阶.a07接口.demo4;
+
+public interface Say {
+    public abstract void speakEnglish();
+}
+```
+
+
+
+Sportsman.java
+
+```java
+package 面向对象进阶.a07接口.demo4;
+
+public abstract class Sportsman extends Person{
+
+    public abstract void study();    //抽象方法
+
+    public Sportsman() {
+    }
+
+    public Sportsman(String name, int age) {
+        super(name, age);
+    }
+
+}
+```
+
+PingPangPlayer.java
+
+```java
+package 面向对象进阶.a07接口.demo4;
+
+public class PingPangPlayer extends Sportsman implements Say{
+    @Override
+    public void speakEnglish() {
+        System.out.println("乒乓球运动员的说英语");
+    }
+
+    @Override
+    public void study() {
+        System.out.println("学打乒乓球");
+    }
+
+    public PingPangPlayer() {
+    }
+
+    public PingPangPlayer(String name, int age) {
+        super(name, age);
+    }
+}
+```
+
+BasketballPlayer.java
+
+```java
+package 面向对象进阶.a07接口.demo4;
+
+public class BasketballPlayer extends Sportsman{
+    @Override
+    public void study() {
+        System.out.println("学打篮球");
+    }
+
+    public BasketballPlayer() {
+    }
+
+    public BasketballPlayer(String name, int age) {
+        super(name, age);
+    }
+}
+```
+
+Coach.java
+
+```java
+package 面向对象进阶.a07接口.demo4;
+
+public abstract class Coach extends Person{
+
+    public abstract void Teaching();  //抽象方法
+
+    public Coach() {
+    }
+
+    public Coach(String name, int age) {
+        super(name, age);
+    }
+}
+```
+
+PingPangCoach.java
+
+```java
+package 面向对象进阶.a07接口.demo4;
+
+public class PingPangCoach extends Coach implements Say{
+    @Override
+    public void Teaching() {
+        System.out.println("教打乒乓球");
+    }
+
+    @Override
+    public void speakEnglish() {
+        System.out.println("说英语");
+    }
+
+    public PingPangCoach() {
+    }
+
+    public PingPangCoach(String name, int age) {
+        super(name, age);
+    }
+}
+```
+
+BasketballCoach.java
+
+```java
+package 面向对象进阶.a07接口.demo4;
+
+public class BasketballCoach extends Coach{
+    @Override
+    public void Teaching() {
+        System.out.println("教打篮球");
+    }
+
+    public BasketballCoach() {
+    }
+
+    public BasketballCoach(String name, int age) {
+        super(name, age);
+    }
+}
+```
+
+测试类
+
+```java
+package 面向对象进阶.a07接口.demo4;
+
+public class Test {
+    public static void main(String[] args) {
+        System.out.println("==================--1--==================");
+        PingPangPlayer pangPlayer = new PingPangPlayer("乒乓球运动员", 23);
+        System.out.println(pangPlayer);
+        pangPlayer.speakEnglish();
+        pangPlayer.study();
+
+        System.out.println("==================--2--==================");
+        PingPangCoach pangCoach = new PingPangCoach("乒乓球教练", 45);
+        System.out.println(pangCoach);
+        pangCoach.speakEnglish();
+        pangCoach.Teaching();
+
+        System.out.println("==================--3--==================");
+        BasketballCoach basketballCoach = new BasketballCoach("篮球教练", 36);
+        System.out.println(basketballCoach);
+        basketballCoach.Teaching();
+
+        System.out.println("==================--4--==================");
+        BasketballPlayer basketballPlayer = new BasketballPlayer("篮球运动员", 26);
+        System.out.println(basketballPlayer);
+        basketballPlayer.study();
+
+
+    }
+}
+```
+
+![image-20221030223900001](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302239129.png)
