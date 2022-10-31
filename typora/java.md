@@ -6333,3 +6333,337 @@ public class Test {
 ```
 
 ![image-20221030223900001](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210302239129.png)
+
+### JDK8开始接口中新增的方法
+
+- JDK7以前：接口中只能定义抽象方法
+- JDK8的新特新：接口中可以定义有方法体的方法。（默认、静态）
+- JDK9的新特新：接口中可以定义私有方法。
+  - 给默认方法去服务的（解决接口中默认方法中的一些重复的代码的复用问题）
+  - 私有方法分类：
+    - 普通的私有方法
+    - 静态的私有方法
+
+
+
+
+
+```java
+public interface Inter{
+    public abstract int method();
+}
+```
+
+JDK7以前：只要接口发生改变，那么他们的实现类就要被动去该，如果不改，就会报错
+
+JDK8以后就解决了这个比较尴尬的问题
+
+JDK8以后接口中新增的方法
+
+- 允许在接口中定义默认方法，需要使用关键字default修饰
+
+  作用：解决接口升级的问题
+
+- 接口中默认方法的定义格式
+
+  - 格式：public default  返回值类型  方法名 （参数列表）{ }
+  - 范例：public default  void  show（）{ }
+
+- 接口中默认方法的注意事项
+
+  - 默认方法不是抽象方法，所以不强制被重写。==但是如果被重写，重写的时候去掉default关键字==
+  - public可以省略，default不能省略
+  - 如果实现了多个接口，多个接口中存在相同名字的默认方法，子类就必须对该方法进行重写
+
+*练习：*
+
+代码结构如下：
+
+![image-20221031103214140](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210311032234.png)
+
+Inter.java   (Interface)
+
+```java
+package 面向对象进阶.a07接口.demo5;
+
+public interface Inter {
+        /*
+        * - 接口中默认方法的定义格式
+          - 格式：public default  返回值类型  方法名 （参数列表）{ }
+          - 范例：public default  void  show（）{ }
+          *
+        - 接口中默认方法的注意事项
+          - 默认方法不是抽象方法，所以不强制被重写。==但是如果被重写，重写的时候去掉default关键字==
+          - public可以省略，default不能省略
+          - 如果实现了多个接口，多个接口中存在相同名字的默认方法，子类就必须对该方法进行重写*/
+
+    public abstract void method();      //抽象方法
+
+    public default void show(){         //定义默认方法
+        System.out.println("接口中的默认方法-----show（）");
+    }
+}
+```
+
+InterImpl.java (实现类)
+
+```java
+package 面向对象进阶.a07接口.demo5;
+
+public class InterImpl implements Inter{
+
+
+//    有默认方法的接口，在这里不重写默认方法也不会报错，
+//    例如：Inter中的show就是默认方法，所以在实现类中不用重写
+    @Override
+    public void method() {
+        System.out.println("抽象方法method");
+    }
+
+//    但是如果想要去重写，默认方法也是可以被重写的，
+//    如果不想重写，就可以删除掉以下的代码
+    @Override
+    public void show() {        //在这里重写的时候不能再写default关键字了
+        System.out.println("重写接口中的默认方法");
+    }
+}
+```
+
+实现类在被重写的时候，会有如下的情况，不会强制重写默认方法（show()）
+
+![image-20221031102450436](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210311024562.png)
+
+Test.java
+
+```java
+package 面向对象进阶.a07接口.demo5;
+
+public class Test {
+    public static void main(String[] args) {
+        InterImpl inter = new InterImpl();
+        inter.method();
+        inter.show();
+    }
+}
+```
+
+![image-20221031103516343](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210311035438.png)
+
+
+
+- 允许在接口中定义静态方法，需要用static修饰
+- 接口中静态方法的定义格式
+  - 格式：public static 返回值类型 方法名  （参数列表）{ }
+  - 范例：public static  void  show() { }
+- 接口中静态方法的注意事项
+  - 静态方法只能通过接口名调用，不能通过实现类名或者对象名调用
+  - public可以省略，static不可以省略
+
+练习
+
+代码结构
+
+![image-20221031104631017](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210311046107.png)
+
+代码如下：
+
+Inter.java  (Interface)
+
+```java
+package 面向对象进阶.a07接口.demo6;
+
+public interface Inter {
+
+    public abstract void method();      //抽象方法
+
+    public static void show(){      //静态方法
+        System.out.println("Inter接口中的静态方法");
+    }
+}
+```
+
+InterImpl.java
+
+```java
+package 面向对象进阶.a07接口.demo6;
+
+public class InterImpl implements Inter{
+//    这里不会强制重写静态方法
+    @Override
+    public void method() {
+        System.out.println("重写Inter里的抽象方法");
+    }
+}
+```
+
+Test.java
+
+```java
+package 面向对象进阶.a07接口.demo6;
+
+public class Test {
+    public static void main(String[] args) {
+        /*
+        * 接口中静态方法的注意事项
+
+        - 静态方法只能通过接口名调用，不能通过实现类名或者对象名调用
+        - public可以省略，static不可以省略*/
+
+//        调用接口中的静态方法
+        Inter.show();
+
+//        调用实现类里的方法
+        InterImpl inter = new InterImpl();
+        inter.method();
+    }
+}
+```
+
+### 接口的应用
+
+- 接口代表规则，是行为的抽象。想要让哪个类拥有一个行为，就让这个类实现对应的接口就可以了
+- 当一个方法的参数是接口时，可以传递接口所有实现类的对象，这种方式称之为接口多态
+
+### 适配器设计模式
+
+**设计模式**
+
+是一套被反复使用、多数人知晓的、经过分类编目的、代码设计经验的总结。使用设计模式是为了可重用代码、让代码更容易被他人了解、保证代码可靠性、程序的重用性。
+
+==简单理解：设计模式就是解决各种问题的套路==
+
+**适配器设计模式**
+
+解决接口与接口实现类之间的矛盾问题
+
+
+
+练习：
+
+代码结构：
+
+![image-20221031111052012](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210311110117.png)
+
+Inter.java  (Interface)
+
+```java
+package 面向对象进阶.a07接口.demo7;
+
+public interface Inter {
+    public abstract void method1();
+
+    public abstract void method2();
+
+    public abstract void method3();
+
+    public abstract void method4();
+
+    public abstract void method5();
+
+    public abstract void method6();
+
+    public abstract void method7();
+
+    public abstract void method8();
+
+}
+```
+
+InterAdapter.java    【设计模式（可以理解为中间商）】
+
+```java
+package 面向对象进阶.a07接口.demo7;
+
+public abstract class InterAdapter implements Inter{    //这里使用abstract使之成为抽象类，就是不让外界创建它的对象
+    @Override
+    public void method1() {
+
+    }
+
+    @Override
+    public void method2() {
+
+    }
+
+    @Override
+    public void method3() {
+
+    }
+
+    @Override
+    public void method4() {
+
+    }
+
+    @Override
+    public void method5() {
+
+    }
+
+    @Override
+    public void method6() {
+
+    }
+
+    @Override
+    public void method7() {
+
+    }
+
+    @Override
+    public void method8() {
+
+    }
+}
+```
+
+InterImpl.java
+
+```java
+package 面向对象进阶.a07接口.demo7;
+
+public class InterImpl extends InterAdapter{
+
+//    在这里我需要用到哪个方法，就重写哪个方法就可以了
+    @Override
+    public void method5() {
+        System.out.println("只要用第五个方法就可以了");
+    }
+}
+```
+
+Test.java
+
+```java
+package 面向对象进阶.a07接口.demo7;
+
+public class Test {
+    public static void main(String[] args) {
+        InterImpl inter = new InterImpl();
+
+        inter.method5();
+    }
+}
+```
+
+![image-20221031111317882](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210311113980.png)
+
+**总结**
+
+- 当一个接口中抽象方法过多，但是我只要使用其中一部分的时候，就可以使用适配器设计模式
+- 书写步骤：
+  - 编写中间类  `接口名Adapter` ，实现对应的接口
+  - 对接口中的抽象方法进行空实现
+  - 然后让真正的实现类继承中间类，并重写需要用的方法
+  - 为了避免其他类创建适配器的对象中间的适配器用abstract进行修饰
+
+## 内部类
+
+- 成员内部类
+- 静态内部类
+- 局部内部类
+- 匿名内部类（使用较多）
+
+#### 什么是内部类？
+
+类的
