@@ -3893,7 +3893,7 @@ public class StudentTest {
 
 ![image-20221027163140790](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271631892.png)
 
-小tips：ctrl+p
+==小tips：ctrl+p==
 
 ![image-20221027163521414](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210271635544.png)
 
@@ -6666,4 +6666,328 @@ public class Test {
 
 #### 什么是内部类？
 
-类的
+类的五大成员
+
+属性、方法、构造方法、代码块、内部类
+
+内部类：
+
+在一个类的里面，再定义一个类
+
+举例：在A类的内部定义B类，B类就被称为内部类
+
+```java
+public class Outer{		//外部类
+    public class Inner{		//内部类
+        
+    }
+}
+```
+
+```java
+public class Test{		//外部其他类
+    public static void main(String[] args){
+        
+    }
+}
+```
+
+练习：
+
+需求：写一个JavaBean类描述汽车
+
+属性：汽车的品牌，车龄，颜色，发动机的品牌，发动机使用年限
+
+分析：
+
+按照我们之前的写法如下
+
+```java
+public class Car {
+    String carName;
+    int carAge;
+    int carColor;
+    String engineName;
+    int engineAge;
+}
+```
+
+按照内部类的形式如下
+
+```java
+public class Car {
+    String carName;
+    int carAge;
+    int carColor;
+    class Engine{
+        String engineName;
+    	int engineAge;
+    }
+}
+```
+
+- 内部类表示的事物是外部类的一部分
+- 内部类单独出现没有任何意义
+- 内部类的访问特点
+  - 内部类可以直接访问外部类的成员，包括私有
+  - 外部类要访问内部类的成员，必须创建对象
+
+**总结**
+
+1. 什么是内部类？
+
+   写在一个类里面的类就叫做内部类
+
+2. 什么时候用到内部类？
+
+   B类表示的事物是A类的一部分，且B类单独存在没有意义。比如：汽车的发动机，ArrayList的迭代器，人的心脏等等。
+
+#### 内部类的分类
+
+- 成员内部类（了解）
+- 静态内部类（了解）
+- 局部内部类（了解）
+- 匿名内部类（掌握）
+
+##### 成员内部类
+
+- 写在成员位置的，属于外部类的成员
+- 成员内部类可以被一些修饰符所修饰，比如：private，默认，protected，public，static等
+
+```java
+public class Car {	//外部类
+    String carName;
+    int carAge;
+    int carColor;
+    class Engine{	//成员内部类
+        String engineName;
+    	int engineAge;
+    }
+}
+```
+
+获取成员内部类对象
+
+方式一：
+
+`在外部类中编写方法，对外提供内部类的对象`
+
+方式二：
+
+直接创建格式：`外部类名.内部类名 对象名 =外部类名.内部类名 `
+
+
+
+##### 匿名内部类（掌握）
+
+匿名内部类本质上就是隐藏了名字的内部类
+
+格式如下：
+
+```java
+new 类名或者接口名(){
+    重写方法;
+};
+```
+
+- 继承/实现
+- 方法重写
+- 创建对象
+
+举例：
+
+```java
+new Inter(){
+    public void show(){
+        
+    }
+}
+```
+
+*练习：匿名内部类*
+
+代码结构：
+
+![image-20221031193637790](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210311936880.png)
+
+Swim.java  (Interface)
+
+```java
+package 面向对象进阶.a08内部类.d01匿名内部类.demo1;
+
+public interface Swim {
+    public abstract void swim();
+}
+```
+
+Animal.java
+
+```java
+package 面向对象进阶.a08内部类.d01匿名内部类.demo1;
+
+public abstract class Animal {
+    public abstract void eat();
+}
+```
+
+Test.java
+
+```java
+package 面向对象进阶.a08内部类.d01匿名内部类.demo1;
+
+public class Test {
+    public static void main(String[] args) {
+//        格式：
+        /*new 类名或者接口名(){
+                重写方法;
+            };*/
+
+//        编写匿名内部类
+        /*实现关系
+        * 方法重写
+        * 创建对象*/
+        new Swim() {
+
+            @Override
+            public void swim() {
+                System.out.println("匿名内部类重写了游泳的方法");
+            }
+        };
+        /*以上的写法相当于接口的实现类
+        1.把前面的class删掉，剩余的内容就变成了一个没有名字的类
+        2.这个没有名字的类想要实现Swim接口
+          把Swim写在了大括号的前面，表示这个没有名字的类实现了Swim接口，所以需要在类中重写接口里面所有的抽象方法。
+        3.还想要创建这个没有名字的类的对象，该怎么办？
+        * */
+
+
+        new Animal(){
+
+            @Override
+            public void eat() {
+                System.out.println("重写了eat（）方法");
+            }
+        };
+
+//        匿名内部类的应用场景
+//        在这里调用method方法
+        method(
+                new Animal() {
+                    @Override
+                    public void eat() {
+                        System.out.println("方法传递的参数是一个匿名内部类");
+                    }
+                }
+        );
+    }
+
+    public static void method(Animal a){    //Animal a = 子类对象    多态
+        a.eat();
+    }
+}
+```
+
+分析图：
+
+![image-20221031193459169](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210311934294.png)
+
+![image-20221031193514181](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210311935309.png)
+
+结果如下：
+
+![image-20221031193433364](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210311934509.png)
+
+Test2.java
+
+```java
+package 面向对象进阶.a08内部类.d01匿名内部类.demo1;
+
+public class Test2 {
+    public static void main(String[] args) {
+
+//        将如下的整体我们可以理解为Swim接口的实现类对象
+//        接口多态
+         Swim s = new Swim() {
+            @Override
+            public void swim() {
+                System.out.println("重写之后的游泳方法");
+            }
+        };
+         s.swim();
+
+//         扩展二
+        new Swim() {
+            @Override
+            public void swim() {
+                System.out.println("重写之后的游泳方法");
+            }
+        }.swim();
+
+    }
+}
+```
+
+![image-20221031193612255](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202210311936361.png)
+
+**总结**
+
+1. 什么是匿名内部类
+
+   隐藏了名字的内部类，可以写在成员位置（没有名字的成员内部类），也可以写在局部位置
+
+2. 匿名内部类格式？
+
+   ```java
+   new 类名或者接口名(){
+       重写方法;
+   };
+   ```
+
+3. 格式的细节
+
+   包含了继承或实现，方法的重写，创建对象，整体就是一个类的子类对象或者接口的实现类对象
+
+4. 使用场景
+
+   当方法的参数是接口或者类时，以接口为例，可以传递这个接口的实现类对象，如果实现类只要使用一次，就可以用匿名内部类简化代码  
+
+   
+
+# 阶段综合项目
+
+拼图小游戏
+
+## GUI
+
+是指采用图形化的方式显示操作界面
+
+- AWT包
+- Swing包
+
+本次采用Swing包
+
+组件
+
+- JFrame：最外层窗体
+- JMenuBar：最上层菜单
+- JLabel：管理容器
+
+创建主界面
+
+- 游戏主界面（603x680）
+- 登录界面(488x430)
+- 注册界面（488x500）
+
+创建主界面2
+
+
+
+创建菜单`JMenuBar`
+
+==小tips：ctrl+alt+m：可用来抽取方法，例如将一个方法里面部分代码想写成另外一个新的方法就可以使用此快捷键==
+
+
+
+添加图片
+
+ImageIcon
