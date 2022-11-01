@@ -6991,3 +6991,379 @@ public class Test2 {
 添加图片
 
 ImageIcon
+
+
+
+# 十一、常用的API
+
+## Math
+
+![image-20221101145534661](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211011455855.png)
+
+
+
+![image-20221101145643857](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211011456969.png)
+
+- 是一个帮助我们用于进行数学计算的工具类
+- ==私有化构造方法，所有的方法都是静态的==
+
+常用的几个方法
+
+- abs（int a）：获取绝对值
+- ceil（double a）：向上取整
+- floor（double a）：向下取整
+- round（float a）：四舍五入
+- max（int a，int b）：获取两个数的较大值
+- min（int a，int b）：获取两个数的较小值
+- pow（double a，double b）：返回a的b次幂的值
+- sqrt（double a）：返回a的平方根
+- cbrt（double a）：返回a的立方根
+- random（）：返回值为double的随机值，范围  [0.0,1.0)
+
+*练习：*
+
+```java
+package 常用API.a01Math;
+
+public class demo1 {
+    public static void main(String[] args) {
+        System.out.println(Math.abs(-12));
+        System.out.println(Math.abs(-12.2));
+//        bug:
+        /*以int类型为例，取值范围：-2147483648 ~ 2147483647*/
+
+//      ceil:向上取整
+        System.out.println(Math.ceil(12.3));
+        System.out.println(Math.ceil(-12.3));
+
+//        floor：向下取整
+        System.out.println(Math.floor(12.3));
+        System.out.println(Math.floor(-12.3));
+
+//        round：四舍五入
+        System.out.println(Math.round(12.3));
+        System.out.println(Math.round(-12.3));
+
+//        max:获取两数的较大值
+        System.out.println(Math.max(12,13));
+        System.out.println(Math.max(-12,-13));
+
+//        pow（double a，double b）:返回a的b次幂
+        System.out.println(Math.pow(2,3));  //8
+
+//        random:获取随机值
+        System.out.println(Math.random());
+    }
+}
+```
+
+![image-20221101151424541](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211011514662.png)
+
+*练习：判断一个数是否为一个质数*
+
+分析：
+
+![image-20221101152928892](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211011529007.png)
+
+```java
+package 常用API.a01Math;
+
+public class demo2 {
+    public static void main(String[] args) {
+//        判断一个数是否为一个质数
+//        System.out.println(isPrime(25));
+
+        System.out.println(isPrime(997));
+
+    }
+
+    public static boolean isPrime(int num){
+        int count=0;
+        for (int i=2;i<=Math.sqrt(num);i++){
+            if (num%i==0){
+                System.out.println(i);
+                return false;
+            }
+            count++;
+        }
+        System.out.println(count);
+        return true;
+    }
+}
+```
+
+![image-20221101153436526](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211011534638.png)
+
+*练习：自幂数*
+
+解释：一个n位自然数等于自身各个数位上数字的n次幂之和
+
+举例1：三位数     1^3 + 5^3 + 3^3 = 153
+
+举例2：四位数	  1^4 + 6^4 + 3^4 + 3^4 = 1643
+
+如果自幂数是一位数，也叫做：独身数
+
+三位自幂数：水仙花数						四位自幂数：四叶玫瑰数
+
+五位自幂数：五角星数						六位自幂数：六合数
+
+七位自幂数：北斗七星数					八位自幂数：八仙数
+
+九位自幂数：九九重阳数					十位自幂数：十全十美数
+
+要求：统计一共有多少个水仙花数
+
+解答如下
+
+```java
+package 常用API.a01Math;
+
+public class demo3 {
+    public static void main(String[] args) {
+//        水仙花数：100~999
+        int count=0;
+        for (int i = 100; i < 999; i++) {
+            int ge = i % 10;
+            int shi = i / 10 % 10;
+            int bai = i / 100 % 10;
+
+            int sum = (int) (Math.pow(ge, 3) + Math.pow(shi, 3) + Math.pow(bai, 3));
+
+            if (sum==i){
+                count++;
+                System.out.println(i);
+            }
+        }
+
+        System.out.println("水仙花数有："+count+"个");
+
+    }
+
+}
+```
+
+![image-20221101155231777](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211011552885.png)
+
+## System
+
+System也是一个工具类，提供了一些与系统相关的方法
+
+- exit(int status)：==终止当前运行的java虚拟机==
+- currentTimeMillis()：==返回当前系统的时间毫秒值形式==
+  - 计算机中的时间原点：1970年1月1日  00：00：00			（同时也是C语言的诞生事件）
+  - 由于时区的原因我们国家（东八区）获取到的时间原点是：1970年1月1日  08：00：00
+  - 1秒=1000毫秒
+  - 1毫秒=1000微秒
+  - 1微秒=1000纳秒
+  - 可以用来计算程序运行时间
+- arraycopy（数据源数组，起始索引，目的索引，目的地数组，起始索引，拷贝个数）：==数组拷贝==
+  - 如果数据源数组和目的地数组都是基本数据类型，那么两者的类型必须保持一致，否则会报错
+  - 在拷贝的时候需要考虑数组的长度，如果超出范围也会报错
+  - 如果数据源数组和目的地数组都是引用数据类型，那么子类类型可以复制给父类类型
+
+*练习*
+
+![image-20221101164013223](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211011640358.png)
+
+```java
+package 常用API.a02System;
+
+public class demo1 {
+    public static void main(String[] args) {
+
+        long currentTimeMillis = System.currentTimeMillis();
+        System.out.println(currentTimeMillis);
+
+        int[] arr1={1,2,3,4,5,6,7,8,9,10};
+        int[] arr2 = new int[10];
+//        拷贝
+//        arraycopy（数据源数组，起始索引，目的索引，目的地数组，起始索引，拷贝个数）
+
+        System.arraycopy(arr1,0,arr2,3,5);
+        for (int i = 0; i < arr2.length; i++) {
+            System.out.print(arr2[i]+",");
+        }
+
+    }
+}
+```
+
+![image-20221101164000324](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211011640453.png)
+
+## Runtime
+
+Runtime表示当前虚拟机的运行环境
+
+- getRuntime（）：当前系统的运行环境对象
+- exit(int status)：==终止当前运行的java虚拟机==
+- availableProcessors（）：获取CPU的线程数
+- maxMemory（）：JVM能从系统中获取总内存大小（单位byte）
+- totalMemory（）：JVM已经从系统中获取到的总内存的大小（单位byte）
+- freeMemory（）：JVM剩余内存大小（单位byte）
+- exec（String command）：运行cmd命令
+
+练习：
+
+```java
+package 常用API.a03Runtime;
+
+import java.io.IOException;
+
+public class demo1 {
+    public static void main(String[] args) throws IOException {
+//        Runtime不能被new出来
+        /*- getRuntime（）：当前系统的运行环境对象
+            - exit(int status)：==终止当前运行的java虚拟机==
+            - availableProcessors（）：获取CPU的线程数
+            - maxMemory（）：JVM能从系统中获取总内存大小（单位byte）
+            - totalMemory（）：JVM已经从系统中获取到的总内存的大小（单位byte）
+            - freeMemory（）：JVM剩余内存大小（单位byte）
+            - exec（String command）：运行cmd命令*/
+
+//        1.获取Runtime对象
+        Runtime r1 = Runtime.getRuntime();
+
+//        2.exit
+//        r1.exit(0);
+//        System.out.println("检测该语句是否执行");        //没有打印
+
+//        availableProcessors
+        System.out.println(r1.availableProcessors());   //12
+
+        System.out.println(r1.maxMemory()/1024/1024);   //2697MB
+
+        System.out.println(r1.totalMemory()/1024/1024);     //182
+
+        System.out.println(r1.freeMemory()/1024/1024);      //179
+
+//        exec
+        r1.exec("notepad");     //notepad:记事本
+        /*shutdown：关机
+        * -s：默认一分钟之后关机
+        * -s -t 指定时间：指定关机时间（3600秒 = 1小时） 。例如：shutdown -s -t 3600
+        * -a：取消关机时间
+        * -r：关机并重启*/
+
+    }
+}
+```
+
+![image-20221101171216837](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211011712951.png)
+
+小案例：
+
+
+
+## Object
+
+- Object是Java中的顶级父类。所有的类都直接或间接的继承于Object类
+
+Object的构造方法
+
+```java
+public Object()			//空参构造
+```
+
+在java中Object是没有有参构造的
+
+成员方法：
+
+![image-20221101172609501](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211011726687.png)
+
+- clone（）：克隆对象
+
+  - 使用该方法，需要在JavaBean类里面进行重写。
+  - 还需要再JavaBean类上实现一个Cloneable接口
+  - 满足以上条件就可以利用对象调用clone方法进行克隆（将源对象的数据拷贝到目标对象）
+
+- 克隆的两种方式
+
+  - 浅克隆，浅拷贝
+
+    不管对象内部的属性是基本数据类型还是引用数据类型，都完全拷贝过来
+
+  - 深克隆，深拷贝
+
+    基本数据类型拷贝过来
+
+    字符串复用
+
+    引用数据类型会重新创建新的内存小空间
+
+- Object里面的clone是浅克隆
+
+*练习：*
+
+```java
+package 常用API.a04Object;
+
+public class User implements Cloneable{
+    private String name;
+    private int age;
+
+    public User() {
+    }
+
+    public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+//    重写克隆方法     Object默认是浅克隆
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+
+        return super.clone();
+    }
+}
+```
+
+在以后如果使用到深克隆的话，一般我们会使用第三方工具`gson-x.x.x.jar`
+
+使用方法：
+
+1. 先创建对象
+
+   Gson 对象名=new Gson（）
+
+2. 调用toJson（）方法，返回一个字符串
+
+   对象名.toJson（要克隆的对象）
+
+3. 把字符串变回对象要调用`fromJson()`方法
+
+   对象名.fromJson()
+
+
+
+## Objects
+
+![image-20221101231047469](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211012310573.png)
+
+Objects的常用的成员方法：
+
+![image-20221101230813160](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211012308343.png)
+
+
+
+**总结**
+
+- Objects是一个对象工具类，提供了一些操作对象的方法
+- 如上解释
