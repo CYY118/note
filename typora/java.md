@@ -7367,3 +7367,200 @@ Objects的常用的成员方法：
 
 - Objects是一个对象工具类，提供了一些操作对象的方法
 - 如上解释
+
+## BigInteger
+
+大的整数
+
+整数类型：byte（1字节），short（2字节），int（4字节），long（8字节）
+
+1字节=8bit位
+
+![image-20221102142246887](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211021422052.png)
+
+![image-20221102142614251](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211021426345.png)
+
+- radix：表示进制
+
+## BigDecima
+
+计算机中的小数运算严格意义上来说是不精确的
+
+- 用于小鼠的精确运算
+- 用来表示很大的小数
+
+继承结构
+
+![image-20221102144127534](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211021441635.png)
+
+需要关注的方法
+
+![image-20221102144439864](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211021444951.png)
+
+![image-20221102144452181](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211021444272.png)
+
+*练习*
+
+```java
+package 常用API.a05BigDecima;
+
+import java.math.BigDecimal;
+
+public class demo1 {
+    public static void main(String[] args) {
+//        1.通过传递double类型的小数来创建对象
+        /*这种方式有可能是不精确的，所以不建议使用*/
+        BigDecimal bigDecimal = new BigDecimal(0.01);
+        BigDecimal bigDecimal2 = new BigDecimal(0.09);
+        System.out.println(bigDecimal);     //0.01000000000000000020816681711721685132943093776702880859375
+        System.out.println(bigDecimal2);     //0.0899999999999999966693309261245303787291049957275390625
+        System.out.println(bigDecimal.add(bigDecimal2));    //0.09999999999999999687749774324174723005853593349456787109375
+
+//        2.通过传递字符串表示的小数来创建对象
+        BigDecimal b2 = new BigDecimal("0.01");
+        BigDecimal b3 = new BigDecimal("0.09");
+        System.out.println(b2);         //0.01
+        System.out.println(b3);         //0.09
+        System.out.println(b2.add(b3)); //0.10
+
+//        3.通过静态方法获取对象
+        BigDecimal d4 = BigDecimal.valueOf(10);
+        System.out.println(d4);     //10
+
+        /*细节：
+        * 1.如果要表示的数字不大，没有超出double的取值范围，那么建议使用double，反之则需要使用String*/
+    }
+}
+```
+
+![image-20221102200303583](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211022003685.png)
+
+
+
+```java
+package 常用API.a05BigDecima;
+
+import java.math.BigDecimal;
+
+public class demo2 {
+    public static void main(String[] args) {
+//        加法：
+        BigDecimal b1 = BigDecimal.valueOf(10.0);
+        BigDecimal b2 = BigDecimal.valueOf(2.0);
+        System.out.println(b1.add(b2));     //12.0
+
+//        减法
+        System.out.println(b1.subtract(b2));    //8.0
+
+//        乘法
+        System.out.println(b1.multiply(b2));    //20.00
+
+//        除法.如果除不尽的话会报错
+        System.out.println(b1.divide(b2));      //5
+
+//        解决除法除不尽的问题,使用四舍五入的方式：ROUND_HALF_UP
+        System.out.println(b1.divide(b2,2,BigDecimal.ROUND_HALF_UP));       //5.00
+
+    }
+}
+```
+
+![image-20221102200235014](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211022002192.png)
+
+舍入模式
+
+![image-20221102200552041](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211022005146.png)
+
+## 正则表达式
+
+一种规则
+
+*练习：校验一个qq账号是否符合规则*
+
+```tex
+规则：6位到20位之间，0不能开头，必须全部是数字
+```
+
+代码如下：
+
+```java
+package 常用API.a06正则表达式;
+
+public class demo1 {
+    public static void main(String[] args) {
+        //  用以前的方式
+        String qq = "3163795094";
+        System.out.println(checkQQ(qq));
+
+//        正则表达式的方式
+        boolean matches = qq.matches("[1-9]\\d{5,19}");
+        System.out.println(matches);
+
+    }
+//  用以前的方式
+    public static boolean checkQQ(String qq) {
+//        核心思想：
+        /*先把异常的数据进行过滤*/
+//        规则：6位到20位之间，0不能开头，必须全部是数字
+        int len = qq.length();
+        if (len < 6 && len > 20) {
+            return false;
+        }
+
+//        0不能开头
+        if (qq.startsWith("0")){
+            return false;
+        }
+//        必须全部是数字
+        for (int i = 0; i < qq.length(); i++) {
+            char c = qq.charAt(i);
+            if (c<'0'&&c>'9'){
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+```
+
+![image-20221102202332273](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211022023374.png)
+
+作用：
+
+1. 校验字符串是否满足规则
+2. 在一段文本中查找满足要求的内容
+
+相关规则：
+
+![image-20221102203615025](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211022036140.png)
+
+[正则表达式在线测试 | 菜鸟工具 (runoob.com)](https://c.runoob.com/front-end/854/)
+
+**常用的正则表达式**
+
+- 数字：**^[0-9]\*$**
+- n位的数字：**^\d{n}$**
+- 至少n位的数字**：^\d{n,}$**
+- m-n位的数字：**^\d{m,n}$**
+- 零和非零开头的数字：**^(0|[1-9][0-9]\*)$**
+- 非零开头的最多带两位小数的数字：**^([1-9][0-9]\*)+(\.[0-9]{1,2})?$**
+- 带1-2位小数的正数或负数：**^(\-)?\d+(\.\d{1,2})$**
+- 正数、负数、和小数：**^(\-|\+)?\d+(\.\d+)?$**
+- 有两位小数的正实数：**^[0-9]+(\.[0-9]{2})?$**
+- 有1~3位小数的正实数：**^[0-9]+(\.[0-9]{1,3})?$**
+- 非零的正整数：**^[1-9]\d\*$ 或 ^([1-9][0-9]\*){1,3}$ 或 ^\+?[1-9][0-9]\*$**
+- 非零的负整数：**^\-[1-9][]0-9"\*$ 或 ^-[1-9]\d\*$**
+- 非负整数：**^\d+$ 或 ^[1-9]\d\*|0$**
+- 非正整数：**^-[1-9]\d\*|0$ 或 ^((-\d+)|(0+))$**
+- 汉字：**^[\u4e00-\u9fa5]{0,}$**
+- 英文和数字：**^[A-Za-z0-9]+$ 或 ^[A-Za-z0-9]{4,40}$**
+- 长度为3-20的所有字符：**^.{3,20}$**
+
+- 由26个英文字母组成的字符串：**^[A-Za-z]+$**
+- 由26个大写英文字母组成的字符串：**^[A-Z]+$**
+- 由26个小写英文字母组成的字符串：**^[a-z]+$**
+- 由数字和26个英文字母组成的字符串：**^[A-Za-z0-9]+$**
+- 由数字、26个英文字母或者下划线组成的字符串：**^\w+$ 或 ^\w{3,20}$**
+- 中文、英文、数字包括下划线：**^[\u4E00-\u9FA5A-Za-z0-9_]+$**
+
