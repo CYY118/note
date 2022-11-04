@@ -7493,7 +7493,7 @@ public class demo1 {
         System.out.println(checkQQ(qq));
 
 //        正则表达式的方式
-        boolean matches = qq.matches("[1-9]\\d{5,19}");
+        boolean matches = qq.matches("[1-9]\\d{5,19}");		// \:转义字符
         System.out.println(matches);
 
     }
@@ -7535,6 +7535,8 @@ public class demo1 {
 
 ![image-20221102203615025](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211022036140.png)
 
+![image-20221103095923078](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211030959176.png)
+
 [正则表达式在线测试 | 菜鸟工具 (runoob.com)](https://c.runoob.com/front-end/854/)
 
 **常用的正则表达式**
@@ -7564,3 +7566,353 @@ public class demo1 {
 - 由数字、26个英文字母或者下划线组成的字符串：**^\w+$ 或 ^\w{3,20}$**
 - 中文、英文、数字包括下划线：**^[\u4E00-\u9FA5A-Za-z0-9_]+$**
 
+*练习*
+
+```java
+package 常用API.a06正则表达式;
+
+public class demo2 {
+    public static void main(String[] args) {
+        System.out.println("\"你好\"");   // \:转义字符
+        String num="123456";
+        boolean matches = num.matches("^[0-9]*$");
+        System.out.println(matches);
+    }
+}
+```
+
+![image-20221103095440442](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211030954558.png)
+
+
+
+*练习：本地爬虫和网络爬虫*
+
+![image-20221103102338146](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031023250.png)
+
+Java自从95年问世以来，经历了很多版本，目前企业中用的最多的是Java8和Java11，因为这两个是长期支持版本，下一个长期支持版本是Java17，相信在未来不久Java17也会逐渐登上历史舞台
+
+```java
+package 常用API.a06正则表达式;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class demo3 {
+    public static void main(String[] args) {
+        String str="Java自从95年问世以来，经历了很多版本，目前企业中用的最多的是Java8和Java11，" +
+                "因为这两个是长期支持版本，下一个长期支持版本是Java17，相信在未来不久Java17也会逐渐登上历史舞台";
+
+//        method1(str);
+
+        //        获取正则表达式的对象
+        Pattern p = Pattern.compile("Java\\d{0,2}");        //设置规则
+//        获取文本匹配器的对象
+        Matcher m = p.matcher(str);
+//        利用循环
+        while (m.find()){
+            String s = m.group();
+            System.out.println(s);
+        }
+    }
+
+    private static void method1(String str) {
+        //        Pattern:表示正则表达式
+//        Matcher：文本匹配器，作用按照正则表达式的规则去读取字符串
+
+//        获取正则表达式的对象
+        Pattern p = Pattern.compile("Java\\d{0,2}");        //设置规则
+//        获取文本匹配器的对象
+        Matcher m = p.matcher(str);
+//        拿着文本匹配器从头开始读取，寻找是否有满足规则的字串
+//        没有，则返回false
+//        有，返回true。在底层记录字串的起始索引和结束索引+1
+        boolean b = m.find();
+//      该方法的底层会根据find方法记录的索引进行字符串的截取
+//        subString(起始索引，结束索引)；包头不包尾，这就是上面+1的原因
+//        会把截取的小串进行返回
+        String s1 = m.group();
+        System.out.println(s1);
+
+//        第二次再调用find方法，他就会继续下面的内容
+//        读取到第二个满足要求的子串，方法会继续返回true
+//        并把第二个字串的起始索引和结束索引+1，进行记录
+        boolean b1 = m.find();
+        String s2 = m.group();
+        System.out.println(s2);
+    }
+}
+```
+
+![image-20221103104253883](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031042997.png)
+
+
+
+网络爬取只做测试
+
+```java
+package 常用API.a06正则表达式;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class demo4 {
+    public static void main(String[] args) throws IOException {
+//        创建一个URL对象
+        URL url = new URL("https://image.baidu.com/search/index?tn=baiduimage&ipn=r&ct=201326592&cl=2&lm=-1&st=-1&fm=result&fr=&sf=1&fmq=1667443659883_R&pv=&ic=&nc=1&z=&hd=&latest=&copyright=&se=1&showtab=0&fb=0&width=&height=&face=0&istype=2&dyTabStr=MCw2LDQsNSwzLDEsNyw4LDIsOQ%3D%3D&ie=utf-8&sid=&word=%E7%BE%8E%E5%A5%B3");
+//        连接这个网址
+        URLConnection conn = url.openConnection();
+//        创建一个对象去获取网络中的数据
+        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line;
+//        获取正则表达式的对象 pattern
+        String regex="src=\"https://[\\S]{0,}[\"]";
+        Pattern pattern = Pattern.compile(regex);
+//        在读取的时候每次读一整行
+        while ((line= br.readLine())!=null){
+            //System.out.println(line);
+            Matcher matcher = pattern.matcher(line);
+            while (matcher.find()){
+                System.out.println(matcher.group());
+            }
+        }
+    }
+}
+```
+
+![image-20221103110029956](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031100071.png)
+
+
+
+*练习：有条件的爬取数据*
+
+![image-20221103120526793](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031205910.png)
+
+Java自从95年问世以来，经历了很多版本，目前企业中用的最多的是Java8和Java11，因为这两个是长期支持版本，下一个长期支持版本是Java17，相信在未来不久Java17也会逐渐登上历史舞台
+
+![image-20221103123308228](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031233332.png)
+
+```java
+package 常用API.a06正则表达式;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class demo5 {
+    public static void main(String[] args) {
+        String str="java自从95年问世以来，经历了很多版本，目前企业中用的最多的是Java8和Java11，" +
+                "因为这两个是长期支持版本，下一个长期支持版本是Java17，相信在未来不久Java17也会逐渐登上历史舞台";
+//        需求一
+//        编写正则表达式
+        String regex1="((?i)Java)(?=8|11|17)";     //?:占位符 ; (?i):忽略大小写
+
+        Pattern p = Pattern.compile(regex1);
+        Matcher m = p.matcher(str);
+
+        while (m.find()){
+            String s1 = m.group();
+            System.out.println(s1);
+        }
+        System.out.println("==============================================");
+//        需求二，以前的方式
+        String regex2="((?i)Java)(8|11|17)";     //?:占位符 ; (?i):忽略大小写
+
+        Pattern p2 = Pattern.compile(regex2);
+        Matcher m2 = p2.matcher(str);
+
+        while (m2.find()){
+            String s2 = m2.group();
+            System.out.println(s2);
+        }
+        System.out.println("==============================================");
+//        需求二，现在的方式
+        String regex3="((?i)Java)(?:8|11|17)";     //?:占位符 ; (?i):忽略大小写
+
+        Pattern p3 = Pattern.compile(regex3);
+        Matcher m3 = p3.matcher(str);
+
+        while (m3.find()){
+            String s3 = m3.group();
+            System.out.println(s3);
+        }
+        System.out.println("==============================================");
+//        需求三
+        String regex4="((?i)Java)(?!8|11|17)";     //?:占位符 ; (?i):忽略大小写
+
+        Pattern p4 = Pattern.compile(regex4);
+        Matcher m4 = p4.matcher(str);
+
+        while (m4.find()){
+            String s4 = m4.group();
+            System.out.println(s4);
+        }
+
+    }
+}
+```
+
+![image-20221103121727954](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031217093.png)
+
+- 贪婪爬取：在爬取数据的时候尽可能多的获取数据
+- 非贪婪爬取：在爬取数据的时候尽可能少的获取数据
+
+例如：字符串str=“abbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaa”
+
+表达式：ab+
+
+结果：
+
+贪婪爬取：abbbbbbbbbbbbbbbb			（java默认的方式）
+
+非贪婪爬取：ab				
+
+如果我们在数量词  + * 的后面加上问号，那么此时就是非贪婪爬取
+
+**关于正则表达式的其他方法**
+
+- replaceAll
+
+![image-20221103123652099](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031236209.png)
+
+该方法的底层如下：
+
+和之前是一样的，也会创建文本解析器的对象
+
+![image-20221103123944532](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031239663.png)
+
+- split
+
+![image-20221103124243163](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031242270.png)
+
+该方法的底层如下：
+
+![image-20221103124409434](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031244532.png)
+
+分组
+
+分组就是一个小括号（）
+
+细节：
+
+每组都是有序号的
+
+- 规则1：从1开始，连续不间断
+- 规则2：以左括号为基准，最左边的是第一组，其次是第二组，以此类推
+- 如下：
+
+![image-20221103151928017](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031519140.png)
+
+## JDK7以前时间相关类
+
+全世界的时间，有一个统一的计算标准
+
+在同一条经线上的时间是一样的
+
+![image-20221103152751251](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211031527436.png)
+
+格林威治/格林尼治时间（Greewich Mean Time）简称：GMT
+
+计算核心：地球自转一天是24小时，太阳直射时为正午12点
+
+2012年取消了格林尼治时间的使用，改用==原子钟==提供的时间
+
+原子钟：利用铯原子的震动频率来计算出时间，作为世界标准时间（UTC）
+
+==铯原子平均震动91亿次等于1秒==
+
+世界标准时间：
+
+- 以前：格林威治/格林尼治时间（Greewich Mean Time）   有误差
+
+- 现在：原子钟（UTC）
+
+中国标准时间：世界标准时间+8小时
+
+### Date时间类
+
+Date类是一个JDK写好的JavaBean类，用来描述时间，精确到毫秒
+
+利用空参构造创建对象，默认表示系统当前时间
+
+利用有参构造创建的对象，表示指定的时间
+
+```java
+public class Date{
+    private long time;
+    
+    
+}
+```
+
+*练习*
+
+```java
+package 常用API.a07时间类;
+
+import java.util.Date;
+
+public class demo1 {
+    public static void main(String[] args) {
+//        1.创建对象表示一个时间
+        Date d = new Date();
+        System.out.println(d);
+
+//        2.创建对象表示一个指定的时间
+        Date d2 = new Date(0L);     //时间原点
+        System.out.println(d2);
+
+//        3.setTime修改时间
+        d2.setTime(1000L);
+        System.out.println(d2);
+
+//        4.getTime() 获取当前时间的毫秒值
+        long t1 = d2.getTime();
+        System.out.println(t1);
+
+
+
+    }
+}
+```
+
+
+
+```java
+package 常用API.a07时间类;
+
+import java.util.Date;
+
+public class demo2 {
+    public static void main(String[] args) {
+        /*需求：打印时间原点开始一年之后的时间*/
+//        创建一个对象，表示时间原点
+        Date d1 = new Date(0L);     //Fri Jan 01 08:00:00 CST 1970
+
+//        获取d1时间的毫秒值
+        long time = d1.getTime();
+
+//        在这个基础上我们要加一年的毫秒值
+        time=time+ 1000L *60*60*24*365;
+
+//        把计算之后的时间毫秒值，再设置回d1当中
+        d1.setTime(time);
+        System.out.println(d1);     //Fri Jan 01 08:00:00 CST 1971
+    }
+}
+```
+
+
+
+
+
+
+
+- SimpleDateFormat：格式化时间
+- Calender：日历
+
+## JDK8新增时间相关类
