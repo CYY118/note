@@ -896,3 +896,63 @@ public void getUserByRowBounds(){
 
 
 > 123
+
+# trim标签
+
+==用于实现sql的拼接==
+
+- ```xml
+  prefix：sql前缀的拼接
+  suffix：sql后缀的拼接
+  suffixOverrides：去除多余的符号
+  ```
+
+例子：
+
+表名：test_table
+
+| id   | name     | test |
+| ---- | -------- | ---- |
+| 1    | testname | test |
+
+
+
+mapper.xml
+
+sql
+
+```sql
+<sql id="selectVal">
+	select * from test_table
+</sql>
+```
+
+
+
+对应mapper.xml中的 `insert` 标签
+
+```xml
+<insert id="insertVal" parameterType="">
+    insert into test_table
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="id != null">id,</if>
+        <if test="name != null">name,</if>
+        <if test="test != null">test,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="id != null">#{id},</if>
+        <if test="name != null">#{name},</if>
+        <if test="test != null">#{test},</if>
+    </trim>
+</insert>
+```
+
+对应mapper.xml中的`select` 标签
+
+```sql
+<select id="selectVal" parameterType="">
+<in
+	select 
+</select>
+```
+

@@ -7915,7 +7915,112 @@ public class demo2 {
 
 
 - SimpleDateFormat：格式化时间
+
+  - 格式化：把时间变成我们喜欢的格式
+  - 解析：把字符串表示的时间变成Date对象
+
+  练习：
+
+  ```java
+  package 常用API.a07时间类;
+  
+  import java.text.ParseException;
+  import java.text.SimpleDateFormat;
+  import java.util.Date;
+  
+  public class demo3 {
+      public static void main(String[] args) throws ParseException {
+          /*
+          * public SimpleDateFormat()     默认格式
+          * public SimpleDateFormat()     指定格式
+          **/
+          method();
+  
+  
+          /*
+          * public final String format(Date date)     格式化（日期对象-》字符串）
+          * public Date parse(String source)          解析（字符串-》日期对象）
+          * */
+          method2();
+  
+      }
+  
+      private static void method2() throws ParseException {
+          /*定义一个字符串表示时间*/
+          String str="2023-11-26 11:11:11";
+          /*利用空参构造创建SimpleDateFormat对象
+          * 细节：
+          * 创建对象的格式要跟字符串的格式完全一致*/
+          SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+          Date parse1 = format1.parse(str);
+          System.out.println("parse1 = " + parse1);
+      }
+  
+      private static void method() {
+          /*1.利用空参构造创建simpleDateFormat对象，默认格式*/
+          SimpleDateFormat format = new SimpleDateFormat();
+          Date date = new Date(0L);
+          String str1 = format.format(date);
+          System.out.println("str1 = " + str1);
+  
+          /*2.利用空参构造创建simpleDateFormat对象，指定格式*/
+          SimpleDateFormat format1 = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+          String str2 = format1.format(date);
+          System.out.println("str2 = " + str2);
+  
+          /*课堂练习：yyyy年MM月dd日 HH:mm:ss 星期*/
+          SimpleDateFormat format2 = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss EE");
+          String str3 = format2.format(date);
+          System.out.println("str3 = " + str3);
+      }
+  }
+  ```
+
+  ![image-20221126200150310](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211262001443.png)
+
+  练习：
+
+  ```java
+  package 常用API.a07时间类;
+  
+  import java.text.ParseException;
+  import java.text.SimpleDateFormat;
+  import java.util.Date;
+  
+  public class demo4 {
+      public static void main(String[] args) throws ParseException {
+          /*假设出生年月日为  2000-6-1*/
+          /*试用字符串表示这个数据，并将其转换为    2000年6月1日*/
+          String str="2000-6-1";
+          SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+          Date date = format1.parse(str);
+  
+          SimpleDateFormat format2 = new SimpleDateFormat("yyyy年MM月dd日");
+          String str2 = format2.format(date);
+          System.out.println("str2 = " + str2);
+      }
+  }
+  ```
+
+  ![image-20221126200124626](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202211262001954.png)
+
+  
+
 - Calender：日历
+
+为啥要学习Calender？
+
+需求：将2023年10月10日 增加一个月
+
+老方法 ：使用毫秒值的方式，在此基础上加上一个月的毫秒时间
+
+新方法：使用Calender类来实现此功能
+
+
+
+细节：Calender是一个抽象类，不能直接创建对象
+
+
 
 ## JDK8新增时间相关类
 
