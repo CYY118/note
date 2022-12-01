@@ -8016,11 +8016,74 @@ public class demo2 {
 
 新方法：使用Calender类来实现此功能
 
-
-
 细节：Calender是一个抽象类，不能直接创建对象
+
+```java
+    /*
+    * public static Calender  getInstance()     获取当前时间的日历对象
+    *
+    * public final Date getTime()       获取日期对象
+    * public final setTime(Date date)       给日历设置日期对象
+    *
+    * public long getTimeInMillis()     拿到时间毫秒值
+    * public void setTimeMillis(long millis)        给日历设置时间毫秒值
+    *
+    * public int get(int field)     取日期中的某个字段的信息
+    * public void set(int field,int value)      修改日历中某个字段信息
+    * public void add(int field,int amount)     为某个字段增加/减少指定的值*/
+```
 
 
 
 ## JDK8新增时间相关类
+
+为什么jdk8要新增？
+
+好处：
+
+- 代码层面：
+
+  - jdk7代码太过于复杂（需要转化为毫秒值）
+  - jdk8简单，判断方法，计算时间间隔的方法
+
+- 安全层面：
+
+  - jdk7在多线程环境下会导致数据安全的问题
+  - jdk8时间日期对象都是不可变的，解决了这个问题
+
+  
+
+  **jdk8新增的时间相关类**
+
+  - Date类
+
+    ZoneId：时区
+
+    Instant：时间戳
+
+    ZoneDateTime：带时区的时间
+
+  - 时间格式化类
+
+    DateTimeFormatter：用于时间的格式化和解析
+
+  - 日历类
+
+    LocalDate：年、月、日
+
+    LocalTime：时、分、秒
+
+    LocalDateTime：年、月、日、时、分、秒
+
+  - 工具类
+
+    Duration：时间间隔（秒，纳秒）
+
+    Period：时间间隔（年、月、日）
+
+  ChronoUnit：时间间隔（所有单位）
+
+  
+
+  
 

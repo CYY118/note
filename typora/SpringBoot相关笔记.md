@@ -17,3 +17,23 @@ Spring Security是一个功能强大、高度可定制的身份验证和访问�
 - 菜单权限
 - 拦截器，过滤器，需要用到大量的原生代码 ~ 冗余太大
 
+shiro、springSecurity：很像，除了类不一样，名字不一样
+
+认证、授权（vip1、vip2...）
+
+[Spring Security官网](https://spring.io/projects/spring-security)
+
+记住这几个类：
+
+- WebSecurityConfigurerAdapter：自定义Security策略
+- AuthenticationManagerBuilder：自定义认证策略
+- @EnableWebSecurity：开启认证WebSecurity模式，@EnableXXXXX  开启某个功能
+
+SpringSecurity的两个主要目标是“认证”和“授权”（控制访问）
+
+“认证”（Authentication）
+
+“授权”（Authorization）
+
+这个概念是通的，而不是只在SpringSecurity中存在
+
