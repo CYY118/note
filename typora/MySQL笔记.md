@@ -6,7 +6,47 @@
 
 show databases;
 
+# DDL
 
+查询所有数据库
+
+> show databases；
+
+查询当前数据库
+
+> select database();
+
+创建
+
+> create database [if not exists] 数据库名 [default charset 字符集] [collate 排序规则];
+>
+> if not exists :如果数据库不存在则创建
+
+删除
+
+> drop database [if exists] 数据库名;
+
+使用
+
+> use 数据库名;
+
+查询当前数据库所有表
+
+> show tables;
+
+查询表结构
+
+> desc 表名;
+
+查询指定表的建表语句
+
+> show create table 表名;
+
+
+
+图形化界面
+
+![image-20230103213132978](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301032131062.png)
 
 # DQL
 
@@ -32,6 +72,8 @@ order by
 limit
 	分页参数
 ```
+
+![image-20230103232214978](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301032322061.png)
 
 - 基本查询
 - 条件查询（where）
@@ -165,6 +207,86 @@ is null:
 
 既可以判断null值，又可以判断普通的数值，可读性较低
 
-
-
 escape：在mysql中可以指定转义字符
+
+![image-20230103213856564](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301032138632.png)
+
+![image-20230103215857927](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301032158987.png)
+
+## 聚合函数
+
+**介绍**
+
+将一列数据作为一个整体，进行纵向计算
+
+**常见的聚合函数**
+
+| 函数  | 功能     |
+| ----- | -------- |
+| count | 统计数量 |
+| max   | 最大值   |
+| min   | 最小值   |
+| avg   | 平均值   |
+| sum   | 求和     |
+
+**语法**
+
+> select 聚合函数(字段列表) from 表名
+
+![image-20230103221527015](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301032215118.png)
+
+所有的null值不参与计算
+
+## 分组查询
+
+**语法**
+
+> select 字段列表 form [where 条件] group by 分组字段名  [having 分组后过滤条件]
+
+**where 和 having区别**
+
+- 执行时机不同：where是分组之前进行过滤，不满足where条件，不参与分组；而having是分组之后对结果进行过滤
+- 判断条件不同：where不能对聚合函数进行判断，而having可以
+
+
+
+![image-20230103222240777](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301032222836.png)
+
+![image-20230103222256170](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301032222214.png)
+
+
+
+![image-20230103222418823](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301032224894.png)
+
+
+
+![image-20230103222740159](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301032227244.png)
+
+==注意：==
+
+- 执行顺序：where>聚合函数>having
+- 分组之后，查询的字段一般为聚合函数和分组字段，查询其他字段无任何意义
+
+## 排序查询
+
+语法：
+
+> select 字段列表 from 表名 order by 字段名 [asc/desc]
+
+升序：asc （默认）
+
+降序：desc
+
+## 分页查询
+
+**语法**
+
+> select 字段列表 from 表名 limit 起始索引，查询记录数;
+
+
+
+==注意：==
+
+- 起始索引从0开始，起始索引 = （查询页码-1）*每页显示记录数
+- 分页查询是数据库的方言，不同的数据库有不同的实现，mysql中是 limit
+- 如果查询的是第一页数据，起始索引可以省略，直接简写为 limit 10
