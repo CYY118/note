@@ -290,3 +290,201 @@ escape：在mysql中可以指定转义字符
 - 起始索引从0开始，起始索引 = （查询页码-1）*每页显示记录数
 - 分页查询是数据库的方言，不同的数据库有不同的实现，mysql中是 limit
 - 如果查询的是第一页数据，起始索引可以省略，直接简写为 limit 10
+
+
+
+# DCL
+
+DCL（数据控制语言），用来管理数据库 用户、控制数据库访问权限
+
+## 管理用户
+
+![image-20230105164629283](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301051646592.png)
+
+```sql
+#创建用户itcast，只能够在当前主机localhost访问，密码123456；
+create user 'itcast'@'localhost' identified  by '123456';
+#创建用户heima，可以在任意主机访问该数据库，密码123456；
+create user 'heima'@'%' identified by '123456';
+#修改用户heima 的访问密码为1234；
+alter user 'heima'@'%' identified with mysql_native_password by '1234';
+#删除itcast@localhost用户
+drop user 'itcast'@'localhost';
+```
+
+
+
+# 函数
+
+概念：是指一段可以直接被另一段程序调用的程序或代码
+
+例如：![image-20230105215033600](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301052150833.png)
+
+## 字符串函数
+
+如下是常用的几个：
+
+| 函数                     | 功能                                                      |
+| ------------------------ | --------------------------------------------------------- |
+| concat(s1,s2,...,sn)     | 字符串拼接                                                |
+| lower（str）             | 将字符串全部转为小写                                      |
+| upper（str）             | 将字符串全部转为大写                                      |
+| lpad（str,n,pad）        | 左填充，用字符串pad对str的左边进行填充，达到n个字符串长度 |
+| rpad（str,n,pad）        | 右填充，用字符串pad对str的右边进行填充，达到n个字符串长度 |
+| trim(str)                | 去掉字符串头部和尾部的空格                                |
+| substring(str,start,len) | 返回从字符串str从start位置起的len个长度的字符串           |
+
+```sql
+-- 字符串拼接
+SELECT CONCAT('hello-','world!');
+
+-- 全部转为大写
+SELECT LOWER('HELLo');
+
+-- 左填充
+SELECT LPAD('01',5,'-');
+
+-- 右填充
+SELECT RPAD('01',5,'-');
+
+-- 去除空格
+SELECT TRIM(' hello world! ')
+
+-- 字符串截取
+SELECT SUBSTRING('hello world',1,5);
+
+```
+
+```sql
+-- 练习：
+-- 员工号显示五位数
+UPDATE emp set workno=LPAD(workno,5,0);
+```
+
+
+
+## 数值函数
+
+常见的数值函数
+
+| 函数       | 功能                               |
+| ---------- | ---------------------------------- |
+| ceil(x)    | 向上取整                           |
+| floor(x)   | 向下取整                           |
+| mod(x,y)   | 返回x/y的模                        |
+| rand()     | 返回0~1内的随机数                  |
+| round(x,y) | 求参数x的四舍五入的值，保留y位小数 |
+
+```sql
+-- 向上取整
+SELECT CEIL(1.5);
+
+-- 向下取整
+SELECT FLOOR(1.5);
+
+-- 返回x/y的模,相当于x除以y取余
+SELECT MOD(5,4);
+
+-- 返回0~1内的随机数
+SELECT rand();
+
+-- 求参数x的四舍五入的值，保留y位小数
+SELECT ROUND(1.423223,2);
+```
+
+```	sql
+-- 练习：
+-- 通过数据库的函数，生成一个六位数的随机验证码
+SELECT LPAD(ROUND(rand()*1000000,0),6,'0');
+-- 解析：
+-- rand()：生成一个随机数
+-- ROUND：四舍五入，保留0位小数
+-- LPAD：向左填充补齐六位数字
+```
+
+## 日期函数
+
+| 函数                              | 功能                                              |
+| --------------------------------- | ------------------------------------------------- |
+| curdate()                         | 返回当前日期                                      |
+| curtime()                         | 返回当前时间                                      |
+| now()                             | 返回当前日期和时间                                |
+| year(date)                        | 获取指定date的年份                                |
+| month(date)                       | 获取指定date的月份                                |
+| day(date)                         | 获取指定date日期                                  |
+| date_add(date,interval expr type) | 返回一个日期/时间值加上一个时间间隔expr后的时间值 |
+| datediff(date1,date2)             | 返回起始时间date1和结束时间date2之间的天数        |
+
+```sql
+-- 返回当前日期
+SELECT CURDATE();
+
+-- 返回当前时间
+SELECT CURTIME();
+
+-- 返回当前日期和时间
+SELECT NOW();
+
+-- YEAR(),MONTH(),DAY()
+SELECT YEAR(NOW());
+SELECT month(NOW());
+SELECT day(NOW());
+
+-- date_add(date,interval expr type)返回一个日期/时间值加上一个时间间隔expr后的时间值
+SELECT DATE_ADD(NOW(),INTERVAL 70 DAY);
+
+-- DATEDIFF 返回起始时间date1和结束时间date2之间的天数
+SELECT DATEDIFF(NOW(),'2024-01-05');
+
+```
+
+```sql
+-- 练习：
+-- 查询所有员工的入职天数，并根据入职天数倒序排序
+SELECT `name`,DATEDIFF(CURDATE(),entrydate) 'entrydates'
+FROM emp
+ORDER BY entrydates desc;
+```
+
+
+
+## 流程控制函数
+
+流程控制函数也是很常用的一类函数，可以在sql语句中实现条件筛选，从而提高语句的效率
+
+| 函数                                                       | 功能                                                     |
+| ---------------------------------------------------------- | -------------------------------------------------------- |
+| if(value,t,f)                                              | 如果value的值true，则返回t，否则返回f                    |
+| ifnull(value1,value2)                                      | 如果value1不为空，返回value1，否则返回value2             |
+| case when [val1] then [res1] ... else [default] end        | 如果val1位true，返回res1，...否则返回default默认值       |
+| case [expr] when [val1] then [res1] ... else [defalut] end | 如果expr的值等于val1，返回res1，...否则返回defalut默认值 |
+
+```sql
+-- if(value,t,f)如果value的值true，则返回t，否则返回f
+SELECT IF(TRUE,'ok','FALSE');
+
+-- ifnull(value1,value2)如果value1不为空，返回value1，否则返回value2
+SELECT IFNULL('ok','defalut');
+SELECT IFNULL(NULL,'defalut');
+
+```
+
+```sql
+-- case when [val1] then [res1] ... else [default] end如果val1位true，返回res1，...否则返回default默认值
+-- 需求：查询emp表的员工姓名和工作地址（上海/北京--》一线城市，其他---》二线城市）
+SELECT
+	name,
+	(CASE worksddress
+	WHEN '北京' THEN
+		'一线城市'	
+  WHEN '上海' THEN
+		'一线城市'
+	ELSE
+		'二线城市'
+  END) AS '工作地址'
+FROM emp;
+```
+
+结果如下：
+
+![image-20230105225749978](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301052257080.png)
