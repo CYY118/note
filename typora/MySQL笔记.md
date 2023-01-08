@@ -470,21 +470,385 @@ SELECT IFNULL(NULL,'defalut');
 ```
 
 ```sql
--- case when [val1] then [res1] ... else [default] end如果val1位true，返回res1，...否则返回default默认值
--- 需求：查询emp表的员工姓名和工作地址（上海/北京--》一线城市，其他---》二线城市）
+-- case 
+-- when [val1] then [res1] ... 
+-- else [default] 
+-- end
+-- 如果val1位true，返回res1，...否则返回default默认值
+-- 需求：查询emp表的员工姓名和工作地址（上海/北京-->一线城市，其他-->二线城市）
 SELECT
 	name,
 	(CASE worksddress
 	WHEN '北京' THEN
 		'一线城市'	
-  WHEN '上海' THEN
+    WHEN '上海' THEN
 		'一线城市'
 	ELSE
 		'二线城市'
-  END) AS '工作地址'
+    END) AS '工作地址'
 FROM emp;
 ```
 
 结果如下：
 
 ![image-20230105225749978](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301052257080.png)
+
+
+
+![image-20230107211526221](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301072115487.png)
+
+![image-20230107212015036](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301072120130.png)
+
+## 总结
+
+- 字符串函数
+- 数值函数
+- 日期函数
+- 流程函数
+
+![image-20230107212405292](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301072124378.png)
+
+# 约束
+
+## 概述
+
+1. 概述：约束是作用于表中字段上的规则，用于限制存储在表中的数据
+
+2. 目的：保证数据库中数据的正确性、有效性、完善性
+
+3. 分类：
+
+   | 约束                    | 描述                                                     | 关键字      |
+   | ----------------------- | -------------------------------------------------------- | ----------- |
+   | 非空约束                | 限制该字段的数据不能为null                               | not null    |
+   | 唯一约束                | 保证该字段的所有数据都是唯一，不重复的                   | unque       |
+   | 主键约束                | 主键是一行数据的唯一标识，要求非空且唯一                 | primary key |
+   | 默认约束                | 保存数据时，如果未指定该字段的值，则采用默认值           | defalut     |
+   | 检查约束（8.0版本之后） | 保证字段值满足某一个条件                                 | check       |
+   | 外键约束                | 用来让两张表的数据之间建立连接，保证数据的一致性和完整性 | foreign key |
+
+   注意：约束是作用于表中字段上的，可以在创建/修改表的时候添加约束
+
+## 演示
+
+![image-20230107214017315](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301072140438.png)
+
+```sql
+-- 约束演示：根据需求建表
+CREATE TABLE user(
+	id int primary key auto_increment COMMENT '主键',
+	name varchar(10) not null unique comment '姓名',
+	age int check(age>0&&age<=120) comment '年龄',
+	status char(1) DEFAULT '1' comment '状态',
+	gender char(1) comment '性别'
+) COMMENT '用户表';
+```
+
+```sql
+-- 插入数据
+INSERT into
+user(name,age,status,gender)
+values
+('Tom1',19,'1','男'),
+('Tom2',25,'0','男');
+```
+
+## 外键约束
+
+![image-20230107221448427](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301072214527.png)
+
+### 语法
+
+- 添加外键
+
+```sql
+create table 表名(
+	字段名	数据类型,
+    ...
+    [constraint] [外键名称] foreign key(外键字段名) references 主表(主表列名)
+);
+```
+
+或者
+
+```sql
+alter table  表名 add constaint 外键名称 foreign key(外键字段名) references 主表(主表列名);
+
+
+```
+
+
+
+
+
+# 多表查询
+
+
+
+属于DQL语句
+
+## 多表关系
+
+在项目开发中，在进行数据库表的设计时，会根据业务需求以及模块之间的关系，分析并设计表结构，由于业务之间相互关联，所以各个表结构之间也存在着各种联系，基本上分为三种：
+
+- 一对多（多对一）
+
+![image-20230108211238413](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082112514.png)
+
+- 多对多
+
+![image-20230108211357871](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082113952.png)
+
+```sql
+-- 创建学生表
+CREATE TABLE student(
+	id int auto_increment primary key comment '主键ID',
+	name varchar(10) comment '姓名',
+	no varchar(10) comment '学号'
+) comment '学生表';
+-- 插入学生信息
+insert into student 
+VALUES
+(null,'张三','2000100101'),
+(null,'王五','2000100102'),
+(null,'李四','2000100103'),
+(null,'谢逊','2000100104');
+
+-- 创建课程表
+create table course(
+	id int auto_increment primary key comment '主键',
+	name varchar(10) comment '课程名称'
+) comment '课程表';
+
+-- 插入课程信息
+insert into course 
+VALUES
+(null,'Java'),
+(null,'PHP'),
+(null,'MySQL'),
+(null,'Hadoop');
+
+-- 创建中间表
+create table student_course(
+	id int auto_increment primary key  comment '主键',
+	studentid int not null comment '学生ID',
+	courseid int not null comment '课程ID',
+  constraint fk_courseid foreign key (courseid) references course(id),
+	constraint fk_studentid foreign key (studentid) references student(id)
+) comment '学生课程中间表';
+
+-- 插入中间表信息
+insert into student_course 
+VALUES
+(null,1,1),
+(null,1,2),
+(null,1,3),
+(null,2,2),
+(null,2,3),
+(null,3,4);
+```
+
+通过idea查看多表之间的关联
+
+![image-20230108213852549](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082138751.png)
+
+如下图即为以上三个表的关联图
+
+![image-20230108213951661](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082139736.png)
+
+- 一对一
+
+![image-20230108214236673](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082142750.png)
+
+```sql
+create table tb_user(
+	id int auto_increment primary key comment'主ID',
+	name varchar(10) comment '姓名',
+	age int comment '年龄',
+	gender char(1) comment '1: 男 ，2:女',
+	phone char(11) comment'手机号'
+) comment '用户基本信息表' ;
+
+create table tb_user_edu(
+	id int auto_increment primary key comment'主健ID',
+	degree varchar(20) comment '学历',
+	major varchar(50) comment '专业',
+	primaryschool varchar(50) comment '小学',
+	middleschool varchar(50) comment '中学',
+	university varchar(50) comment '大学',
+	userid int unique comment '用户ID',
+	constraint fk_userid foreign key (userid) references tb_user(id)
+)comment '用户教育信息表';
+
+insert into tb_user(id,name,age, gender, phone) values
+(null,'黄渤',45,1,'18800001111'),
+(null,'冰冰',35,2,'18800002222'),
+(null,'码云',55,1,'18800008888'),
+(null,'李彦宏',50,1,'18800009999');
+
+insert into tb_user_edu(id,degree,major,primaryschool,middleschool,university,userid) 
+values
+(null,'本科','舞蹈','静安区第一小学','静安区第一中学','北京彝蹈学院',1),
+(null,'顾士','表演','朝阳区第一小学','朝阳区第一中学','北京电影学院',2),
+(null,'本科','英语','杭州市第一小学','杭州市第一中学','杭州师范大学',3),
+(null,'本科','应用数学','阳泉第一小学','阳泉区第一中学','清华大学',4);
+```
+
+
+
+## 多表查询概述
+
+概述：从多张表中进行数据查询
+
+```sql
+-- 多表查询 ---笛卡尔积
+SELECT * from emp,dept;
+```
+
+笛卡尔积：笛卡尔乘积是指在数学中，两个集合A集合B的所有组合情况（在多表查询当中，需要消除无效的笛卡尔积）。如下图所示：
+
+![image-20230108220719360](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082207433.png)
+
+消除笛卡尔积：
+
+![image-20230108220814507](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082208580.png)
+
+### 分类
+
+![image-20230108221130066](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082211130.png)
+
+- 连接查询
+  - 内连接：相当于查询A、B交集部分数据
+  - 外连接：
+    - 左外连接：查询左表所有数据，以及两张表交集部分数据
+    - 右外连接：查询右表所有数据，以及两张表交集部分数据
+  - 自连接：当前表与自身的连接查询，自连接必须使用表列名
+- 子查询
+
+## 内连接
+
+==内连接查询的是两张表交集的部分==
+
+内连接查询语法：
+
+- 隐式内连接
+
+> select 字段列表 from 表1，表2 where 条件...;
+
+```sql
+-- 内连接演示
+-- 查询每一个员工的姓名，及关联的部门的名称（隐式内连接实现）
+-- 表结构：emp, dept
+-- 连接条件：emp.dept_id=dept.id
+select emp.id,emp.name '员工姓名',dept.name '部门名称' 
+from emp,dept 
+where emp.dept_id=dept.id;
+```
+
+
+
+- 显式内连接
+
+> select 字段列表 from表1 [inner] join 表2 on 连接条件...;
+
+```sql
+-- 查询每一个员工的姓名，及关联的部门的名称（显式内连接实现）
+select e.id,e.name '员工姓名',d.name '部门名称' 
+from emp e inner join dept d on e.dept_id=d.id;
+```
+
+查询结果如下：
+
+![image-20230108223502322](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082235395.png)
+
+## 外连接
+
+![image-20230108223643545](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082236609.png)
+
+外连接查询语法：
+
+- 左外连接
+
+> select 字段列表 from 表1 left [outer] join 表2 on 条件...;
+
+==相当于查询表1（左表）的所有数据 包含 表1和表2交集部分的数据==
+
+```sql
+-- 外连接演示
+-- 表结构：emp, dept
+-- 连接条件：emp.dept_id=dept.id
+-- 查询emp表所有数据，和对应的部门信息(左外连接)
+select e.*,d.name 
+from emp e 
+left outer join dept d
+on e.dept_id=d.id;
+-- outer 可写可不写
+```
+
+结果如下：
+
+![image-20230108225159919](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082252008.png)
+
+- 右外连接
+
+> select 字段列表 from 表1 right [outer] join 表2 on 条件...;
+
+==相当于查询表2（右表）的所有数据 包含 表1和表2交集部分的数据==
+
+```sql
+-- 查询dept表所有数据，和对应的员工信息(右外连接)
+select d.*,e.* 
+from emp e 
+right outer join dept d
+on e.dept_id=d.id;
+-- outer 可写可不写
+-- 注意：右外通常可以改为左外，如下
+select d.*,e.* 
+from dept d
+left outer join emp e 
+on e.dept_id=d.id;
+```
+
+结果如下：
+
+![image-20230108225233506](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082252597.png)
+
+## 自连接
+
+概述：自己连接自己
+
+自连接查询语法：
+
+> select 字段列表 from 表A 别名A join 表A 别名B on 条件...;
+
+==自连接查询，可以是内连接查询，也可以是外连接查询==
+
+```sql
+-- 自连接
+-- 表结构：emp,
+-- 查询员工 及其 所属员工的名字
+select a.name '员工姓名',b.name '领导姓名' 
+from emp a,emp b 
+where a.managerid=b.id;
+```
+
+结果如下图：
+
+![image-20230108231135775](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082311856.png)
+
+```sql
+-- 查询所有员工 emp 及其领导的名字 emp，如果员工没有领导，也需要查询出来
+select a.name '员工姓名',b.name '领导姓名' 
+from emp a left join emp b 
+on a.managerid=b.id;
+```
+
+结果如下图：
+
+![image-20230108231228312](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082312382.png)
+
+## 子查询
+
+
+
+## 多表查询案例
