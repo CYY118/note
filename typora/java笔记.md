@@ -4802,6 +4802,10 @@ class Teacher extends Person{
 
 #### **方法的重写**
 
+如下图是重写和重载的区别
+
+![image-20230112180052922](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301121800403.png)
+
 当父类的方法不能满足子类现在的需求时，需要进行方法的重写
 
 ##### **书写格式：**
@@ -8037,6 +8041,8 @@ public class demo2 {
 
 ## JDK8新增时间相关类
 
+![image-20230109220005852](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301092200995.png)
+
 为什么jdk8要新增？
 
 好处：
@@ -8085,5 +8091,212 @@ public class demo2 {
 
   
 
-  
+## 包装类
 
+什么是包装类？
+
+包装类：基本数据类型对应的引用类型
+
+如何理解包装类？
+
+==用一个对象，把基本数据类型给包起来==
+
+![image-20230112214935441](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301122149665.png)
+
+![image-20230112221032293](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301122210460.png)
+
+![image-20230112221108123](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301122211255.png)
+
+```java
+package 常用API.a09包装类;
+
+/**
+ * @author cyy
+ * @ProjectName java-learn
+ * @Description
+ * @time 2023/1/12 22:09
+ */
+public class demo1 {
+    public static void main(String[] args) {
+        /*jdk5以前的方式*/
+
+//        1.利用构造方法获取Integer的对象
+        Integer i1 = new Integer(1);
+        Integer i2 = new Integer("1");
+        System.out.println(i1);
+        System.out.println(i2);
+
+//        2.利用静态方法获取Integer的对象
+        Integer i3 = Integer.valueOf(123);
+        Integer i4 = Integer.valueOf("123");
+        Integer i5 = Integer.valueOf("123", 8);
+        System.out.println(i3);
+        System.out.println(i4);
+        System.out.println(i5);
+
+//        3.这两种方式获取对象的区别
+        /*因为在实际开发过程中，-128~127之间的数据，用的比较多，
+        * 如果每次使用都是new对象，那么太浪费内存了
+        * 所以，提前把这个范围之内的每一个数据都创建好对象
+        * 如果要用到了不会创建新的，而是返回已经创建好的对象*/
+        Integer i6 = Integer.valueOf(127);
+        Integer i7 = Integer.valueOf(127);
+        System.out.println(i6 == i7);//true
+
+        Integer i8 = Integer.valueOf(128);
+        Integer i9 = Integer.valueOf(128);
+        System.out.println(i8 == i9);//false
+
+//        因为看到了new关键字，在Java中，每一次new都是创建了一个新的对象
+//        所以下面的两个对象都是new出来的，地址值不一样
+        Integer i10 = new Integer(127);
+        Integer i11 = new Integer(127);
+        System.out.println(i10 == i11);//false
+
+        Integer i12 = new Integer(128);
+        Integer i13 = new Integer(128);
+        System.out.println(i12 == i13);//false
+    }
+}
+```
+
+```java
+package 常用API.a09包装类;
+
+/**
+ * @author cyy
+ * @ProjectName java-learn
+ * @Description
+ * @time 2023/1/12 22:24
+ */
+public class demo2 {
+    public static void main(String[] args) {
+//        在以前包装类如何进行计算
+        Integer i1 = new Integer(1);
+        Integer i2 = new Integer(2);
+
+//        需求：要把两个数据进行相加得到结果3
+        /*对象之间是不能直接进行计算的
+         * 步骤：
+         * 1.把对象进行拆箱，变成基本数据类型
+         * 2.相加
+         * 3.把得到的结果再次进行装箱（再变回包装类）*/
+
+        int res = i1.intValue() + i2.intValue();
+        Integer i3 = new Integer(res);
+        System.out.println(i3);
+    }
+}
+
+```
+
+```java
+package 常用API.a09包装类;
+
+/**
+ * @author cyy
+ * @ProjectName java-learn
+ * @Description
+ * @time 2023/1/12 22:39
+ */
+public class demo3 {
+    public static void main(String[] args) {
+//        在JDK5的时候提出了一个机制：自动装箱和自动拆箱
+        /*自动装箱：把基本数据类型会自动的变成其对应的包装类
+         * 自动拆箱：把包装类自动的变成其对应的基本数据类型*/
+
+//        在底层，此时还回去自动调用静态方法valueof得到一个Integer对象，只不过这个动作不需要我们自己去操作了
+        Integer i1 = 10;
+
+        Integer i2 = new Integer(10);
+//        自动拆箱的动作
+        int i = i2;
+
+//      在JDK5以后，int和Integer可以看作是同一个东西，因为在内部可以自动转化
+
+    }
+}
+```
+
+Integer成员方法
+
+![image-20230112224938556](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301122249715.png)
+
+==因为这四个方法是static静态的，所以调用的时候可以直接``类名'.'``进行调用==
+
+练习：
+
+```sql
+package 常用API.a09包装类;
+
+/**
+ * @author cyy
+ * @ProjectName java-learn
+ * @Description
+ * @time 2023/1/12 22:51
+ */
+public class demo4 {
+    public static void main(String[] args) {
+//        把整数转成二进制
+        String str1 = Integer.toBinaryString(100);
+        System.out.println("str1 = " + str1);
+
+//        把整数转成八进制
+        String str2 = Integer.toOctalString(100);
+        System.out.println("str2 = " + str2);
+
+//        把整数转成十六进制
+        String str3 = Integer.toHexString(100);
+        System.out.println("str3 = " + str3);
+
+//        将字符串类型的整数转成int类型的整数
+        /*强类型语言：每种数据在Java中都有各自的数据类型
+        * 在计算的时候，如果不是同一种数据类型，是无法直接计算的
+        * */
+        int i = Integer.parseInt("123");
+        System.out.println("i = " + i);
+        /*细节1:
+        * 在类型转换的时候，括号中的参数只能是数字不能是其他，否则代码会报错
+        * 细节2：
+        * 8中包装类当中，除了Character都有对应的parseXxx的方法，进行类型转化*/
+        String str="true";
+        boolean b = Boolean.parseBoolean(str);
+        System.out.println("b = " + b);
+    }
+}
+```
+
+```java
+package 常用API.a09包装类;
+
+import java.util.Scanner;
+
+/**
+ * @author cyy
+ * @ProjectName java-learn
+ * @Description
+ * @time 2023/1/12 23:02
+ */
+public class demo5 {
+    public static void main(String[] args) {
+//        键盘录入
+        Scanner scanner = new Scanner(System.in);
+/*        System.out.println("请输入一个整数");
+        int i = scanner.nextInt();
+        System.out.println("i = " + i);*/
+        /*弊端：
+        * 当我们在使用next，nextInt，nextDouble在接收数据的时候，遇到空格，回车，制表符的时候就停止了
+        * 键盘录入的是123 123 那么此时只能接受到空格前面的数据
+        * 我想要的是接受一整行的数据
+        * 约定：
+        * 以后我们如果想要键盘录入，不管什么类型，统一使用nextLine
+        * 特点：遇到回车才停止*/
+        System.out.println("请输入一个字符串");
+        String line = scanner.nextLine();
+        System.out.println("========输入如下=========");
+        System.out.println(line);
+    }
+}
+```
+
+![image-20230112231150521](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301122311662.png)

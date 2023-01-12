@@ -847,7 +847,123 @@ on a.managerid=b.id;
 
 ![image-20230108231228312](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301082312382.png)
 
+## 联合查询-union、union all
+
+对于ubion查询，就是把多次结果结果合并起来，形成一个新的查询结果集
+
+> select 字段列表 from 表A
+>
+> union [all]
+>
+> select 字段列表 from 表B ...;
+
+- union all：是直接将查询的结果合并
+- union：是将查询的结果合并并进行去重操作
+
+注意：
+
+==对于联合查询的多张表的列数必须保持一致，字段类型也需要保持一致==
+
 ## 子查询
+
+- 概念：SQL语句中嵌套select语句，称为嵌套语句，又称子查询。
+
+> select  *  from  t1  where  column1 = (select  column1  from t2);
+
+==子查询外部的语句可以是insert / update / delete / select 的任何一个。==
+
+- 根据子查询结果不同，分为：
+
+  - 标量子查询（子查询结果为单个值）
+
+  子查询返回的结果是单个值（数字、字符串、日期等），最简单的形式，这种子查询成为==标量子查询==。
+
+  常用的操作符：=  <>  >  >=  <   <=
+
+  ```sql
+  -- 标量子查询
+  -- 需求：查询销售部所有员工的信息
+  -- 拆解完成如下：
+  -- a.查询‘销售部’部门ID
+  select id from dept where name = '销售部';
+  -- b.根据销售部部门ID，查询员工信息
+  select * from emp where dept_id = 4;
+  -- 子查询sql如下：
+  select * from emp where dept_id = (select id from dept where name = '销售部');
+  
+  
+  -- 需求：查询在 ‘张艳’ 入职之后的信息
+  -- 拆解完成如下：
+  -- a.查询 ‘张艳’ 的入职日期
+  select entrydate from emp where name='张艳';
+  -- b.查询指定入职日期之后入职的员工信息
+  select * from emp where entrydate > '2010-01-01';
+  -- 子查询sql如下：
+  select * from emp where entrydate > (select entrydate from emp where name='张艳');
+  
+  ```
+
+  - 列子查询（子查询结果为一列）
+
+  子查询返回的结果是一列（可以是多列），这种子查询称为==列子查询==
+
+  常用的操作符：in 、not in 、any 、some、all
+
+  | 操作符 | 描述                                   |
+  | ------ | -------------------------------------- |
+  | IN     | 在指定的集合范围之内，多选一           |
+  | NOT IN | 不在指定的集合范围之内                 |
+  | ANY    | 子查询返回列表中，有任意一个满足即可   |
+  | SOME   | 与ANY等同，使用SOME的地方都可以使用ANY |
+  | ALL    | 子查询返回列表的所有值都必须满足       |
+
+  ![image-20230109215531811](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301092155013.png)
+
+  - 行子查询（子查询结果为一行）
+
+  子查询返回的结果是一行（可以是多列），这种子查询查询称为==行子查询==
+
+  常用的操作符：=、<>、IN、NOT IN
+
+  ```sql
+  
+  -- 行子查询
+  -- 查询与“张艳”的薪资 及直属领导相同的员工信息
+  -- 分布完成
+  -- a.查询“张艳”的薪资及直属领导
+  SELECT salary,managerid from emp WHERE name='张艳';
+  -- b.查询与“张艳”的薪资及直属领导相同的员工信息
+  SELECT * from emp WHERE salary = '6000' and managerid=13;
+  
+  -- 行子查询完成
+  SELECT * 
+  from emp 
+  where (salary,managerid)=(SELECT salary,managerid from emp WHERE name='张艳');
+  ```
+
+  ![image-20230112202034213](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301122020357.png)
+
+  - 表子查询（子查询结果为多行多列）
+
+  子查询返回的结果是多行多列，这种子查询称为==表子查询==
+
+  常用的操作符：IN
+
+  ![image-20230112202835680](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301122028795.png)
+
+  ![image-20230112203454159](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301122034246.png)
+
+- 根据子查询位置，分为：
+
+  - where 之后
+  - from 之后
+  - select 之后
+
+
+
+
+
+
 
 
 
