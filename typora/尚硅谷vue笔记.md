@@ -97,3 +97,4 @@ MVVM
    - 通过Object.defineProperty()把data对象中所有属性添加到vm上。
    - 为每一个添加到vm上的属性，都指定一个getter/setter
    - 在getter/setter内部去操作（读/写）data中对应的属性
+
