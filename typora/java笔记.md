@@ -8300,3 +8300,217 @@ public class demo5 {
 ```
 
 ![image-20230112231150521](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202301122311662.png)
+
+# Lambda表达式
+
+## 函数式编程
+
+是一种思想特点，忽略面向对象的复杂语法，强调做什么，而不是谁去做
+
+**面向对象**：先找对象，让对象做事情
+
+## Lambda表达式的标准格式
+
+```java
+()->{
+    
+}
+```
+
+- ()：对应的是方法的形参
+- ->：固定格式
+
+lambda表达式是JDK8开始后的一种新的语法形式
+
+**注意点**
+
+- Lambda表达式可以用来简化匿名内部类的书写
+- Lambda表达式只能简化==函数式接口==的匿名内部类的写法
+- 函数式接口：
+  - 有且只有一个抽象方法的接口叫做函数式接口，接口上方可以加`@FunctionalInterface`注解
+
+练习：
+
+```java
+package 面向对象进阶.a10lambda表达式.demo1;
+
+/**
+ * @author cyy
+ * @ProjectName java-learn
+ * @Description
+ * @time 2023/2/9 9:55
+ */
+public class demo1 {
+    public static void main(String[] args) {
+        /*1.利用匿名内部类的形式调用下面的方法
+        * 调用一个方法的时候，如果方法的形参是一个接口，那么我们要传递这个接口的实现类对象
+        * 如果实现类对象只要用到一次，可以用匿名内部类的方式书写
+        * */
+        method(new Swim() {
+            @Override
+            public void swimming() {
+                System.out.println("正在游泳！");
+            }
+        });
+
+        /*2.利用Lambda表达式进行改写*/
+        method(()->{
+            System.out.println("lambda正在游泳");
+        });
+    }
+    
+    public static void method(Swim swim){
+        swim.swimming();
+    }
+}
+
+//函数式接口：有且只有一个抽象方法的接口叫做函数式接口，接口上方可以加`@FunctionalInterface`注解
+@FunctionalInterface
+interface Swim{
+    public abstract void swimming();//抽象方法
+}
+```
+
+![image-20230209214909508](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202302092149679.png)
+
+**总结：**
+
+- Lambda表达式的基本作用？
+
+  简化函数式接口的匿名内部类的写法
+
+- Lambda表达式有什么使用前提？
+
+  必须使用接口的匿名内部类，接口中只有一个抽象方法
+
+- Lambda的好处？
+
+  Lambda是一个匿名函数 我们可以把lambda表达式理解为是一段可以传递的代码，它可以写出更简洁、跟灵活的代码，作为一种跟紧凑的代码风格，使java语言表达能力得到了提升
+
+## Lambda表达式的省略写法
+
+**省略核心**：可推导，可省略
+
+**省略规则**：
+
+1. 参数类型可以省略不写
+2. 如果只有一个参数，参数类型可以省略，同时（）也可以省略
+3. 如果Lambda表达式的方法体只有一行，大括号，分号，return可以省略不写，需要同时省略
+
+**练习：**
+
+```java
+package 面向对象进阶.a10lambda表达式.demo1;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Comparator;
+
+/**
+ * @author cyy
+ * @ProjectName java-learn
+ * @Description
+ * @time 2023/2/9 22:02
+ */
+public class demo2 {
+
+    public static void main(String[] args) {
+        /*
+        * 1. 参数类型可以省略不写
+          2. 如果只有一个参数，参数类型可以省略，同时（）也可以省略
+          3. 如果Lambda表达式的方法体只有一行，大括号，分号，return可以省略不写，需要同时省略*/
+
+        Integer[] arr = {2, 3, 1, 5, 6, 7, 8, 4, 9};
+//        排序
+        Arrays.sort(arr, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1 - o2;
+            }
+        });
+
+//        lambda完整格式
+        Arrays.sort(arr, (Integer o1, Integer o2) -> {
+            return o1 - o2;
+        });
+
+        //        lambda省略格式
+        Arrays.sort(arr, (o1, o2) -> o1 - o2);
+
+        System.out.println(Arrays.toString(arr));
+    }
+}
+```
+
+![image-20230209221104894](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202302092211020.png)
+
+==**练习**==
+
+![image-20230209221229235](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202302092212349.png)
+
+
+
+```java
+package 面向对象进阶.a10lambda表达式.demo1;
+
+import java.util.Arrays;
+
+/**
+ * @author cyy
+ * @ProjectName java-learn
+ * @Description
+ * @time 2023/2/9 22:12
+ */
+public class demo3 {
+    public static void main(String[] args) {
+        String[] arr = {"a", "aaaa", "aaa", "aa"};
+//      效果：  a aa aaa aaaa
+//        如果以后我们要把数组中的数据按照指定的方式进行排列，就需要用到sort方法，而且要指定排序的规则
+//        1、匿名内部类的方式
+/*        Arrays.sort(arr, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+//                规则：按照字符串的长度进行排序
+                return o1.length()-o2.length();
+            }
+        });*/
+
+//        2、Lambda 完整格式
+/*        Arrays.sort(arr,((String o1,String o2) -> {
+            return o1.length()-o2.length();
+        }));*/
+
+//        3、Lambda 简写格式
+        Arrays.sort(arr,((o1,o2) -> o1.length()-o2.length()));
+
+//        打印数组
+        System.out.println("Arrays.toString(arr) = " + Arrays.toString(arr));
+    }
+}
+```
+
+![image-20230209222820365](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202302092228491.png)
+
+# 集合体系结构
+
+![image-20230209224612037](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202302092246189.png)
+
+
+
+## Collection
+
+![image-20230209225353592](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202302092253730.png)
+
+![image-20230209225439139](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202302092254261.png)
+
+==**List系列集合**==：添加的元素是有序、可重复、有索引
+
+- 有序：存取的顺序是一样的
+
+==**Set系列集合**==：添加的元素是无序、不重复、无索引
+
+- 无序：存和取的顺序有可能是不一样的
+
+**==Collection是单列集合的祖宗接口，它的功能是全部单列集合都可以继承使用的==**
+
+![image-20230209230253908](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202302092302052.png)
