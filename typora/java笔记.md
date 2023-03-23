@@ -8514,3 +8514,21 @@ public class demo3 {
 **==Collection是单列集合的祖宗接口，它的功能是全部单列集合都可以继承使用的==**
 
 ![image-20230209230253908](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202302092302052.png)
+
+
+
+
+
+# Stream流
+
+## Stream流的终结方法
+
+| 名称    | 说明                       |
+| ------- | -------------------------- |
+| forEach | 遍历                       |
+| count   | 统计                       |
+| toArray | 收集流中的数据，放到数组中 |
+| collect | 收集流中的数据，放到集合中 |
+
+
+
