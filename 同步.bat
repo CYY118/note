@@ -1,6 +1,6 @@
 @echo off 
 echo File is being uploaded（git pull）, please wait...... 
-cd H:\note
+cd F:\note
 git pull
 
 cd E:\Program Files (x86)\Typora\

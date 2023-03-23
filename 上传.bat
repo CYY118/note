@@ -1,6 +1,6 @@
 @echo off 
 echo File is being uploaded, please wait...... 
-cd H:\note
+cd F:\note
 git add .
 set t=%date%  %time%
 git commit -m "%t%"
