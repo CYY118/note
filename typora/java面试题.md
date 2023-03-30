@@ -122,3 +122,16 @@ JRE是Java的运行环境，并不是一个开发环境，所以没有包含任�
 - 动态多态性：在子类中重写父类的方法。运行期间判断所引用对象的实际类型，根据其实际类型调用相应的方法。
 
 4、抽象。把客观事物用代码抽象出来。
+
+## Java的基本数据类型有哪些？
+
+- byte，8bit
+- char，16bit
+- short，16bit
+- int，32bit
+- float，32bit
+- long，64bit
+- double，64bit
+- boolean，只有两个值：true、false，可以使⽤用 1 bit 来存储
+
+在Java规范中，没有明确指出boolean的大小。在《Java虚拟机规范》给出了单个boolean占4个字节，和boolean数组1个字节的定义，具体 **还要看虚拟机实现是否按照规范来**，因此boolean占用1个字节或者4个字节都是有可能的。

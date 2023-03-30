@@ -968,3 +968,133 @@ on a.managerid=b.id;
 
 
 ## 多表查询案例
+
+
+
+
+
+# 事务
+
+简介：
+
+事务是一组操作的集合，它是一个不可分割得工作单位，事务会把所有得操作作为一个整体一起向系统提交或撤销操作请求，即这些操作要么同时成功，要么同时失败
+
+默认mysql的事务是自动提交的，也就是说，当执行一条DML语句，MySQL会立即隐式的提交事务
+
+
+
+# 存储对象
+
+![image-20230330214917346](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303302149516.png)
+
+## 视图
+
+**介绍：**
+
+视图是一种虚拟存在的表，视图中的数据并不在数据中实际存在，行和列数据来定义视图的查询中使用的表（基表），并且是在使用视图时动态生成的
+
+通俗的说，视图 只是保存了查询的SQL逻辑，不保存查询逻辑。所以我们在创建视图的时候，主要的工作就落在了创建这条SQL查询的语句上
+
+### **创建**
+
+> create [or replace] view 视图名称[(列名列表)] as select语句 [with[cascaded|local] check option]
+
+replace：替换某一个视图时用replace
+
+```sql
+-- 创建视图
+CREATE or replace VIEW stu_1 as select id,name from student where id<10;
+```
+
+![image-20230330220110919](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303302201033.png)
+
+### 查询
+
+> 查看创建视图语句：show create view 视图名称;
+>
+> 查看视图数据：select * from 视图名称.......;
+
+```sql
+-- 查询
+show create view stu_1;
+
+select * from stu_1 where id<10;
+```
+
+![image-20230330220619432](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303302206509.png)
+
+### 修改
+
+> 方式一：create [or replace] view 视图名称[(列名列表)] as select语句 [with[cascaded|local] check option]
+>
+> 方式二：alter view 视图名称[(列名列表)]  as select语句 [with[cascaded|local] check option]
+
+```sql
+CREATE or replace VIEW stu_1 as select id,name,no from student where id<10;
+
+alter VIEW stu_1 as select id,name,no from student where id<10;
+
+```
+
+### 删除
+
+> drop view [if exists] 视图名称 [,视图名称] ...
+
+```sql
+drop view stu_1;
+```
+
+
+
+
+
+```sql
+--创建视图
+CREATE or replace VIEW stu_1 as select id,name from student where id<10;
+--查询视图数据
+select * from stu_1;
+--向视图中插入数据
+insert into stu_1 values(5,'李飞');
+--向视图中插入数据（因为在创建的时候规定了id的上限，所以插入不到视图中）
+insert into stu_1 values(30,'Tom');
+```
+
+==默认插入视图中的数据会存放在基表中（student），即使视图规定了id的上限基表中还是会存在，只是视图中不存在==
+
+加上 `with[cascaded|local] check option` 在向视图中插入数据的时候会进行校验
+
+### 视图的检查选项
+
+![image-20230330222553781](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303302225867.png)
+
+cascaded（级联）：递归检查所有有所依赖的视图条件
+
+![image-20230330223652021](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303302236104.png)
+
+LOCAL:
+
+![image-20230330224618439](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303302246524.png)
+
+### 视图的更新
+
+要使试图可更新，视图中的行与基表中的行之间必须存在一对一的关系。如果试图包含以下任何一项，则该视图不可更新
+
+- 聚合函数或窗口函数（sum()、min()、max()、count()等）
+- distinct
+- group by
+- having
+- union或者 union all
+
+### 作用
+
+- 简单
+
+  视图不仅可以简化用户对数据的理解，也可以简化他们的操作。那些被经常使用的查询可以被定义为视图，从而使得用户不必为以后的操作每次指定全部的条件
+
+- 安全
+
+  数据库可以授权，但不能授权到数据库特定行和特定列上。通过视图用户只能查询和修改他们所能见到的数据
+
+- 数据独立
+
+  视图可帮助用户屏蔽真实表结构变化带来的影响

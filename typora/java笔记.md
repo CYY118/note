@@ -8515,9 +8515,388 @@ public class demo3 {
 
 ![image-20230209230253908](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202302092302052.png)
 
+## HashMap
+
+HashMap的特点
+
+- HashMap是Map里面的一个实现类
+- 没有额外需要学习的特有方法，直接使用Map里面的方法就可以了
+- 特点都是由键决定的：无序、不重复、无索引
+- HashMap和HashSet底层原理是一摸一样的
+
+**练习**
+
+![image-20230325103521821](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303251035042.png)
+
+```java
+package 集合进阶.a02HashMap;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * @author cyy
+ * @ProjectName javaLearn
+ * @Description
+ * @time 2023/3/25 10:34
+ */
+public class demo1 {
+    public static void main(String[] args) {
+        /*
+        * 核心点：
+        *   HashMap的键位置如果存的是自定义对象，需要重写hashCode和equals*/
+
+        HashMap<Student, String> map = new HashMap<>();
+
+        Student s1 = new Student("zhangsan", 21);
+        Student s2 = new Student("Lisi", 20);
+        Student s3 = new Student("wangwu", 10);
+        Student s4 = new Student("wangwu", 10);
+
+        map.put(s1,"北京");
+        map.put(s2,"广州");
+        map.put(s3,"上海");
+        map.put(s4,"山东");
+
+//        1遍历集合
+        Set<Student> students = map.keySet();
+        for (Student student : students) {
+            String address = map.get(student);
+            System.out.println(student+"="+address);
+        }
+
+        System.out.println("====================================");
+//        2遍历集合
+        Set<Map.Entry<Student, String>> entries = map.entrySet();
+        for (Map.Entry<Student, String> entry : entries) {
+            Student key = entry.getKey();
+            String value = entry.getValue();
+            System.out.println(key+"="+value);
+        }
+        System.out.println("====================================");
+//        3遍历集合
+        map.forEach((k,v)->{
+            System.out.println(k+"="+v);
+        });
+    }
+}
+
+```
+
+![image-20230325105434356](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303251054471.png)
+
+**练习**
+
+![image-20230325111427526](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303251114719.png)
+
+```java
+package 集合进阶.a02HashMap;
+
+import java.util.*;
+
+/**
+ * @author cyy
+ * @ProjectName javaLearn
+ * @Description
+ * @time 2023/3/25 11:00
+ */
+public class demo2 {
+    public static void main(String[] args) {
+//        1.定义一个数组，用于存储4个景点
+        String[] arr={"A","B","C","D"};
+//        利用随机数模拟80个同学的投票，并把投票的结果存储起来
+        ArrayList<String> list = new ArrayList<>();
+        Random random = new Random();
+
+        for (int i = 0; i < 100; i++) {
+            int i1 = random.nextInt(arr.length);
+            list.add(arr[i1]);
+        }
+        list.add("E");//存在有同学会投别的景点（不在数组中的景点）
+        HashMap<String, Integer> map = new HashMap<>();
+//        定义map集合，利用集合进行统计
+        for (String name : list) {
+//            判断当前景点的名称是否存在
+            if (map.containsKey(name)){
+//                存在
+//                获取当前景点已经被投的次数
+                int count = map.get(name);
+//                在此基础上加1
+                count++;
+//                把最新的投票结果更新到map中
+                map.put(name,count);
+            }else {
+//                不存在
+                map.put(name,1);
+            }
+        }
+
+        System.out.println("map = " + map);
+
+//        3.求最大值
+        int max=0;
+        Set<Map.Entry<String, Integer>> entries = map.entrySet();
+        for (Map.Entry<String, Integer> entry : entries) {
+            int count = entry.getValue();
+            if (count>max){
+                max=count;
+            }
+        }
+
+        System.out.println("max = " + max);
+
+//        4.判断哪个景点的次数和最大值一样，如果一样，打印出来
+        for (Map.Entry<String, Integer> entry : entries) {
+            int count = entry.getValue();
+            if (count==max){
+                System.out.println("景点 = " + entry.getKey());
+            }
+        }
+    }
+}
+
+```
+
+![image-20230325112241516](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303251122636.png)
 
 
 
+## LinkedHashMap
+
+- ==由键决定==：有序、不重复、无索引
+- 这里的有序指的是保证存储和取出的元素顺序一致
+- ==原理==：底层数据结构是依赖哈希表，只是每个键值对元素又额外的多了一个双链表的机制记录存储的顺序
+
+```java
+package 集合进阶.a03LinkedHashMap;
+
+import java.util.LinkedHashMap;
+
+/**
+ * @author cyy
+ * @ProjectName javaLearn
+ * @Description
+ * @time 2023/3/25 11:29
+ */
+public class demo1 {
+    public static void main(String[] args) {
+//        1.创建集合
+        LinkedHashMap<String, Integer> lhm = new LinkedHashMap<>();
+
+//        2.添加元素
+        lhm.put("a",123);
+        lhm.put("a",123);
+        lhm.put("a",111);
+        lhm.put("c",12345);
+        lhm.put("d",123456);
+
+//        3.打印集合
+        System.out.println("lhm = " + lhm);
+    }
+}
+```
+
+![image-20230325113322402](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303251133543.png)
+
+## TreeMap
+
+- TreeMap跟TreeSet底层原理一样，都是红黑树结构的
+- 由键决定特性：不重复、无索引、可排序
+- 可排序：对键进行排序
+- ==注意：默认按照键从小到大进行排序，也可以自己规定键的排序规则==
+
+### 代码书写两种排序规则
+
+- 实现Comparable接口，指定比较规则
+- 创建集合时传递Comparator比较器对象，指定比较规则
+
+**案例**
+
+![image-20230325141230057](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303251412396.png)
+
+需求1：
+
+```java
+package 集合进阶.a04TreeMap;
+
+import java.util.Comparator;
+import java.util.TreeMap;
+
+/**
+ * @author cyy
+ * @ProjectName javaLearn
+ * @Description
+ * @time 2023/3/25 11:38
+ */
+public class demo1 {
+    public static void main(String[] args) {
+//        1.创建集合对象
+        TreeMap<Integer, String> treeMap = new TreeMap<>();
+
+//        Integer,Double 默认情况下都是按照升序排列的
+//        String 按照字母在ASCII码表中对应的数字升序进行排列（abcdef..）
+//        2.添加元素
+        treeMap.put(3,"三");
+        treeMap.put(4,"四");
+        treeMap.put(1,"一");
+        treeMap.put(2,"二");
+
+//        升序
+        System.out.println("treeMap = " + treeMap);
+
+        //降序操作
+        TreeMap<Integer, String> map = new TreeMap<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+//                o1:当前要添加的元素
+//                o2:表示已经在红黑树中存在的元素
+                return o2-o1;
+            }
+        });
+    }
+}
+```
+
+需求2：
+
+```java
+package 集合进阶.a04TreeMap;
+
+import java.util.Objects;
+
+/**
+ * @author cyy
+ * @ProjectName javaLearn
+ * @Description
+ * @time 2023/3/25 14:03
+ */
+public class Student implements Comparable<Student>{
+    private String name;
+    private int age;
+
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public Student() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return age == student.age && Objects.equals(name, student.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+
+    @Override
+    public int compareTo(Student o) {
+//        this:表示当前要添加的元素
+//        o:表示已经在红黑树中存在的元素
+        int i = this.getAge() - o.getAge();
+        i = i == 0 ? this.getName().compareTo(o.getName()) : i;
+        return i;
+    }
+}
+```
+
+```java
+package 集合进阶.a04TreeMap;
+
+import java.util.TreeMap;
+
+/**
+ * @author cyy
+ * @ProjectName javaLearn
+ * @Description
+ * @time 2023/3/25 14:03
+ */
+public class demo2 {
+    public static void main(String[] args) {
+        TreeMap<Student, String> treeMap = new TreeMap<>();
+
+        Student s1 = new Student("zhangsan", 23);
+        Student s2 = new Student("lisi", 20);
+        Student s3 = new Student("wangwu", 21);
+
+        treeMap.put(s1,"北京");
+        treeMap.put(s2,"西安");
+        treeMap.put(s3,"上海");
+
+        System.out.println("treeMap = " + treeMap);
+    }
+}
+
+```
+
+![image-20230325141510803](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303251415940.png)
+
+## Collections
+
+![image-20230325155508470](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303251555662.png)
+
+**练习**
+
+```java
+package 集合进阶.a05Collections;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+/**
+ * @author cyy
+ * @ProjectName javaLearn
+ * @Description
+ * @time 2023/3/25 15:57
+ */
+public class demo1 {
+    public static void main(String[] args) {
+//        1.创建集合对象
+        ArrayList<String> list = new ArrayList<>();
+
+//        2.批量添加元素
+        Collections.addAll(list,"asd","dcs","scc","tdf");
+        System.out.println("list = " + list);
+
+//        3.shuffle 打乱数据
+        Collections.shuffle(list);
+        System.out.println("list = " + list);
+    }
+}
+```
+
+![image-20230325160334637](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202303251603771.png)
 
 # Stream流
 
@@ -8529,6 +8908,5 @@ public class demo3 {
 | count   | 统计                       |
 | toArray | 收集流中的数据，放到数组中 |
 | collect | 收集流中的数据，放到集合中 |
-
 
 
