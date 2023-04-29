@@ -366,9 +366,9 @@ MapperRegistry是什么？
   4. 返回类型不对
   5. maven导出资源问题
 
-![image-20220722095721027](D:\Typora\pritrue\image-20220722095721027.png)
+![image-20230429132933723](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202304291329788.png)
 
-![image-20220722100142681](D:\Typora\pritrue\image-20220722100142681.png)
+![image-20230429132902722](https://gitee.com/yangstudys/typora-pic/raw/master/prcture/202304291329128.png)
 
 
 
