@@ -135,3 +135,6 @@ JRE是Java的运行环境，并不是一个开发环境，所以没有包含任�
 - boolean，只有两个值：true、false，可以使⽤用 1 bit 来存储
 
 在Java规范中，没有明确指出boolean的大小。在《Java虚拟机规范》给出了单个boolean占4个字节，和boolean数组1个字节的定义，具体 **还要看虚拟机实现是否按照规范来**，因此boolean占用1个字节或者4个字节都是有可能的。
+
+## socket的过程
+
