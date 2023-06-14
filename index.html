@@ -6,10 +6,6 @@
 	<title></title>
 </head>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<!-- 引入样式 -->
-<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-<!-- 引入组件库 -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <style>
 	
 </style>
@@ -29,8 +25,15 @@
             //判断条件是否成立并返回结果
             if(xhr.readyState==4 && xhr.status==200){
                 //返回结果data
-                var data=xhr.responseText;
-                console.log(data)
+                var data=JSON.parse(xhr.responseText);
+
+				var arr=[]
+				var imgDiv=document.getElementById("img_div")
+				for(var i=0;i<data.length;i++){
+					arr.push('<img src="'+data[i].download_url+'"><br/>')
+				}
+				console.log("arr:>",arr)
+				imgDiv.innerHTML=arr
             }
         }
 		xhr.open("GET",url,true)
@@ -107,6 +110,7 @@
 </script>
 <body>
 	<h1 style="text-align: center;">现在是：<span id="date"></span></h1>
-	<h1 style="text-align: center;"><span id="love_date"></span></h1>
+	<h1 style="text-align: center;">相距：<span id="love_date"></span></h1>
+	<div id="img_div"></div>
 </body>
 </html>
