@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+</head>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<style>
+	
+</style>
+<script type="text/javascript">
+	window.onload = function(){
+		this.getPic()
+	}
+	//实现时间动态变化
+	window.setInterval("nowDate()",1000);
+	window.setInterval("loveDate()",1000);
+
+	function getPic(){
+		var xhr=new XMLHttpRequest;
+		let url="https://gitee.com/api/v5/repos/yangstudys/note/contents/typora/love?access_token=eb893802166c2cd9e1403a1ed46529aa"
+		        //2.绑定事件
+		xhr.onreadystatechange=function (){
+            //判断条件是否成立并返回结果
+            if(xhr.readyState==4 && xhr.status==200){
+                //返回结果data
+                var data=JSON.parse(xhr.responseText);
+
+				var arr=[]
+				var imgDiv=document.getElementById("img_div")
+				for(var i=0;i<data.length;i++){
+					arr.push('<img src="'+data[i].download_url+'"><br/>')
+				}
+				console.log("arr:>",arr)
+				imgDiv.innerHTML=arr
+            }
+        }
+		xhr.open("GET",url,true)
+		xhr.send()
+	}
+
+	
+	function getNowDate() {
+		var myDate = new Date;
+		var year = myDate.getFullYear(); //获取当前年
+		var mon = myDate.getMonth() + 1; //获取当前月
+		var date = myDate.getDate(); //获取当前日
+		var hours = myDate.getHours(); //获取当前小时
+		var minutes = myDate.getMinutes(); //获取当前分钟
+		var seconds = myDate.getSeconds(); //获取当前秒
+		var now = year + "-" + mon + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
+		return now;
+	}
+	/**
+	 * JS 计算两个时间间隔多久（时分秒）
+	 * @param startTime "2019-10-23 15:27:23"
+	 * @param endTime "2019-10-23 15:27:55"
+	 * @return 1天2时3分5秒
+	 */
+	function twoTimeInterval(startTime, endTime) {
+		
+		// 开始时间
+		let d1 = startTime.replace(/\-/g, "/");
+		let date1 = new Date(d1);
+
+		// 结束时间
+		let d2 = endTime.replace(/\-/g, "/");
+		let date2 = new Date(d2);
+
+		// 时间相差秒数
+		let dateDiff = date2.getTime() - date1.getTime();
+
+		// 计算出相差天数
+		let days = Math.floor(dateDiff / (24 * 3600 * 1000));
+
+		// 计算出小时数
+		let residue1 = dateDiff % (24 * 3600 * 1000); // 计算天数后剩余的毫秒数
+		let hours = Math.floor(residue1 / (3600 * 1000));
+
+		// 计算相差分钟数
+		let residue2 = residue1 % (3600 * 1000); // 计算小时数后剩余的毫秒数
+		let minutes = Math.floor(residue2 / (60 * 1000));
+
+		// 计算相差秒数
+		let residue3 = residue2 % (60 * 1000); // 计算分钟数后剩余的毫秒数
+		let seconds = Math.round(residue3 / 1000);
+
+		let returnVal =
+		((days == 0) ? "" : days+"天") +
+		((hours == 0) ? "" : hours +"时") +
+		((minutes == 0) ? "" : minutes+"分") +
+		((seconds == 0) ? "" : seconds+"秒");
+
+		return returnVal;
+	}
+
+	function nowDate(){
+		$('#date').text(getNowDate());
+	}
+	function loveDate(){
+		let startTime="2023-5-9 17:54:00"
+		let endTime=getNowDate()
+		$('#love_date').text(twoTimeInterval(startTime,endTime));
+	}
+	function getTimestamp() {
+		return new Date(getNowDate()).getTime();
+	}
+
+</script>
+<body>
+	<h1 style="text-align: center;">现在是：<span id="date"></span></h1>
+	<h1 style="text-align: center;">相距：<span id="love_date"></span></h1>
+	<div id="img_div"></div>
+</body>
+</html>

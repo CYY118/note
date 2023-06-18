@@ -1,19 +1,300 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
-</head>
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<style>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<!-- <script src="jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script> -->
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+
+			#main {
+				margin: 0 auto;
+				width: 100vw;
+				overflow: hidden;
+				position: relative;
+				height: 100vh;
+			}
+			.date_data {
+				position: absolute;
+				margin-top: 45vh;
+				margin-left: 40vw;
+			}
+
+			.slider {
+				height: 100vh;
+				position: absolute;
+			}
+
+			.slider li {
+				height: 100vh;
+				width: 100vw;
+				float: left;
+				display: block;
+			}
+
+			.banner_img {
+				height: 100vh;
+				width: 100vw
+			}
+
+			.select_left {
+				position: absolute;
+				height: 60px;
+				width: 60px;
+				left: 20px;
+				top: 50%;
+				margin-top: -30px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.select_right {
+				position: absolute;
+				height: 60px;
+				width: 60px;
+				right: 20px;
+				top: 50%;
+				margin-top: -30px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.select_left img,
+			.select_right img {
+				height: 30px;
+				width: 30px;
+				opacity: 0.8;
+			}
+
+			.dots {
+				display: flex;
+				align-items: center;
+				margin: 0 auto;
+				position: absolute;
+				bottom: 20px;
+				width: 100%;
+				justify-content: center;
+			}
+
+			.dot {
+				width: 13px;
+				height: 13px;
+				background-color: rgb(183, 179, 179);
+				border-radius: 50%;
+				box-sizing: border-box;
+				margin: 6px;
+			}
+
+			.select_dot {
+				background-color: #a71f3f;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="main">
+			<div class="date_data">
+				<h1 style="text-align: center;">现在是：<span id="date"></span></h1>
+				<h1 style="text-align: center;">相距：<span id="love_date"></span></h1>
+			</div>
+			<ul class="slider" id="banner">
+				
+			</ul>
+			<div class="select_button">
+				<div class="select_left">
+					<img src="img/xz.png">
+				</div>
+				<div class="select_right">
+					<img src="img/xy.png">
+				</div>
+			</div>
+			<div class="dots">
+				<!-- <div class="dot select_dot">
+
+				</div>
+				<div class="dot">
+
+				</div>
+				<div class="dot">
+
+				</div>
+				<div class="dot">
+
+				</div>
+				<div class="dot">
+
+				</div> -->
+			</div>
+		</div>
+		<script type="text/javascript">
 	
-</style>
-<script type="text/javascript">
-	window.onload = function(){
-		this.getPic()
-	}
-	//实现时间动态变化
+			// window.onload = function(){
+			// 	this.getPic()
+			// }
+			$(document).ready(function() {
+				
+				var images=[
+					{
+						id:1,
+						url:"img/1.png"
+					},
+					{
+						id:2,
+						url:"img/2.png"
+					},
+					{
+						id:3,
+						url:"img/3.png"
+					},
+					{
+						id:4,
+						url:"img/4.png"
+					},
+					{
+						id:5,
+						url:"img/5.png"
+					},
+					{
+						id:4,
+						url:"img/4.png"
+					},
+					{
+						id:5,
+						url:"img/5.png"
+					},
+					{
+						id:6,
+						url:"img/5.png"
+					}
+				]
+				var xhr=new XMLHttpRequest;
+				let url="https://gitee.com/api/v5/repos/yangstudys/note/contents/typora/love?access_token=eb893802166c2cd9e1403a1ed46529aa"
+						//2.绑定事件
+				xhr.onreadystatechange=function (){
+					//判断条件是否成立并返回结果
+					if(xhr.readyState==4 && xhr.status==200){
+						//返回结果data
+						var data=JSON.parse(xhr.responseText);
+
+						var arr=[]
+						var imgDiv=document.getElementById("img_div")
+						for(var i=0;i<data.length;i++){
+							arr.push('<img src="'+data[i].download_url+'"><br/>')
+							images.push({
+								id:i+1,
+								url:data[i].download_url
+							})
+						}
+						console.log("images:>",images)
+						// imgDiv.innerHTML=arr
+					}
+				}
+				xhr.open("GET",url,false)
+				xhr.send()
+				console.log("12423534645====")
+				var imgWidth
+				var banner=document.getElementById("banner");
+				var dots=document.getElementsByClassName('dots');
+				for(var i=0	;i<images.length;i++){
+					var li=document.createElement("li");
+					banner.appendChild(li);
+					console.log(li)
+					var a=document.createElement("a");
+					li.appendChild(a);
+					var img=document.createElement("img");
+					img.src=images[i].url;
+					img.className='banner_img';
+					a.appendChild(img);
+					imgWidth = $(".slider li")[0].offsetWidth;
+					$(".dots").append("<div class='dot'></div>");
+					$(".dot").eq(0).addClass("select_dot").siblings().removeClass("select_dot");
+				}
+				console.log($(".dot")[0])
+				
+			
+				var numb =images.length;
+				
+				var sliderWidth = numb * imgWidth;
+				$(".slider").css({
+					width: sliderWidth + 'px'
+				})
+				console.log(imgWidth)
+				console.log(numb)
+				var curindex = 0;
+				var width = 100;
+				var timer
+				
+				$(".select_right").click(function() {
+					curindex++;
+					if(curindex<numb){
+						$(".slider").css({left:-width*curindex+"vw"})
+					}else{
+						curindex=0;
+						$(".slider").css({left:-width*curindex+"vw"})
+					}
+					$(".dot").eq(curindex).addClass("select_dot").siblings().removeClass("select_dot");
+					$(".slider a").eq(curindex).animate({"animation":0},3000).animate({"opacity":0},3000);
+					// $(".slider a").eq(curindex).fadeOut(500);animation: 3s ease-in 1s infinite reverse both running slidein;
+					// $(".slider a").eq(curindex).fadeIn(500);
+				})
+				$(".select_left").click(function() {
+					
+					if (curindex > 0) {
+						curindex--;
+						$(".slider").css({
+							left: -width * curindex + "vw"
+						})
+					} else {
+						curindex = numb;
+						curindex--;
+						$(".slider").css({
+							left: -width * curindex + "vw"
+						})
+					}
+					$(".dot").eq(curindex).addClass("select_dot").siblings().removeClass("select_dot");
+
+					$(".slider a").eq(curindex).animate({"opacity":0},3000).animate({"opacity":0},3000);
+				})
+				autoPlay();
+
+				function autoPlay() {
+					timer = setInterval(res => {
+						curindex++;
+						if (curindex < numb) {
+							$(".slider").css({
+								left: -width * curindex + "vw"
+							})
+						} else {
+							curindex = 0;
+							$(".slider").css({
+								left: -width * curindex + "vw"
+							})
+						}
+						$(".dot").eq(curindex).addClass("select_dot").siblings().removeClass("select_dot");
+
+						$(".slider a").eq(curindex).animate({"opacity":0},3000).animate({"opacity":0},3000);
+
+					}, 3000)
+				}
+				$(".dot").click(function() {
+					
+					var index = $(this).index();
+					console.log("index", index)
+					curindex = index;
+					$(".slider").css({
+						left: -width * curindex + "vw"
+					})
+					$(this).addClass("select_dot").siblings().removeClass("select_dot");
+					$(".slider a").eq(curindex).animate({"opacity":0},3000).animate({"opacity":0},3000);
+				})
+			})
+
+				//实现时间动态变化
 	window.setInterval("nowDate()",1000);
 	window.setInterval("loveDate()",1000);
 
@@ -106,11 +387,6 @@
 	function getTimestamp() {
 		return new Date(getNowDate()).getTime();
 	}
-
-</script>
-<body>
-	<h1 style="text-align: center;">现在是：<span id="date"></span></h1>
-	<h1 style="text-align: center;">相距：<span id="love_date"></span></h1>
-	<div id="img_div"></div>
-</body>
+		</script>
+	</body>
 </html>
